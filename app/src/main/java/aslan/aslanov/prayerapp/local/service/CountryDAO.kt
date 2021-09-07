@@ -11,7 +11,6 @@ import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 interface CountryDAO {
 
     // TODO: 31.08.21 City
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCity(vararg country: City)
 
@@ -19,7 +18,6 @@ interface CountryDAO {
     fun getCities(countryName: String): LiveData<List<City>>
 
     // TODO: 31.08.21 Country
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCountry(vararg country: Country)
 
