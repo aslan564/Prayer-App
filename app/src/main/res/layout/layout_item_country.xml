@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="countryItem"
+            type="aslan.aslanov.prayerapp.model.countryModel.Country" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/margin_4dp"
+        android:layout_marginHorizontal="@dimen/small_2dp"
+        android:layout_marginVertical="@dimen/small_2dp"
+        android:background="@drawable/bg_text_country">
+
+        <TextView
+            android:id="@+id/text_view_country"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{countryItem.country}"
+            android:textAppearance="@style/TextColumnSubHeader"
+            android:textColor="#000000"
+            android:layout_marginVertical="@dimen/margin_4dp"
+            app:drawableEndCompat="@drawable/ic_navigate_next"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginBottom="@dimen/small_2dp"
+            tools:text="@string/calendar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

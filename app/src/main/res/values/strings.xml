@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Prayer App</string>
+    <string name="main">Main</string>
+    <string name="prayers">Prayers</string>
+    <string name="qibla">Qibla</string>
+    <string name="calendar">Calendar</string>
+    <string name="events">Events</string>
+    <string name="text_view_prayer_time">12 Jan 2016</string>
+    <string name="text_view_country">Europe/London</string>
+    <string name="gregorian">Gregorian</string>
+    <string name="hijri">Hijri</string>
+    <string name="prayer_notification_icon">prayer notification icon</string>
+    <string name="fajr">Fajr</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="dhuhr">Dhuhr</string>
+    <string name="asr">Asr</string>
+    <string name="sunset">Sunset</string>
+    <string name="maghrib">Maghrib</string>
+    <string name="isha">Isha</string>
+    <string name="imsak">Imsak</string>
+    <string name="midnight" translatable="false">Midnight</string>
+    <string name="permission">Location permission needed</string>
+    <string name="location" translatable="false">Location</string>
+    <string name="settings" translatable="false">Settings</string>
+    <string name="quran">Quran</string>
+    <string name="tr">Tr</string>
+    <string name="arb">Arb</string>
+    <string name="aze">Aze</string>
+    <string name="language">Language</string>
+    <string name="others">Others</string>
+    <string name="big_text"><![CDATA[load(params: LoadParams<Int>) — This function will be called by the Paging library to asynchronously fetch more data to be displayed as the user scrolls around. The LoadParams object keeps information related to the load operation. We are going to use the params.key for get the current page index. If this is the first time that load is called, params. key will be null. In that case, we will have to define the initial page key with the TMDB_STARTING_PAGE_INDEX constant. Finally, params.loadSize is the requested number of items to load load(params: LoadParams<Int>) — This function will be called by the Paging library to asynchronously fetch more data to be displayed as the user scrolls around. The LoadParams object keeps information related to the load operation. We are going to use the params.key for get the current page index. If this is the first time that load is called, params. key will be null. In that case, we will have to define the initial page key with the TMDB_STARTING_PAGE_INDEX constant. Finally, params.loadSize is the requested number of items to load. We create our PagingSource successfully. But now we need a way to emit flows of PagingData. For that task, we’re gonna need a PagingData builder. In our repository or dataSource we must create an instance of Page which is going to accept a PagingConfig and a pagingSourceFactory function will be called by the Paging library to asynchronously fetch more data to be displayed as the user scrolls around. The LoadParams object keeps information related to the load operation. We are going to use the params.key for get the current page index. If this is the first time that load is called, params. key will be null. In that case, we will have to define the initial page key with the TMDB_STARTING_PAGE_INDEX constant. Finally, params.loadSize is the requested number of items to load load(params: LoadParams<Int>) — This function will be called by the Paging library to asynchronously fetch more data to be displayed as the user scrolls around. The LoadParams object keeps information related to the load operation. We are going to use the params.key for get the current page index. If this is the first time that load is called, params. key will be null. In that case, we will have to define the initial page key with the TMDB_STARTING_PAGE_INDEX constant. Finally, params.loadSize is the requested number of items to load.]]></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

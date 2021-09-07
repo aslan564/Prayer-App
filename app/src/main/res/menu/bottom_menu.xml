@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navigation_remaining_time"
+        android:icon="@drawable/ic_timer"
+        android:enabled="true"
+        android:title="@string/main" />
+    <item
+        android:id="@+id/navigation_prayer_time"
+        android:icon="@drawable/ic_kneel_pray"
+        android:enabled="true"
+        android:title="@string/prayers" />
+    <item
+        android:id="@+id/navigation_prayer_qibla"
+        android:icon="@drawable/ic_custom_qibla"
+        android:enabled="true"
+        android:title="@string/qibla" />
+    <item
+        android:id="@+id/navigation_prayer_calendar"
+        android:icon="@drawable/ic_date_range"
+        android:enabled="true"
+        android:title="@string/calendar" />
+    <item
+        android:id="@+id/navigation_prayer_events"
+        android:icon="@drawable/ic_schedule"
+        android:enabled="true"
+        android:title="@string/events" />
+</menu>

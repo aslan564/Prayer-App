@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item>
+    <shape android:shape="oval" >
+        <solid android:color="@color/white" />
+        <padding
+            android:top="@dimen/small_2dp"
+            android:bottom="@dimen/small_2dp"
+            android:left="@dimen/small_2dp"
+            android:right="@dimen/small_2dp" />
+    </shape>
+</item>
+    <item android:drawable="@drawable/ic_notifications_off" />
+</layer-list>

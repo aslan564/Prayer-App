@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.fragment.settings.SettingsFragment">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:padding="@dimen/margin_10dp"
+            android:drawablePadding="@dimen/margin_10dp"
+            android:textAppearance="@style/TextColumnHeader"
+            app:drawableLeftCompat="@drawable/ic_settings_filled" />
+
+        <TextView
+            android:id="@+id/text_view_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/location"
+            android:layout_marginHorizontal="@dimen/margin_10dp"
+            android:layout_marginVertical="@dimen/small_2dp"
+            android:background="@drawable/bg_text_view"
+            app:drawableEndCompat="@drawable/ic_navigate_next"
+            android:textAppearance="@style/TextColumnSubHeader" />
+
+        <TextView
+            android:id="@+id/text_view_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/calendar"
+            android:layout_marginHorizontal="@dimen/margin_10dp"
+            android:layout_marginVertical="@dimen/small_2dp"
+            android:background="@drawable/bg_text_view"
+            app:drawableEndCompat="@drawable/ic_navigate_next"
+            android:textAppearance="@style/TextColumnSubHeader" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/others"
+            android:padding="@dimen/margin_10dp"
+            android:layout_marginTop="@dimen/margin_10dp"
+            android:drawablePadding="@dimen/margin_10dp"
+            android:textAppearance="@style/TextColumnHeader"
+            app:drawableLeftCompat="@drawable/ic_settings_filled" />
+
+        <TextView
+            android:id="@+id/text_view_quran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/quran"
+            android:layout_marginHorizontal="@dimen/margin_10dp"
+            android:layout_marginVertical="@dimen/small_2dp"
+            android:background="@drawable/bg_text_view"
+            app:drawableEndCompat="@drawable/ic_navigate_next"
+            android:textAppearance="@style/TextColumnSubHeader" />
+    </LinearLayout>
+</layout>

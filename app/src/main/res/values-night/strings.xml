@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Prayer App</string>
+    <string name="main" translatable="false">Main</string>
+    <string name="prayers" translatable="false">Prayers</string>
+    <string name="qibla" translatable="false">Qibla</string>
+    <string name="calendar" translatable="false">Calendar</string>
+    <string name="events" translatable="false">Events</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_view_prayer_time" translatable="false">12 Jan 2016</string>
+    <string name="text_view_country" translatable="false">Europe/London</string>
+    <string name="gregorian" translatable="false">Gregorian</string>
+    <string name="hijri" translatable="false">Hijri</string>
+    <string name="prayer_notification_icon" translatable="false">prayer notification icon</string>
+    <string name="fajr" translatable="false">Fajr</string>
+    <string name="sunrise" translatable="false">Sunrise</string>
+    <string name="dhuhr" translatable="false">Dhuhr</string>
+    <string name="asr" translatable="false">Asr</string>
+    <string name="sunset" translatable="false">Sunset</string>
+    <string name="maghrib" translatable="false">Maghrib</string>
+    <string name="isha" translatable="false">Isha</string>
+    <string name="imsak" translatable="false">Imsak</string>
+    <string name="permission" translatable="false">Location permission needed</string>
+    <string name="quran" translatable="false">Quran</string>
+    <string name="tr" translatable="false">Tr</string>
+    <string name="arb" translatable="false">Arb</string>
+    <string name="aze" translatable="false">Aze</string>
+    <string name="language">Language</string>
+    <string name="others">Digərləri</string>
+</resources>

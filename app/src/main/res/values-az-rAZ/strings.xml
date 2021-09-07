@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dua Vaxti</string>
+    <string name="main" translatable="false">Əsas</string>
+    <string name="prayers" translatable="false">Dualar</string>
+    <string name="qibla" translatable="false">Qiblə</string>
+    <string name="calendar" translatable="false">Təqvim</string>
+    <string name="events" translatable="false">Hadisələr</string>
+    <string name="text_view_prayer_time" translatable="false">12 Jan 2016</string>
+    <string name="text_view_country" translatable="false">Europe/London</string>
+    <string name="gregorian" translatable="false">Qriqorian</string>
+    <string name="hijri" translatable="false">Hicri</string>
+    <string name="prayer_notification_icon" translatable="false">namaz bildiriş nişanı</string>
+    <string name="fajr" translatable="false">Fəcr</string>
+    <string name="sunrise" translatable="false">Günəşin doğuşu</string>
+    <string name="dhuhr" translatable="false">Zöhr</string>
+    <string name="asr" translatable="false">Əsr</string>
+    <string name="sunset" translatable="false">Gün batımı</string>
+    <string name="maghrib" translatable="false">Məğrib</string>
+    <string name="isha" translatable="false">Isha</string>
+    <string name="imsak" translatable="false">İmsak</string>
+    <string name="midnight" translatable="false">Gecə yarısı</string>
+    <string name="permission" translatable="false">Məkan icazəsi tələb olunur</string>
+    <string name="location" translatable="false">Yer</string>
+    <string name="settings" translatable="false">Parametrlər</string>
+    <string name="quran" translatable="false">Quran</string>
+    <string name="tr" translatable="false">Tr</string>
+    <string name="arb" translatable="false">Arb</string>
+    <string name="aze" translatable="false">Aze</string>
+    <string name="language" translatable="false">Dil</string>
+    <string name="others">Digərləri</string>
+</resources>
