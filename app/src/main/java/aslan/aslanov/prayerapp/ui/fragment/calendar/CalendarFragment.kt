@@ -1,14 +1,15 @@
 package aslan.aslanov.prayerapp.ui.fragment.calendar
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCalendarBinding
 import aslan.aslanov.prayerapp.databinding.LayoutCalendarItemBinding
 import aslan.aslanov.prayerapp.ui.fragment.calendar.adapter.CalendarAdapter
+import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 
 
 class CalendarFragment : Fragment() {
@@ -31,8 +32,24 @@ class CalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         bindUI()
     }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.settings_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_settings -> {
+                val action = SettingsFragmentDirections.actionToNavigateToSettings()
+                findNavController().navigate(action)
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun bindUI(): Unit = with(binding) {
         lifecycleOwner = this@CalendarFragment
         recyclerViewCalendar.apply {

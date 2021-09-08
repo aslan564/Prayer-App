@@ -1,13 +1,12 @@
 package aslan.aslanov.prayerapp.ui.fragment.timings
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCurrentTimeBinding
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isAsr
@@ -23,6 +22,7 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCit
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCountryName
 import aslan.aslanov.prayerapp.mainService.AlarmReceiver
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
+import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.calculateTime
 import aslan.aslanov.prayerapp.util.logApp
 import java.util.*
@@ -46,10 +46,26 @@ class CurrentTimeFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         bindUI()
         observeData()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.settings_menu, menu)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_settings -> {
+                val action = SettingsFragmentDirections.actionToNavigateToSettings()
+                findNavController().navigate(action)
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onClick(view: View?): Unit = with(binding) {
         view?.let {

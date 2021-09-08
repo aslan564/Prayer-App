@@ -1,6 +1,7 @@
 package aslan.aslanov.prayerapp.network.services
 
 import aslan.aslanov.prayerapp.model.ayahs.AyahsResponse
+import aslan.aslanov.prayerapp.model.language.LanguageResponse
 import aslan.aslanov.prayerapp.model.surahs.QuranResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -8,8 +9,8 @@ import retrofit2.http.Path
 
 interface QuranService {
 
-    @GET("edition/type/translation")
-    suspend fun fetchQuranTranslations()
+    @GET("edition")
+    suspend fun fetchQuranTranslationsLanguage():Response<LanguageResponse>
 
     @GET("surah/{surah}/{edition}")
     suspend fun fetchSurahAyahsQuran(

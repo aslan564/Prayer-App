@@ -5,13 +5,18 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import aslan.aslanov.prayerapp.local.service.CountryDAO
+import aslan.aslanov.prayerapp.local.service.QuranDAO
+import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
 import aslan.aslanov.prayerapp.model.countryModel.City
 import aslan.aslanov.prayerapp.model.countryModel.Country
+import aslan.aslanov.prayerapp.model.language.QuranLanguage
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
+import aslan.aslanov.prayerapp.model.surahs.SurahEntity
 
-@Database(entities = [Country::class, City::class, TimingsEntity::class],version = 1,exportSchema = false)
+@Database(entities = [Country::class, City::class, TimingsEntity::class,SurahEntity::class, QuranLanguage::class, AyahEntity::class],version = 1,exportSchema = false)
 abstract class PrayerDatabase : RoomDatabase() {
-    abstract fun getDao(): CountryDAO
+    abstract fun getCountryDao(): CountryDAO
+    abstract fun getQuranDao(): QuranDAO
 
     companion object {
         @Volatile

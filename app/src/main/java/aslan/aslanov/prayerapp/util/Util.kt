@@ -3,20 +3,19 @@ package aslan.aslanov.prayerapp.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
-import android.os.Message
 import android.util.Log
 import android.widget.Toast
 import aslan.aslanov.prayerapp.model.countryModel.*
 import aslan.aslanov.prayerapp.model.prayerCurrent.Timings
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
+import aslan.aslanov.prayerapp.model.surahs.Data
+import aslan.aslanov.prayerapp.model.surahs.SurahEntity
 import aslan.aslanov.prayerapp.network.NetworkResult
-import aslan.aslanov.prayerapp.ui.fragment.remainingTime.RemainingTimeFragment
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.min
 
 private const val TAG = "😍 😙 🥶"
 val currentDate: Calendar = Calendar.getInstance()
@@ -155,6 +154,17 @@ fun cityList(cityStrings: List<String>, countryId: String): List<City> {
         newCityList.add(City(countryId, city))
     }
     return newCityList
+}
+
+fun List<Data>.convertToSurah(): List<SurahEntity> = map {
+    SurahEntity(
+        englishName = it.englishName!!,
+        englishNameTranslation = it.englishNameTranslation!!,
+        name = it.name!!,
+        number = it.number!!,
+        numberOfAyahs = it.numberOfAyahs!!,
+        revelationType = it.revelationType!!
+    )
 }
 
 fun listTimingsEntity(

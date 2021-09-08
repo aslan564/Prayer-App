@@ -93,21 +93,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.settings_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_settings -> {
-                val action = SettingsFragmentDirections.actionToNavigateToSettings()
-                navController.navigate(action)
-            }
-
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onStart() {
         super.onStart()

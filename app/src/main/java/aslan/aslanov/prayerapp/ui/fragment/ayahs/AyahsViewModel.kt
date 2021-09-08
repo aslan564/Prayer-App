@@ -8,6 +8,7 @@ import aslan.aslanov.prayerapp.model.ayahs.Ayah
 import aslan.aslanov.prayerapp.model.ayahs.AyahsResponse
 import aslan.aslanov.prayerapp.network.Status
 import aslan.aslanov.prayerapp.repository.QuranSurahAyahsRepository
+import aslan.aslanov.prayerapp.util.logApp
 import kotlinx.coroutines.launch
 
 class AyahsViewModel : ViewModel() {
@@ -31,6 +32,7 @@ class AyahsViewModel : ViewModel() {
                     result.data?.let {
                         _ayahs.value=it
                         _ayahsStatus.value=false
+                        logApp(it.data!!.ayahs!!.toString())
                     }
                 }
                 Status.LOADING -> {

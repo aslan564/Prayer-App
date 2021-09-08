@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
+        android:id="@+id/menu_quran_language"
         android:icon="@drawable/ic_baseline_language_24"
         app:showAsAction="withText"
         android:title="@string/language">
-        <menu>
-            <item
-                android:id="@+id/lang_tr_menu"
-                android:title="@string/tr" />
-            <item
-                android:id="@+id/lang_arb_menu"
-                android:title="@string/arb" />
-            <item
-                android:id="@+id/lang_aze_menu"
-                android:title="@string/aze" />
-        </menu>
     </item>
 </menu>

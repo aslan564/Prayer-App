@@ -6,6 +6,6 @@ import aslan.aslanov.prayerapp.model.countryModel.City
 
 class CitiesRepository(private val database: PrayerDatabase)  {
     fun getAllCity(countryName:String):LiveData<List<City>>{
-      return  database.getDao().getCities(countryName)
+      return  database.getCountryDao().getCities(countryName)
     }
 }

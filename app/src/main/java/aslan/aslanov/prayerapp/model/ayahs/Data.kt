@@ -1,6 +1,4 @@
 package aslan.aslanov.prayerapp.model.ayahs
-
-
 import com.squareup.moshi.Json
 
 data class Data(

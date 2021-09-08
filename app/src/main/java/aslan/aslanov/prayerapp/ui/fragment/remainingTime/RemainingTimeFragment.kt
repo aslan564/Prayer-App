@@ -3,14 +3,14 @@ package aslan.aslanov.prayerapp.ui.fragment.remainingTime
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentRemainingTimeBinding
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
+import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -33,33 +33,37 @@ class RemainingTimeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setHasOptionsMenu(true)
         bindUI()
+
+    }
+
+
+    override fun onStart() {
+        super.onStart()
         observeRemaining()
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        /*   requireActivity().registerReceiver(
-               IntentFilter(AlarmNotification.COUNTDOWN_BR)
-           )*/
-        Log.d(TAG, "onResume: Register broadcast receiver")
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.settings_menu, menu)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_settings -> {
+                val action = SettingsFragmentDirections.actionToNavigateToSettings()
+                findNavController().navigate(action)
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     @SuppressLint("SimpleDateFormat")
     private fun bindUI(): Unit = with(binding) {
         lifecycleOwner = this@RemainingTimeFragment
         currentDate = Calendar.getInstance()
-
 
     }
 
@@ -69,7 +73,6 @@ class RemainingTimeFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 createSortedList(it) { list ->
                     checkRemainingTimeHoursStatus(list)
-
                 }
             }
         })
@@ -121,25 +124,25 @@ class RemainingTimeFragment : Fragment() {
             currentDate,
             stopDate
         ) { elapsedHours: Long, elapsedMinutes: Long, elapsedSeconds: Long ->
-            contentLoadingProgress.max = ((elapsedHours*60)*1000).toInt()
-            val minuteDif = if (elapsedMinutes > 60){
-                elapsedMinutes%60
-            }else{
+            contentLoadingProgress.max = ((elapsedHours * 60) * 1000).toInt()
+            val minuteDif = if (elapsedMinutes > 60) {
+                elapsedMinutes % 60
+            } else {
                 elapsedMinutes
             }
-                countDownTimer(
-                    elapsedHours.toInt(),
-                    minuteDif.toInt(),
-                    (elapsedSeconds / 1000).toInt(),
-                    (elapsedMinutes * 60) * 1000
-                ) { hours, minute, second, complete ->
-                    if (complete) {
-                        textViewPrayerTime.text = "Time Up"
-                    } else {
-                        textViewPrayerTime.text = "$hours:$minute:$second"
-                        contentLoadingProgress.progress = minute
-                    }
+            countDownTimer(
+                elapsedHours.toInt(),
+                minuteDif.toInt(),
+                (elapsedSeconds / 1000).toInt(),
+                (elapsedMinutes * 60) * 1000
+            ) { hours, minute, second, complete ->
+                if (complete) {
+                    textViewPrayerTime.text = "Time Up"
+                } else {
+                    textViewPrayerTime.text = "$hours:$minute:$second"
+                    contentLoadingProgress.progress = minute
                 }
+            }
         }
     }
 

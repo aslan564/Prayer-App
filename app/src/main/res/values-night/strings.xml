@@ -27,4 +27,5 @@
     <string name="aze" translatable="false">Aze</string>
     <string name="language">Language</string>
     <string name="others">Digərləri</string>
+    <string name="language_quran">Please select any language</string>
 </resources>

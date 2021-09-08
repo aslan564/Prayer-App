@@ -42,7 +42,7 @@ class CountryListRepository(private val database: PrayerDatabase) {
     }
 
     fun getCountryDatabase() :LiveData<List<CountryWithCities>>{
-        return database.getDao().getCountryWithCities()
+        return database.getCountryDao().getCountryWithCities()
     }
 
     suspend fun convertedList(onCompletionListener: (List<Data>?, Boolean) -> Unit) {
@@ -83,7 +83,7 @@ class CountryListRepository(private val database: PrayerDatabase) {
     }
 
     private suspend fun addCityAndCountryToDatabase(countryWithCities: CountryWithCities) {
-        database.getDao().insertCity(*countryWithCities.city.toTypedArray())
-        database.getDao().insertCountry(countryWithCities.country)
+        database.getCountryDao().insertCity(*countryWithCities.city.toTypedArray())
+        database.getCountryDao().insertCountry(countryWithCities.country)
     }
 }

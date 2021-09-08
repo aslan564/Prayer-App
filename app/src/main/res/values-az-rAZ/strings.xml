@@ -28,5 +28,6 @@
     <string name="arb" translatable="false">Arb</string>
     <string name="aze" translatable="false">Aze</string>
     <string name="language" translatable="false">Dil</string>
-    <string name="others">Digərləri</string>
+    <string name="others" translatable="false">Digərləri</string>
+    <string name="language_quran" translatable="false">Zəhmət olmasa hər hansı bir dili seçin</string>
 </resources>

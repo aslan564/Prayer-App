@@ -6,16 +6,19 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentQuranSurahsBinding
-import aslan.aslanov.prayerapp.databinding.LayoutItemQuranBinding
-import aslan.aslanov.prayerapp.ui.fragment.surah.adapter.QuranAdapter
+import aslan.aslanov.prayerapp.databinding.LayoutItemQuranSurahsBinding
+import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.quranLanguage
+import aslan.aslanov.prayerapp.ui.fragment.surah.adapter.QuranSurahAdapter
+import aslan.aslanov.prayerapp.util.makeToast
 
 class QuranSurahFragment : Fragment() {
 
     private val binding by lazy { FragmentQuranSurahsBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<QuranSurahsViewModel>()
-    private lateinit var quranAdapter: QuranAdapter
+    private lateinit var quranSurahAdapter: QuranSurahAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,32 +27,52 @@ class QuranSurahFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         bindUI()
         observeQuranData()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.quran_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_quran_language -> {
+                val action =
+                    QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranLanguage()
+                findNavController().navigate(action)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun bindUI(): Unit = with(binding) {
         lifecycleOwner = this@QuranSurahFragment
-        setHasOptionsMenu(true)
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun observeQuranData(): Unit = with(viewModel) {
-        fetchQuran("az.mammadaliyev")
         quranResponse.observe(viewLifecycleOwner, {
             it?.let {
-                quranAdapter = QuranAdapter(it) { viewDataBinding, list, i, surah ->
-                    if (viewDataBinding is LayoutItemQuranBinding) {
+                quranSurahAdapter = QuranSurahAdapter(it) { viewDataBinding, list, i, surah ->
+                    if (viewDataBinding is LayoutItemQuranSurahsBinding) {
                         viewDataBinding.quranItem = surah
-                        viewDataBinding.root.setOnClickListener { v->
-                            val action=QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranAyahs().setSurahNum(surah.number!!)
-                            v.findNavController().navigate(action)
+                        viewDataBinding.root.setOnClickListener { v ->
+                            if (quranLanguage != null) {
+                                val action =
+                                    QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranAyahs()
+                                action.surahNum = surah.number!!
+                                v.findNavController().navigate(action)
+                            } else {
+                                requireContext().makeToast(requireContext().getString(R.string.language_quran))
+                            }
+
                         }
                     }
 
                 }.apply { notifyDataSetChanged() }
-                binding.recyclerViewQuran.adapter = quranAdapter
+                binding.recyclerViewQuran.adapter = quranSurahAdapter
             }
         })
 
@@ -62,26 +85,13 @@ class QuranSurahFragment : Fragment() {
                 }
             }
         })
+        errorMessage.observe(viewLifecycleOwner,{
+            it?.let {
+                requireContext().makeToast(it)
+            }
+        })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.quran_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.lang_arb_menu -> {
-                viewModel.fetchQuran("ar.alafasy")
-            }
-            R.id.lang_aze_menu -> {
-                viewModel.fetchQuran("az.mammadaliyev")
-            }
-            R.id.lang_tr_menu -> {
-                viewModel.fetchQuran("tr.diyanet")
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     companion object {
 

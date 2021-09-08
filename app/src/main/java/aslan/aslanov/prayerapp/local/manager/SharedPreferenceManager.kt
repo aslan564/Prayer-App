@@ -26,6 +26,7 @@ object SharedPreferenceManager {
     private val LONGITUDE = Pair<String, String?>("longitude", null)
     private val CITY_NAME = Pair<String, String?>("location", null)
     private val COUNTRY_NAME = Pair<String, String?>("country_name", null)
+    private val QURAN_LANGUAGE = Pair<String, String?>("quran_language", null)
 
     fun instance(context: Context) {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE)
@@ -59,6 +60,11 @@ object SharedPreferenceManager {
         get() = sharedPreferences.getString(COUNTRY_NAME.first, COUNTRY_NAME.second)
         set(value) = sharedPreferences.edit {
             it.putString(COUNTRY_NAME.first, value)
+        }
+    var quranLanguage: String?
+        get() = sharedPreferences.getString(QURAN_LANGUAGE.first, QURAN_LANGUAGE.second)
+        set(value) = sharedPreferences.edit {
+            it.putString(QURAN_LANGUAGE.first, value)
         }
     var isFirstTime: Boolean
         get() = sharedPreferences.getBoolean(IS_FIRST_TIME.first, IS_FIRST_TIME.second)

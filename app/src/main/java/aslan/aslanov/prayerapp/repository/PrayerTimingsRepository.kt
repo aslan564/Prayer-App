@@ -35,11 +35,11 @@ class PrayerTimingsRepository(private val database: PrayerDatabase) {
     }
 
     suspend fun addTimeToDatabase(time: TimingsEntity) {
-        database.getDao().insertTime(time)
+        database.getCountryDao().insertTime(time)
     }
 
     fun getCurrentTimeLive(): LiveData<TimingsEntity> {
-        return database.getDao().getTimingsEntityLive()
+        return database.getCountryDao().getTimingsEntityLive()
     }
 
 }
