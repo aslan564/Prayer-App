@@ -17,7 +17,7 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val TAG = "😍 😙 🥶"
+private const val TAG = "prayerapp.util"
 val currentDate: Calendar = Calendar.getInstance()
 private lateinit var alarmTime: Calendar
 fun logApp(msg: String) {
@@ -148,43 +148,6 @@ fun countDownTimer(
     countDownTimer.start()
 }
 
-fun cityList(cityStrings: List<String>, countryId: String): List<City> {
-    val newCityList = mutableListOf<City>()
-    for (city in cityStrings) {
-        newCityList.add(City(countryId, city))
-    }
-    return newCityList
-}
-
-fun List<Data>.convertToSurah(): List<SurahEntity> = map {
-    SurahEntity(
-        englishName = it.englishName!!,
-        englishNameTranslation = it.englishNameTranslation!!,
-        name = it.name!!,
-        number = it.number!!,
-        numberOfAyahs = it.numberOfAyahs!!,
-        revelationType = it.revelationType!!
-    )
-}
-
-fun listTimingsEntity(
-    data: Timings?,
-): TimingsEntity {
-    data?.let {
-        return TimingsEntity(
-            asr = data.asr,
-            dhuhr = data.dhuhr,
-            fajr = data.fajr,
-            imsak = data.imsak,
-            isha = data.isha,
-            maghrib = data.maghrib,
-            midnight = data.midnight,
-            sunrise = data.sunrise,
-            sunset = data.sunset
-        )
-
-    } ?: return TimingsEntity(0, null, null, null, null, null, null, null, null, null)
-}
 
 fun Context.makeToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()

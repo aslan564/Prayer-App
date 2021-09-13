@@ -26,7 +26,7 @@ interface CountryDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTime(vararg timings: TimingsEntity)
 
-    @Query("SELECT * FROM timingsentity")
+    @Query("SELECT * FROM table_timings")
     fun getTimingsEntityLive(): LiveData<TimingsEntity>
 
 

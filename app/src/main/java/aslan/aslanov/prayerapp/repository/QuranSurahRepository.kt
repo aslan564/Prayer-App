@@ -2,14 +2,14 @@ package aslan.aslanov.prayerapp.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import aslan.aslanov.prayerapp.local.PrayerDatabase
-import aslan.aslanov.prayerapp.model.surahs.Data
+import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isSurahFirst
 import aslan.aslanov.prayerapp.model.surahs.QuranResponse
+import aslan.aslanov.prayerapp.model.surahs.SurahEntity
 import aslan.aslanov.prayerapp.network.NetworkResult
 import aslan.aslanov.prayerapp.network.RetrofitService.getQuranResponse
 import aslan.aslanov.prayerapp.network.Status
-import aslan.aslanov.prayerapp.util.convertToSurah
+import aslan.aslanov.prayerapp.util.convertToSurahEntity
 import aslan.aslanov.prayerapp.util.getServerError
 import aslan.aslanov.prayerapp.util.logApp
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +20,6 @@ import kotlinx.coroutines.withContext
 class QuranSurahRepository(private val database: PrayerDatabase) {
     private val service = getQuranResponse
 
-    val quranResponse=database.getQuranDao().getSurahsFromDatabase()
 
     private var _quranUiState = MutableLiveData<Boolean>()
     val quranUiState: LiveData<Boolean>
@@ -49,7 +48,7 @@ class QuranSurahRepository(private val database: PrayerDatabase) {
         }
     }
 
-    suspend fun addQuranSurahToDB() {
+    private suspend fun addQuranSurahToDB() {
         fetchQuran { res ->
             when (res.status) {
                 Status.LOADING -> {
@@ -58,7 +57,7 @@ class QuranSurahRepository(private val database: PrayerDatabase) {
                 Status.ERROR -> {
                     res.msg?.let {
                         logApp(res.msg)
-                        _errorMessage.value=it
+                        _errorMessage.value = it
                         _quranUiState.value = false
                     }
                 }
@@ -68,15 +67,24 @@ class QuranSurahRepository(private val database: PrayerDatabase) {
                             GlobalScope.launch {
                                 val convertedSurah = withContext(Dispatchers.Default)
                                 {
-                                    return@withContext surahs.convertToSurah()
+                                    return@withContext surahs.convertToSurahEntity()
                                 }
                                 database.getQuranDao().insertSurah(*convertedSurah.toTypedArray())
                             }
-                            _quranUiState.value = false
+                            _quranUiState.postValue(false)
                         }
                     }
                 }
             }
         }
+    }
+
+    suspend fun getSurahFromDB(onCompleteListener: (LiveData<List<SurahEntity>>) -> Unit) {
+        if (!isSurahFirst) {
+            isSurahFirst = true
+            addQuranSurahToDB()
+        }
+        _quranUiState.postValue(false)
+        onCompleteListener(database.getQuranDao().getSurahsFromDatabase())
     }
 }

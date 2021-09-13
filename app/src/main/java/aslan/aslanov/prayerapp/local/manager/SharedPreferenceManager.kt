@@ -20,13 +20,15 @@ object SharedPreferenceManager {
     private val IS_SUNSET = Pair("isSunsetPrayer", false)
 
 
+    private val IS_SURAH_FIRST = Pair("isSurahFirst", false)
     private val IS_LOCATION = Pair("isLocation", true)
     private val IS_FIRST_TIME = Pair("isFirstTime", false)
     private val LATITUDE = Pair<String, String?>("latitude", null)
     private val LONGITUDE = Pair<String, String?>("longitude", null)
     private val CITY_NAME = Pair<String, String?>("location", null)
     private val COUNTRY_NAME = Pair<String, String?>("country_name", null)
-    private val QURAN_LANGUAGE = Pair<String, String?>("quran_language", null)
+    private val QURAN_LANGUAGE_SURAH = Pair<String, String?>("quran_language_surah", null)
+    private val QURAN_LANGUAGE_HADEETH = Pair<String, String?>("quran_language_hadeeth", null)
 
     fun instance(context: Context) {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE)
@@ -61,10 +63,15 @@ object SharedPreferenceManager {
         set(value) = sharedPreferences.edit {
             it.putString(COUNTRY_NAME.first, value)
         }
-    var quranLanguage: String?
-        get() = sharedPreferences.getString(QURAN_LANGUAGE.first, QURAN_LANGUAGE.second)
+    var languageSurah: String?
+        get() = sharedPreferences.getString(QURAN_LANGUAGE_SURAH.first, QURAN_LANGUAGE_SURAH.second)
         set(value) = sharedPreferences.edit {
-            it.putString(QURAN_LANGUAGE.first, value)
+            it.putString(QURAN_LANGUAGE_SURAH.first, value)
+        }
+    var languageHadeeth: String?
+        get() = sharedPreferences.getString(QURAN_LANGUAGE_HADEETH.first, QURAN_LANGUAGE_HADEETH.second)
+        set(value) = sharedPreferences.edit {
+            it.putString(QURAN_LANGUAGE_HADEETH.first, value)
         }
     var isFirstTime: Boolean
         get() = sharedPreferences.getBoolean(IS_FIRST_TIME.first, IS_FIRST_TIME.second)
@@ -75,6 +82,11 @@ object SharedPreferenceManager {
         get() = sharedPreferences.getBoolean(IS_LOCATION.first, IS_LOCATION.second)
         set(value) = sharedPreferences.edit {
             it.putBoolean(IS_LOCATION.first, value)
+        }
+    var isSurahFirst: Boolean
+        get() = sharedPreferences.getBoolean(IS_SURAH_FIRST.first, IS_SURAH_FIRST.second)
+        set(value) = sharedPreferences.edit {
+            it.putBoolean(IS_SURAH_FIRST.first, value)
         }
 
 

@@ -1,21 +1,26 @@
 package aslan.aslanov.prayerapp.ui.fragment.city
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCityBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemCityBinding
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager
 import aslan.aslanov.prayerapp.ui.fragment.city.adapterCity.AdapterCity
+import aslan.aslanov.prayerapp.util.BaseFragment
 
 
-class CityFragment : Fragment() {
+@SuppressLint("ResourceType")
+class CityFragment : BaseFragment(R.layout.fragment_city) {
     private val cityViewModel by viewModels<CityViewModel>()
-    private val binding by lazy { FragmentCityBinding.inflate(layoutInflater) }
+    private lateinit var binding : FragmentCityBinding
 
     private val adapterCity by lazy {
         AdapterCity(onClickListener = { viewDataBinding, city ->
@@ -31,30 +36,13 @@ class CityFragment : Fragment() {
         })
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindUI()
     }
 
-    override fun onStart() {
-        super.onStart()
-        observeData()
-    }
 
-    private fun observeData(): Unit = with(cityViewModel) {
-
-    }
-
-    private fun bindUI(): Unit = with(binding) {
-        lifecycleOwner = this@CityFragment
+    override fun observeData(): Unit = with(cityViewModel) {
         arguments?.let {
             CityFragmentArgs.fromBundle(it).countryName?.let { country ->
                 cityViewModel.getAllCity(country){liveData->
@@ -66,9 +54,19 @@ class CityFragment : Fragment() {
                 }
             }
         }
-        recyclerViewCity.adapter = adapterCity
+        binding.recyclerViewCity.adapter = adapterCity
 
     }
+
+    override fun bindUI(binding: ViewDataBinding) {
+        super.bindUI(binding)
+        if (binding is FragmentCityBinding) {
+            this.binding = binding
+
+        }
+    }
+
+
 
     companion object {
         private const val TAG = "CityFragment"

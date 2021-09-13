@@ -8,7 +8,14 @@
         android:id="@+id/navigation_remaining_time"
         android:name="aslan.aslanov.prayerapp.ui.fragment.remainingTime.RemainingTimeFragment"
         android:label="Remaining Time"
-        tools:layout="@layout/fragment_remaining_time" />
+        tools:layout="@layout/fragment_remaining_time">
+        <action
+            android:id="@+id/action_navigation_remaining_time_to_navigation_quran_ayahs"
+            app:destination="@id/navigation_quran_ayahs" />
+        <action
+            android:id="@+id/action_navigation_remaining_time_to_navigation_hadeeths"
+            app:destination="@id/navigation_hadeeths" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_prayer_time"
         android:name="aslan.aslanov.prayerapp.ui.fragment.timings.CurrentTimeFragment"
@@ -43,6 +50,9 @@
         <action
             android:id="@+id/action_settings_to_quran"
             app:destination="@+id/navigation_quran" />
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_hadeeths_category"
+            app:destination="@id/navigation_hadeeths_category" />
     </fragment>
 
     <fragment
@@ -77,36 +87,56 @@
         <action
             android:id="@+id/action_navigation_quran_to_navigation_quran_language"
             app:destination="@id/navigation_quran_language" />
+
     </fragment>
     <fragment
         android:id="@+id/navigation_quran_language"
         android:name="aslan.aslanov.prayerapp.ui.fragment.language.LanguageFragment"
         android:label="Quran Language"
         tools:layout="@layout/fragment_language">
+        <argument
+            android:name="layoutId"
+            android:defaultValue="0"
+            app:argType="integer" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_quran_ayahs"
         android:name="aslan.aslanov.prayerapp.ui.fragment.ayahs.AyahsFragment"
         android:label="Quran Ayahs"
-        tools:layout="@layout/fragment_ayahs" >
-        <action
-            android:id="@+id/action_navigation_quran_ayahs_to_navigation_quran_ayah"
-            app:destination="@+id/navigation_quran_ayah" />
+        tools:layout="@layout/fragment_ayahs">
         <argument
             android:name="surahNum"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/navigation_hadeeths_category"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.categoryOfHadeeth.CategoryOfHadithFragment"
+        android:label="Hadeeths Category"
+        tools:layout="@layout/fragment_category_of_hadith">
+        <action
+            android:id="@+id/action_navigation_hadeeths_category_to_navigation_hadeeths"
+            app:destination="@id/navigation_hadeeths" />
+
+        <action
+            android:id="@+id/action_navigation_hadeeths_category_to_navigation_quran_language"
+            app:destination="@id/navigation_quran_language" />
+
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_quran_ayah"
-        android:name="aslan.aslanov.prayerapp.ui.fragment.ayah.AyahFragment"
-        android:label="Quran"
-        tools:layout="@layout/fragment_ayah" >
+        android:id="@+id/navigation_hadeeths"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.hadeeths.HadeethsFragment"
+        android:label="Hadeeths"
+        tools:layout="@layout/fragment_hadeeths" >
         <argument
-            android:name="ayahNum"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:name="category"
+            app:argType="aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity"
+            />
     </fragment>
+
+
 </navigation>

@@ -1,7 +1,9 @@
 package aslan.aslanov.prayerapp.ui.fragment.calendar
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -10,11 +12,13 @@ import aslan.aslanov.prayerapp.databinding.FragmentCalendarBinding
 import aslan.aslanov.prayerapp.databinding.LayoutCalendarItemBinding
 import aslan.aslanov.prayerapp.ui.fragment.calendar.adapter.CalendarAdapter
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
+import aslan.aslanov.prayerapp.util.BaseFragment
 
 
-class CalendarFragment : Fragment() {
+@SuppressLint("ResourceType")
+class CalendarFragment : BaseFragment(R.layout.fragment_calendar) {
+    private lateinit var binding : FragmentCalendarBinding
     private val viewModel by viewModels<CalendarViewModel>()
-    private val binding by lazy { FragmentCalendarBinding.inflate(layoutInflater) }
     private val adapterCalendarFragment by lazy {
         CalendarAdapter { viewDataBinding, data ->
             if (viewDataBinding is LayoutCalendarItemBinding) {
@@ -24,16 +28,9 @@ class CalendarFragment : Fragment() {
         }
     }
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View=binding.root
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        bindUI()
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.settings_menu, menu)
@@ -50,17 +47,18 @@ class CalendarFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun bindUI(): Unit = with(binding) {
-        lifecycleOwner = this@CalendarFragment
-        recyclerViewCalendar.apply {
-            adapter=adapterCalendarFragment
+    override fun bindUI(binding: ViewDataBinding) {
+        super.bindUI(binding)
+        if (binding is FragmentCalendarBinding) {
+            this.binding = binding
+            binding.recyclerViewCalendar.apply {
+                adapter=adapterCalendarFragment
+            }
+            viewModel.getMonthTimingByCity()
         }
-        viewModel.getMonthTimingByCity()
-
-        observeData()
-
     }
-    private fun observeData(): Unit = with(viewModel) {
+
+    override fun observeData(): Unit = with(viewModel) {
         viewModel.prayerTimeByHijriCalendar.observe(viewLifecycleOwner, {
             it?.let {
                 adapterCalendarFragment.submitList(it.data)

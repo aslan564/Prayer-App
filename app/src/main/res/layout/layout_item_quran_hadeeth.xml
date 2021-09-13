@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="hadithItem"
+            type="aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/margin_4dp"
+        android:layout_marginHorizontal="@dimen/small_2dp"
+        android:layout_marginVertical="@dimen/small_2dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_text_country">
+
+        <TextView
+            android:id="@+id/text_view_surah_arab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{hadithItem.title}"
+            android:textAppearance="@style/TextColumnHeader"
+            android:textSize="20sp"
+            android:padding="@dimen/margin_4dp"
+            android:layout_marginVertical="@dimen/margin_4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginBottom="@dimen/small_2dp"
+            tools:text="@string/calendar" />
+        <TextView
+            android:id="@+id/text_view_surah_translations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(hadithItem.id)}"
+            android:textAppearance="@style/TextColumnSubHeader"
+            android:padding="@dimen/margin_4dp"
+            android:layout_marginVertical="@dimen/margin_4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginBottom="@dimen/small_2dp"
+            tools:text="@string/calendar" />
+
+    </LinearLayout>
+</layout>

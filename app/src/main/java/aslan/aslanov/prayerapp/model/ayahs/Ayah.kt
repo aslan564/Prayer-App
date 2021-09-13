@@ -48,5 +48,9 @@ data class AyahEntity(
     @ColumnInfo(name = "text")
     val text: String,
     @ColumnInfo(name = "surahId")
-    val surahId: Int
+    val surahId: Int ,
+    @ColumnInfo(name = "surahEnglishName")
+    val surahEnglishName: String,
+    @ColumnInfo(name = "surahArabicName")
+    val surahArabicName: String
 )

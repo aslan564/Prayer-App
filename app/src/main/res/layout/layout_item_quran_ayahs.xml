@@ -7,7 +7,7 @@
 
         <variable
             name="quranItem"
-            type="aslan.aslanov.prayerapp.model.ayahs.Ayah" />
+            type="aslan.aslanov.prayerapp.model.ayahs.AyahEntity" />
     </data>
 
     <LinearLayout

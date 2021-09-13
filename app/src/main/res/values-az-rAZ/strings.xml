@@ -30,4 +30,5 @@
     <string name="language" translatable="false">Dil</string>
     <string name="others" translatable="false">Digərləri</string>
     <string name="language_quran" translatable="false">Zəhmət olmasa hər hansı bir dili seçin</string>
+    <string name="hadeeths" translatable="false">Hədislər</string>
 </resources>

@@ -9,22 +9,23 @@ import android.content.Intent
 import android.media.AudioManager.STREAM_MUSIC
 import android.media.RingtoneManager
 import android.os.Message
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.ui.activity.MainActivity
+import aslan.aslanov.prayerapp.ui.fragment.timings.CurrentTimeFragment
 import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_ID
 import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_COMPAT_ID
+import aslan.aslanov.prayerapp.util.currentDate
 import java.util.*
 
 const val EXTRA_TYPE = "ExtraType"
 const val EXTRA_MESSAGE = "ExtraType"
 
 class AlarmReceiver : BroadcastReceiver() {
-    private lateinit var alarmManager: AlarmManager
-    private var pendingIntent: PendingIntent? = null
-    private lateinit var calendar: Calendar
+    private  var alarmManager: AlarmManager?=null
 
 
     override fun onReceive(context: Context?, p1: Intent?) {
@@ -44,7 +45,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val message = intentReceiver?.getStringExtra(EXTRA_MESSAGE)
         val intentMainActivity = Intent(context, MainActivity::class.java)
         intentMainActivity.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
 
         val pendingIntent = PendingIntent.getActivity(context, 0, intentMainActivity, 0)
 
@@ -64,29 +65,37 @@ class AlarmReceiver : BroadcastReceiver() {
 
 
     @SuppressLint("SimpleDateFormat", "UnspecifiedImmutableFlag")
-    fun setAlarm(context: Context, elapsedHours: Int, elapsedMinutes: Int, message: String) {
-        calendar = Calendar.getInstance()
+    fun setAlarm(
+        context: Context,
+        elapsedHours: Int,
+        elapsedMinutes: Int,
+        pendingIntent: PendingIntent
+    ) {
+        val calendar = Calendar.getInstance(TimeZone.getDefault())
         calendar.set(Calendar.HOUR_OF_DAY, elapsedHours)
         calendar.set(Calendar.MINUTE, elapsedMinutes)
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
-        alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        if (alarmManager == null) {
+            alarmManager =
+                context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        val intent = Intent(context, AlarmReceiver::class.java)
-        intent.putExtra(EXTRA_MESSAGE, message)
-        pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
-        alarmManager.setInexactRepeating(
+        }
+        alarmManager!!.set(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
-        Toast.makeText(context, "$message alarm set successfully ${calendar.timeInMillis}", Toast.LENGTH_SHORT).show()
-
+        Toast.makeText(
+            context,
+            "alarm set successfully ${calendar.timeInMillis}",
+            Toast.LENGTH_SHORT
+        ).show()
+        Log.d("TimingsFragment", "setAlarmManager: ${calendar.time}")
+        Log.d("TimingsFragment", "pendingIntent.creatorUid: ${pendingIntent.creatorUid}")
     }
 
-    fun cancelAlarm(requireContext: Context, get: Int, get1: Int, prayer: String) {
-
+    fun cancelAlarm(pendingIntent: PendingIntent) {
+        alarmManager?.cancel(pendingIntent)
     }
 }

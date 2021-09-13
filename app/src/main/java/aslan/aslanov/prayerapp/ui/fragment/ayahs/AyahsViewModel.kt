@@ -1,49 +1,33 @@
 package aslan.aslanov.prayerapp.ui.fragment.ayahs
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import aslan.aslanov.prayerapp.model.ayahs.Ayah
-import aslan.aslanov.prayerapp.model.ayahs.AyahsResponse
-import aslan.aslanov.prayerapp.network.Status
+import aslan.aslanov.prayerapp.local.PrayerDatabase
+import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
 import aslan.aslanov.prayerapp.repository.QuranSurahAyahsRepository
-import aslan.aslanov.prayerapp.util.logApp
 import kotlinx.coroutines.launch
 
-class AyahsViewModel : ViewModel() {
-    private val repository = QuranSurahAyahsRepository()
+class AyahsViewModel(application: Application) : AndroidViewModel(application) {
+    private val database=PrayerDatabase.getInstance(application)
+    private val repository = QuranSurahAyahsRepository(database)
 
-    private var _ayahs = MutableLiveData<AyahsResponse>()
-    val ayahs: LiveData<AyahsResponse>
-        get() = _ayahs
-    private var _ayahsStatus = MutableLiveData<Boolean>()
-    val ayahsStatus: LiveData<Boolean>
-        get() = _ayahsStatus
 
+    val errorMsg = repository.baseErrorMessage
+    val ayahsStatus = repository.baseLoading
 
     fun fetchSurahAyahs(
         surah: Int,
         edition: String
     ) = viewModelScope.launch {
-        repository.fetchSurahAyahsFromQuran(surah, edition) { result ->
-            when (result.status) {
-                Status.SUCCESS -> {
-                    result.data?.let {
-                        _ayahs.value=it
-                        _ayahsStatus.value=false
-                        logApp(it.data!!.ayahs!!.toString())
-                    }
-                }
-                Status.LOADING -> {
-                    _ayahsStatus.value=true
-                }
-                Status.ERROR -> {
-                    result.msg?.let {
-                        _ayahsStatus.value=false
-                    }
-                }
-            }
+        repository.fetchSurahAyahs(surah, edition)
+    }
+
+    fun getAyahsFromDatabase(surah: Int, onCompleteListener: (LiveData<List<AyahEntity>>) -> Unit) {
+        repository.getAyahsFromDatabase(surah){
+            onCompleteListener(it)
         }
     }
+
 }

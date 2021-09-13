@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentRemainingTimeBinding
+import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
+import aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.*
@@ -16,33 +19,21 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class RemainingTimeFragment : Fragment() {
+@SuppressLint("ResourceType")
+class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
 
-    private val binding by lazy { FragmentRemainingTimeBinding.inflate(layoutInflater) }
+    private lateinit var binding: FragmentRemainingTimeBinding
     private val viewModel by viewModels<RemainingViewModel>()
     private lateinit var currentDate: Calendar
     private var timeList = ArrayList<Calendar>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        bindUI()
-
     }
 
 
-    override fun onStart() {
-        super.onStart()
-        observeRemaining()
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.settings_menu, menu)
@@ -61,13 +52,15 @@ class RemainingTimeFragment : Fragment() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun bindUI(): Unit = with(binding) {
-        lifecycleOwner = this@RemainingTimeFragment
-        currentDate = Calendar.getInstance()
-
+    override fun bindUI(binding: ViewDataBinding) {
+        super.bindUI(binding)
+        if (binding is FragmentRemainingTimeBinding) {
+            this.binding = binding
+            currentDate = Calendar.getInstance()
+        }
     }
 
-    private fun observeRemaining(): Unit = with(viewModel) {
+    override fun observeData() : Unit = with(viewModel) {
         currentTime.observe(viewLifecycleOwner, { time ->
             time?.let {
                 binding.progressBar.visibility = View.GONE
@@ -76,7 +69,50 @@ class RemainingTimeFragment : Fragment() {
                 }
             }
         })
+
+        randomAyah.observe(viewLifecycleOwner, { ayahs ->
+            ayahs?.let {
+                if (ayahs.isNotEmpty()) {
+                    val random = Random()
+                    val data = ayahs[random.nextInt(ayahs.size)]
+                    binding.textViewDailyAyah.text = addRandomAyahsWithSurah(data.number.toString(),data.surahEnglishName,data.surahArabicName,data.text)
+                    binding.textViewDailyAyah.setOnClickListener {
+                        val action =
+                            RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs()
+                                .setSurahNum(data.surahId)
+                        it.findNavController().navigate(action)
+                    }
+
+                } else {
+                    binding.textViewDailyAyah.text = getString(R.string.ayah_text)
+                }
+            }
+        })
+
+        randomHadeeths.observe(viewLifecycleOwner,{hadeeths->
+            hadeeths?.let {
+                if (hadeeths.isNotEmpty()) {
+                    val random=Random()
+                    val data=hadeeths[random.nextInt(hadeeths.size)]
+                    binding.textViewDailyHadeeths.text= addRandomAyahsWithSurah(data.id.toString(),data.categoryId.toString(),data.categoryName,data.title)
+                    binding.textViewDailyHadeeths.setOnClickListener {
+                        val category= CategoryEntity(hadeeths.size.toString(),data.categoryId.toString(),"",data.categoryName)
+                        val action=RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationHadeeths(category)
+                        it.findNavController().navigate(action)
+                    }
+
+                }else {
+                    binding.textViewDailyAyah.text = getString(R.string.hadeeths_text)
+                }
+            }
+        })
     }
+
+
+    private fun addRandomAyahsWithSurah(umber: String,englishName:String,arabicName:String,text:String): String {
+        return "$umber / $englishName / ${arabicName}\n\n${text}"
+    }
+
 
     private fun checkRemainingTimeHoursStatus(list: java.util.ArrayList<Calendar>) {
         if (currentDate.time > list.first().time && currentDate.time <= list[1].time) {

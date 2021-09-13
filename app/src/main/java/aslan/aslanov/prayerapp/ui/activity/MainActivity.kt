@@ -57,14 +57,6 @@ class MainActivity : AppCompatActivity() {
                 checkPermissionGetLocation()
             }
         }
-    private val resultPermission =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == RESULT_OK) {
-                checkPermissionGetLocation()
-            } else {
-                Toast.makeText(this, "permission required 2", Toast.LENGTH_SHORT).show()
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -190,6 +182,7 @@ class MainActivity : AppCompatActivity() {
             }
         }).show()
     }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "PrayerAppRemainderChannel"

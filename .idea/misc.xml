@@ -19,11 +19,14 @@
         <entry key="app/src/main/res/layout/fragment_ayah.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/fragment_ayahs.xml" value="0.338768115942029" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/fragment_category_of_hadith.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/fragment_city.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/fragment_country.xml" value="0.32155797101449274" />
         <entry key="app/src/main/res/layout/fragment_current_time.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_events.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/fragment_hadeeths.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_hijri_calendar_by_city.xml" value="0.30434782608695654" />
+        <entry key="app/src/main/res/layout/fragment_language.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/fragment_qibla.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/fragment_quran.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/fragment_quran_surahs.xml" value="0.338768115942029" />
@@ -34,6 +37,12 @@
         <entry key="app/src/main/res/layout/layout_item_city.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/layout_item_country.xml" value="0.3269927536231884" />
         <entry key="app/src/main/res/layout/layout_item_quran.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/layout_item_quran_ayahs.xml" value="0.328804347826087" />
+        <entry key="app/src/main/res/layout/layout_item_quran_hadeeth.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/layout_item_quran_hadeeth_category.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/layout_item_quran_language.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/layout_item_quran_language_hadith.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/layout_item_quran_surahs.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/menu/bottom_menu.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/menu/bottom_nav.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/menu/quran_menu.xml" value="0.19791666666666666" />

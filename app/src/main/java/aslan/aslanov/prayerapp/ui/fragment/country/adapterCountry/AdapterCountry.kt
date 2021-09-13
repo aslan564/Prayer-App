@@ -11,7 +11,7 @@ class AdapterCountry(newList:List<CountryWithCities>,onCompletionListener: (View
     GenericRecyclerViewAdapter<CountryWithCities>(
         newList,
         R.layout.layout_item_country,
-        onClickListener = { viewDataBinding: ViewDataBinding,item:CountryWithCities, list: List<CountryWithCities>, position: Int ->
+        onCompleteListener = { viewDataBinding: ViewDataBinding, item:CountryWithCities, list: List<CountryWithCities>, position: Int ->
             onCompletionListener(viewDataBinding, list, position,item)
         }
     )

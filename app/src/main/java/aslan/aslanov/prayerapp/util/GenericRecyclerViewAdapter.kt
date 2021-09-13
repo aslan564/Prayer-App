@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 @SuppressLint("ResourceType")
 open class GenericRecyclerViewAdapter<T : Any>(
-    private var cityWithCities: List<T>,
+    private var newList: List<T>,
     @IdRes val layoutId: Int,
-    private val onClickListener: (ViewDataBinding,T, List<T>, Int) -> Unit
+    private val onCompleteListener: (ViewDataBinding,T, List<T>, Int) -> Unit
 ) : RecyclerView.Adapter<ViewHolderGeneric<T>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderGeneric<T> {
@@ -21,11 +21,11 @@ open class GenericRecyclerViewAdapter<T : Any>(
 
 
     override fun onBindViewHolder(holder: ViewHolderGeneric<T>, position: Int) {
-        holder.bind(cityWithCities[position],cityWithCities, position, onClickListener)
+        holder.bind(newList[position],newList, position, onCompleteListener)
     }
 
     override fun getItemCount(): Int {
-        return cityWithCities.size
+        return newList.size
     }
 }
 

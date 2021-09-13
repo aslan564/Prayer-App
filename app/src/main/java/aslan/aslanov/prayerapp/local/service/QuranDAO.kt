@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
-import aslan.aslanov.prayerapp.model.language.QuranLanguage
 import aslan.aslanov.prayerapp.model.surahs.SurahEntity
 
 @Dao
@@ -18,14 +17,14 @@ interface QuranDAO {
     fun getSurahsFromDatabase(): LiveData<List<SurahEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertQuranLanguage(vararg language: QuranLanguage)
-
-    @Query("SELECT * FROM table_language")
-    fun getLanguageFromDatabase(): LiveData<QuranLanguage>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuranAyah(vararg ayahs: AyahEntity)
 
+    @Query("DELETE FROM table_ayahs")
+    suspend fun deleteAllAyahs()
+
     @Query("SELECT * FROM table_ayahs where surahId=:idSurah")
-    fun getAyahsFromDatabase(idSurah: Int): LiveData<AyahEntity>
+    fun getAyahsFromDatabase(idSurah: Int): LiveData<List<AyahEntity>>
+
+    @Query("SELECT * FROM table_ayahs")
+    fun getRandomAyahsFromDatabase(): LiveData<List<AyahEntity>>
 }

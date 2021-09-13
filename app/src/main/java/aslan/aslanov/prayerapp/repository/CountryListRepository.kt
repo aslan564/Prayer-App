@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import aslan.aslanov.prayerapp.local.PrayerDatabase
-import aslan.aslanov.prayerapp.model.countryModel.Country
-import aslan.aslanov.prayerapp.model.countryModel.CountryResponse
-import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
-import aslan.aslanov.prayerapp.model.countryModel.Data
+import aslan.aslanov.prayerapp.model.countryModel.*
 import aslan.aslanov.prayerapp.network.NetworkResult
 import aslan.aslanov.prayerapp.network.RetrofitService.getCountryList
 import aslan.aslanov.prayerapp.network.Status
@@ -41,7 +38,7 @@ class CountryListRepository(private val database: PrayerDatabase) {
         }
     }
 
-    fun getCountryDatabase() :LiveData<List<CountryWithCities>>{
+    fun getCountryDatabase(): LiveData<List<CountryWithCities>> {
         return database.getCountryDao().getCountryWithCities()
     }
 
@@ -55,10 +52,11 @@ class CountryListRepository(private val database: PrayerDatabase) {
                             Log.d("RemainingTimeFragment", "addCountryDatabase: $it")
                             GlobalScope.launch {
                                 for (item in it.data!!) {
-                                    addCityAndCountryToDatabase(
-                                        CountryWithCities(
-                                            Country(item.country!!),
-                                            cityList(item.cities!!, countryId = item.country)
+                                    addCountryToDatabase(Country(item.country!!))
+                                    addCityToDatabase(
+                                        cityList(
+                                            item.cities!!,
+                                            countryId = item.country
                                         )
                                     )
                                 }
@@ -82,8 +80,11 @@ class CountryListRepository(private val database: PrayerDatabase) {
         }
     }
 
-    private suspend fun addCityAndCountryToDatabase(countryWithCities: CountryWithCities) {
-        database.getCountryDao().insertCity(*countryWithCities.city.toTypedArray())
-        database.getCountryDao().insertCountry(countryWithCities.country)
+    private suspend fun addCityToDatabase(countryWithCities: List<City>) {
+        database.getCountryDao().insertCity(*countryWithCities.toTypedArray())
+    }
+
+    private suspend fun addCountryToDatabase(country: Country) {
+        database.getCountryDao().insertCountry(country)
     }
 }

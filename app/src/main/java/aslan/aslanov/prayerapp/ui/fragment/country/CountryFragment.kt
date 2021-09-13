@@ -10,42 +10,22 @@ import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCountryBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemCountryBinding
 import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
 import aslan.aslanov.prayerapp.ui.fragment.country.adapterCountry.AdapterCountry
+import aslan.aslanov.prayerapp.util.BaseFragment
 
 
 @SuppressLint("ResourceType")
-class CountryFragment : Fragment() {
-    private val binding by lazy { FragmentCountryBinding.inflate(layoutInflater) }
+class CountryFragment : BaseFragment(R.layout.fragment_country) {
+    private lateinit var binding : FragmentCountryBinding
     private val viewModel by viewModels<CountryViewModel>()
     private var adapterCountry: AdapterCountry? = null
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bindUI()
-        observeData()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-
-    }
-
-
     @SuppressLint("NotifyDataSetChanged")
-    private fun observeData(): Unit = with(viewModel) {
+    override fun observeData(): Unit = with(viewModel) {
         getAllCountry()
 
         countryListError.observe(viewLifecycleOwner, {
@@ -87,9 +67,12 @@ class CountryFragment : Fragment() {
         })
     }
 
-    private fun bindUI(): Unit = with(binding) {
-        lifecycleOwner = this@CountryFragment
+    override fun bindUI(binding: ViewDataBinding) {
+        super.bindUI(binding)
+        if (binding is FragmentCountryBinding) {
+            this.binding = binding
 
+        }
     }
 
     companion object {

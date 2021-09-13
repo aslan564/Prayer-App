@@ -13,7 +13,7 @@ class QuranSurahAdapter(
 ) : GenericRecyclerViewAdapter<SurahEntity>(
     newList,
     R.layout.layout_item_quran_surahs,
-    onClickListener = { viewDataBinding: ViewDataBinding, item: SurahEntity, list: List<SurahEntity>, position: Int ->
+    onCompleteListener = { viewDataBinding: ViewDataBinding, item: SurahEntity, list: List<SurahEntity>, position: Int ->
         onCompletionListener(viewDataBinding, list, position, item)
     }
 )

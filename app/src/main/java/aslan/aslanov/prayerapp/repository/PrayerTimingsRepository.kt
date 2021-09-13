@@ -2,6 +2,8 @@ package aslan.aslanov.prayerapp.repository
 
 import androidx.lifecycle.LiveData
 import aslan.aslanov.prayerapp.local.PrayerDatabase
+import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
+import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
 import aslan.aslanov.prayerapp.model.prayerCurrent.CurrentDayPrayerResponse
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 import aslan.aslanov.prayerapp.network.NetworkResult
@@ -9,7 +11,6 @@ import aslan.aslanov.prayerapp.network.RetrofitService
 import aslan.aslanov.prayerapp.util.getServerError
 
 class PrayerTimingsRepository(private val database: PrayerDatabase) {
-
     suspend fun getPrayerTimings(
         city: String, country: String, method: Int,
         onLoadCompleteListener: (NetworkResult<CurrentDayPrayerResponse>) -> Unit
@@ -41,5 +42,10 @@ class PrayerTimingsRepository(private val database: PrayerDatabase) {
     fun getCurrentTimeLive(): LiveData<TimingsEntity> {
         return database.getCountryDao().getTimingsEntityLive()
     }
-
+    fun getRandomAyahFromQuran():LiveData<List<AyahEntity>>{
+        return  database.getQuranDao().getRandomAyahsFromDatabase()
+    }
+    fun getRandomHadeethsFromQuran():LiveData<List<HadeethsEntity>>{
+        return  database.getHadeeth().getRandomHadeethsFromQuran()
+    }
 }

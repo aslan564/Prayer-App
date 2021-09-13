@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="languageItem"
+            type="aslan.aslanov.prayerapp.model.language.category.HadithLanguageItem" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/margin_4dp"
+        android:layout_marginHorizontal="@dimen/small_2dp"
+        android:layout_marginVertical="@dimen/small_2dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_text_country">
+        <TextView
+            android:id="@+id/text_view_surah_translations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{languageItem.native}"
+            android:textAppearance="@style/TextColumnSubHeader"
+            android:textSize="18sp"
+            android:padding="@dimen/margin_4dp"
+            android:layout_marginVertical="@dimen/margin_4dp"
+            tools:text="@string/calendar" />
+    </LinearLayout>
+</layout>

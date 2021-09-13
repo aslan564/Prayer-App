@@ -1,8 +1,10 @@
 package aslan.aslanov.prayerapp.ui.fragment.timings
 
 import android.app.Application
-import android.content.Context
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import aslan.aslanov.prayerapp.local.PrayerDatabase
 import aslan.aslanov.prayerapp.network.Status
 import aslan.aslanov.prayerapp.repository.PrayerTimingsRepository

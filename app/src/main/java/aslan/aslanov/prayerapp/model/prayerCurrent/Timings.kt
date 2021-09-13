@@ -26,7 +26,7 @@ data class Timings(
     @Json(name = "Sunset")
     val sunset: String?
 )
-@Entity
+@Entity(tableName = "table_timings")
 data class TimingsEntity(
     @PrimaryKey(autoGenerate = false)
     val timeId:Int=1,
