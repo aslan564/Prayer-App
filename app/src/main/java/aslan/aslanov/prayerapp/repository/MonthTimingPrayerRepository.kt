@@ -3,7 +3,7 @@ package aslan.aslanov.prayerapp.repository
 import aslan.aslanov.prayerapp.model.prayerByCIty.PrayerHijriCalendarByCity
 import aslan.aslanov.prayerapp.network.NetworkResult
 import aslan.aslanov.prayerapp.network.RetrofitService.getPrayerTimeForMonth
-import aslan.aslanov.prayerapp.util.getServerError
+import aslan.aslanov.prayerapp.util.catchServerError
 import java.lang.Exception
 
 class MonthTimingPrayerRepository {
@@ -16,7 +16,7 @@ class MonthTimingPrayerRepository {
                     onCompletionListener(NetworkResult.success(it))
                 } ?: onCompletionListener(NetworkResult.error(res.message()))
             } else {
-                getServerError<PrayerHijriCalendarByCity>(res.errorBody()) {
+                catchServerError<PrayerHijriCalendarByCity>(res.errorBody()) {
                     onCompletionListener(it)
                 }
             }

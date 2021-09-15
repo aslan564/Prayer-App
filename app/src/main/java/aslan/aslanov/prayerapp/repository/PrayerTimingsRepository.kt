@@ -8,7 +8,7 @@ import aslan.aslanov.prayerapp.model.prayerCurrent.CurrentDayPrayerResponse
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 import aslan.aslanov.prayerapp.network.NetworkResult
 import aslan.aslanov.prayerapp.network.RetrofitService
-import aslan.aslanov.prayerapp.util.getServerError
+import aslan.aslanov.prayerapp.util.catchServerError
 
 class PrayerTimingsRepository(private val database: PrayerDatabase) {
     suspend fun getPrayerTimings(
@@ -23,9 +23,9 @@ class PrayerTimingsRepository(private val database: PrayerDatabase) {
             if (res.isSuccessful) {
                 res.body()?.let {
                     onLoadCompleteListener(NetworkResult.success(it))
-                } ?: onLoadCompleteListener(NetworkResult.error("response body must null"))
+                } ?: onLoadCompleteListener(NetworkResult.error(res.message()))
             } else {
-                getServerError<CurrentDayPrayerResponse>(res.errorBody()) {
+                catchServerError<CurrentDayPrayerResponse>(res.errorBody()) {
                     onLoadCompleteListener(it)
                 }
             }

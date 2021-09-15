@@ -20,8 +20,8 @@ interface HadeethDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHadeethsByCategory(vararg hadeethsEntity: HadeethsEntity)
 
-    @Query("DELETE FROM table_hadeeths where categoryId=:idCategory")
-    suspend fun deleteAllHadeeths(vararg idCategory: Int)
+    @Query("DELETE FROM table_hadeeths")
+    suspend fun deleteAllHadeeths()
 
     @Query("SELECT * FROM table_hadeeths where categoryId=:idCategory")
     fun getHadeethsByCategory(idCategory: Int): LiveData<List<HadeethsEntity>>

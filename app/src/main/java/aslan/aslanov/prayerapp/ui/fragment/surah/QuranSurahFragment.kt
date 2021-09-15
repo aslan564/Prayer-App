@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -18,7 +19,7 @@ import aslan.aslanov.prayerapp.util.makeToast
 @SuppressLint("ResourceType")
 class QuranSurahFragment : BaseFragment(R.layout.fragment_quran_surahs) {
     private var binding: FragmentQuranSurahsBinding? = null
-    private val viewModel by viewModels<QuranSurahsViewModel>()
+    private val viewModel by activityViewModels<QuranSurahsViewModel>()
     private lateinit var quranSurahAdapter: QuranSurahAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +35,8 @@ class QuranSurahFragment : BaseFragment(R.layout.fragment_quran_surahs) {
         when (item.itemId) {
             R.id.menu_quran_language -> {
                 val action =
-                    QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranLanguage().setLayoutId(R.layout.layout_item_quran_language)
+                    QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranLanguage()
+                        .setLayoutId(R.layout.layout_item_quran_language)
                 findNavController().navigate(action)
             }
         }
@@ -48,16 +50,35 @@ class QuranSurahFragment : BaseFragment(R.layout.fragment_quran_surahs) {
         if (binding is FragmentQuranSurahsBinding) {
             this.binding = binding
             binding.swipeLayoutSurah.setOnRefreshListener {
-                getSurah()
+                viewModel.fetchSurahs()
                 binding.swipeLayoutSurah.isRefreshing = false
             }
         }
     }
-
+    @SuppressLint("NotifyDataSetChanged")
     override fun observeData(): Unit = with(viewModel) {
+        surahs.observe(viewLifecycleOwner, {
+            it?.let {
+                quranSurahAdapter = QuranSurahAdapter(it) { viewDataBinding, list, i, surah ->
+                    if (viewDataBinding is LayoutItemQuranSurahsBinding) {
+                        viewDataBinding.quranItem = surah
+                        viewDataBinding.root.setOnClickListener { v ->
+                            if (languageSurah != null) {
+                                val action =
+                                    QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranAyahs()
+                                action.surahNum = surah.number
+                                v.findNavController().navigate(action)
+                            } else {
+                                requireContext().makeToast(requireContext().getString(R.string.language_quran))
+                            }
 
-        getSurah()
+                        }
+                    }
 
+                }.apply { notifyDataSetChanged() }
+                binding?.recyclerViewQuran?.adapter = quranSurahAdapter
+            }
+        })
         quranUiState.observe(viewLifecycleOwner, {
             it?.let {
                 if (it) {
@@ -75,33 +96,6 @@ class QuranSurahFragment : BaseFragment(R.layout.fragment_quran_surahs) {
         })
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getSurah() {
-        viewModel.getSurahFromDB { quranResponse ->
-            quranResponse.observe(viewLifecycleOwner, {
-                it?.let {
-                    quranSurahAdapter = QuranSurahAdapter(it) { viewDataBinding, list, i, surah ->
-                        if (viewDataBinding is LayoutItemQuranSurahsBinding) {
-                            viewDataBinding.quranItem = surah
-                            viewDataBinding.root.setOnClickListener { v ->
-                                if (languageSurah != null) {
-                                    val action =
-                                        QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranAyahs()
-                                    action.surahNum = surah.number
-                                    v.findNavController().navigate(action)
-                                } else {
-                                    requireContext().makeToast(requireContext().getString(R.string.language_quran))
-                                }
-
-                            }
-                        }
-
-                    }.apply { notifyDataSetChanged() }
-                    binding?.recyclerViewQuran?.adapter = quranSurahAdapter
-                }
-            })
-        }
-    }
 
 
     companion object {

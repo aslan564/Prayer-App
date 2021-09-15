@@ -25,15 +25,11 @@ class HadeethsViewModel(application: Application) : AndroidViewModel(application
         repository.addHadithToDatabase(categoryId, page, perPage, hadeethsName)
     }
 
-    fun getHadith(
+    fun getHadithFromDb(
         categoryId: Int
     ): LiveData<List<HadeethsEntity>> {
         return repository.getHadithFromDb(categoryId)
     }
 
-    fun clearHadeethsFromDb(
-        categoryId: Int
-    ) = viewModelScope.launch {
-        repository.clearHadeethsFromDb(categoryId)
-    }
+
 }

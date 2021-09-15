@@ -15,15 +15,16 @@ class QuranSurahsViewModel(application: Application) : AndroidViewModel(applicat
     private val repository = QuranSurahRepository(database)
 
 
+    val surahs = repository.getSurahFromDB()
+
     val quranUiState = repository.quranUiState
 
     val errorMessage = repository.errorMessage
 
-    fun getSurahFromDB(onCompleteListener: (LiveData<List<SurahEntity>>) -> Unit) =
-        viewModelScope.launch {
-            repository.getSurahFromDB{
-                onCompleteListener(it)
-            }
-        }
-
+    init {
+        fetchSurahs()
+    }
+    fun fetchSurahs()=   viewModelScope.launch {
+        repository.addQuranSurahToDB()
+    }
 }

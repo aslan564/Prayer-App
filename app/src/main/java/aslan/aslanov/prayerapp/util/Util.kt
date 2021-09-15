@@ -5,15 +5,10 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
-import aslan.aslanov.prayerapp.model.countryModel.*
-import aslan.aslanov.prayerapp.model.prayerCurrent.Timings
-import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
-import aslan.aslanov.prayerapp.model.surahs.Data
-import aslan.aslanov.prayerapp.model.surahs.SurahEntity
 import aslan.aslanov.prayerapp.network.NetworkResult
+import com.google.gson.Gson
 import okhttp3.ResponseBody
 import org.json.JSONObject
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,18 +19,14 @@ fun logApp(msg: String) {
     Log.d(TAG, "logApp: $msg")
 }
 
-fun <T> getServerError(error: ResponseBody?, onCatchError: (NetworkResult<T>) -> Unit) {
+fun <T> catchServerError(error: ResponseBody?, onCatchError: (NetworkResult<T>) -> Unit) {
     try {
-        val jsonError = error?.let {
-            JSONObject(it.string())
+        if (error != null) {
+            val jsonError = error.string()
+            val gson =Gson()
+            val text = gson.toJson(jsonError)
+            onCatchError(NetworkResult.error(text))
         }
-        jsonError?.let {
-            val status = jsonError.getString("status")
-            val message = jsonError.getString("data")
-            onCatchError(NetworkResult.error("$status  : $message"))
-        }
-
-
     } catch (e: Exception) {
         onCatchError(NetworkResult.error(e.message))
     }
@@ -88,15 +79,15 @@ fun timeDifference(
     onComplete: (elapsedHours: Long, elapsedMinutes: Long, elapsedSeconds: Long) -> Unit
 ) {
     try {
-        val dates = SimpleDateFormat("HH:mm")
+        SimpleDateFormat("HH:mm")
         val dateStart = currentDate.time
         val dateStop = stopDate.time
         val different = dateStop.time - dateStart.time
 
         val secondsInMilli = 1000
-        val minutesInMilli = secondsInMilli * 60;
-        val hoursInMilli = minutesInMilli * 60;
-        val daysInMilli = hoursInMilli * 24;
+        val minutesInMilli = secondsInMilli * 60
+        val hoursInMilli = minutesInMilli * 60
+        val daysInMilli = hoursInMilli * 24
 
         val elapsedDays = different / daysInMilli
 

@@ -9,7 +9,7 @@ import aslan.aslanov.prayerapp.network.NetworkResult
 import aslan.aslanov.prayerapp.network.RetrofitService.getQuranResponse
 import aslan.aslanov.prayerapp.network.Status
 import aslan.aslanov.prayerapp.util.convertToAyah
-import aslan.aslanov.prayerapp.util.getServerError
+import aslan.aslanov.prayerapp.util.catchServerError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,12 +34,12 @@ class QuranSurahAyahsRepository(private val database: PrayerDatabase) {
         try {
             onCompleteListener(NetworkResult.loading())
             val res = service.fetchSurahAyahsQuran(surah, edition)
-            if (res.isSuccessful && res.code() == 200) {
+            if (res.isSuccessful) {
                 res.body()?.let {
                     onCompleteListener(NetworkResult.success(it))
-                } ?: onCompleteListener(NetworkResult.error("data not loaded"))
+                } ?: onCompleteListener(NetworkResult.error(res.message()))
             } else {
-                getServerError<AyahsResponse>(res.errorBody()) {
+                catchServerError<AyahsResponse>(res.errorBody()) {
                     onCompleteListener(it)
                 }
             }

@@ -16,6 +16,7 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHad
 import aslan.aslanov.prayerapp.ui.activity.MainActivity
 import aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter.HadeethsAdapter
 import aslan.aslanov.prayerapp.util.BaseFragment
+import aslan.aslanov.prayerapp.util.logApp
 import aslan.aslanov.prayerapp.util.makeToast
 import kotlin.reflect.cast
 
@@ -30,7 +31,6 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         observeData()
     }
 
@@ -46,7 +46,6 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
             val category = HadeethsFragmentArgs.fromBundle(it).category
             (activity as MainActivity).supportActionBar!!.title = category.title
             if (languageHadeeth != null) {
-                viewModel.clearHadeethsFromDb(category.id.toInt())
                 addHadith(
                     category.id.toInt(),
                     page,
@@ -56,11 +55,11 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
             } else {
                 findNavController().popBackStack()
             }
-
-            getHadith(category.id.toInt()).observe(viewLifecycleOwner, { res ->
-                res?.let { listHadeeth ->
+            getHadithFromDb(category.id.toInt()).observe(viewLifecycleOwner, { res ->
+                if (res != null&& res.isNotEmpty()) {
                     adapter =
-                        HadeethsAdapter(listHadeeth) { viewDataBinding, data, list, i ->
+                        HadeethsAdapter(res) { viewDataBinding, data, _, _ ->
+
                             if (viewDataBinding is LayoutItemQuranHadeethBinding) {
                                 viewDataBinding.hadithItem = data
                             }
@@ -69,6 +68,8 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
                     binding.recyclerViewHadeeths.addOnScrollListener(
                         recyclerViewScrollChangeListener
                     )
+                }else{
+                   logApp("**************************************** ${res.size}")
                 }
             })
 

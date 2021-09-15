@@ -58,6 +58,7 @@ class LanguageFragment : BaseFragment(R.layout.fragment_language) {
                                     viewDataBinding.executePendingBindings()
                                     viewDataBinding.root.setOnClickListener {
                                         languageHadeeth = data.code
+                                        viewModel.clearHadeethsFromDb()
                                         viewModel.getHadithCategory{
                                             findNavController().popBackStack()
                                         }

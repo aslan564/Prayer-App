@@ -74,4 +74,8 @@ class LanguageViewModel(application: Application) : AndroidViewModel(application
             repository.addCategoryToDatabase()
             onCompleteListener(true)
         }
+
+    fun clearHadeethsFromDb()=viewModelScope.launch {
+        repository.clearHadeethsFromDb()
+    }
 }

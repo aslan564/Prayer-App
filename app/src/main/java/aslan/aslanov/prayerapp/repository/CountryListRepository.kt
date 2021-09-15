@@ -9,7 +9,7 @@ import aslan.aslanov.prayerapp.network.NetworkResult
 import aslan.aslanov.prayerapp.network.RetrofitService.getCountryList
 import aslan.aslanov.prayerapp.network.Status
 import aslan.aslanov.prayerapp.util.cityList
-import aslan.aslanov.prayerapp.util.getServerError
+import aslan.aslanov.prayerapp.util.catchServerError
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -24,12 +24,12 @@ class CountryListRepository(private val database: PrayerDatabase) {
         try {
             onCompletionListener(NetworkResult.loading())
             val result = getCountryList.getAllCountry()
-            if (result.isSuccessful && result.code() == 200) {
+            if (result.isSuccessful) {
                 result.body()?.let {
                     onCompletionListener(NetworkResult.success(it))
                 } ?: onCompletionListener(NetworkResult.error(result.message()))
             } else {
-                getServerError<CountryResponse>(result.errorBody()) {
+                catchServerError<CountryResponse>(result.errorBody()) {
                     onCompletionListener(it)
                 }
             }

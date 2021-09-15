@@ -6,7 +6,6 @@
     <string name="qibla" translatable="false">Qibla</string>
     <string name="calendar" translatable="false">Calendar</string>
     <string name="events" translatable="false">Events</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_view_prayer_time" translatable="false">12 Jan 2016</string>
     <string name="text_view_country" translatable="false">Europe/London</string>
     <string name="gregorian" translatable="false">Gregorian</string>

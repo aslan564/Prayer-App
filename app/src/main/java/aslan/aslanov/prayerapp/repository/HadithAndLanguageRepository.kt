@@ -1,6 +1,5 @@
 package aslan.aslanov.prayerapp.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import aslan.aslanov.prayerapp.local.PrayerDatabase
@@ -17,11 +16,9 @@ import aslan.aslanov.prayerapp.network.RetrofitService
 import aslan.aslanov.prayerapp.network.RetrofitService.getHadeethsService
 import aslan.aslanov.prayerapp.network.Status
 import aslan.aslanov.prayerapp.util.convertToCategoryEntity
-import aslan.aslanov.prayerapp.util.getServerError
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import aslan.aslanov.prayerapp.util.catchServerError
+import kotlinx.coroutines.*
+import okhttp3.internal.wait
 
 class HadithAndLanguageRepository(private val database: PrayerDatabase) {
     private val service = getHadeethsService
@@ -43,9 +40,9 @@ class HadithAndLanguageRepository(private val database: PrayerDatabase) {
             if (res.isSuccessful) {
                 res.body()?.let {
                     onCompleteListener(NetworkResult.success(it))
-                } ?: onCompleteListener(NetworkResult.error("Language data not loaded"))
+                } ?: onCompleteListener(NetworkResult.error(res.message()))
             } else {
-                getServerError<LanguageResponse>(res.errorBody()) {
+                catchServerError<LanguageResponse>(res.errorBody()) {
                     onCompleteListener(it)
                 }
             }
@@ -58,13 +55,13 @@ class HadithAndLanguageRepository(private val database: PrayerDatabase) {
     suspend fun getHadeethLanguage(onCompleteListener: (NetworkResult<List<HadithLanguageItem>>) -> Unit) {
         try {
             onCompleteListener(NetworkResult.loading())
-            val res = RetrofitService.getHadeethsService.getHadithLanguage()
+            val res = getHadeethsService.getHadithLanguage()
             if (res.isSuccessful) {
                 res.body()?.let {
                     onCompleteListener(NetworkResult.success(it))
-                } ?: onCompleteListener(NetworkResult.error("Language data not loaded"))
+                } ?: onCompleteListener(NetworkResult.error(res.message()))
             } else {
-                getServerError<List<HadithLanguageItem>>(res.errorBody()) {
+                catchServerError<List<HadithLanguageItem>>(res.errorBody()) {
                     onCompleteListener(it)
                 }
             }
@@ -85,9 +82,9 @@ class HadithAndLanguageRepository(private val database: PrayerDatabase) {
             if (res.isSuccessful) {
                 res.body()?.let {
                     onCompleteListener(NetworkResult.success(it))
-                } ?: onCompleteListener(NetworkResult.error("data not loaded please retry"))
+                } ?: onCompleteListener(NetworkResult.error(res.message()))
             } else {
-                getServerError<List<CategoryItem>>(res.errorBody()) {
+                catchServerError<List<CategoryItem>>(res.errorBody()) {
                     onCompleteListener(it)
                 }
             }
@@ -140,25 +137,26 @@ class HadithAndLanguageRepository(private val database: PrayerDatabase) {
         perPage: Int,
         onCompleteListener: (NetworkResult<HadeethsResponse>) -> Unit
     ) {
+        onCompleteListener(NetworkResult.loading())
         try {
-            onCompleteListener(NetworkResult.loading())
             val res = service.getHadithFromCategory(language, categoryId, page, perPage)
             if (res.isSuccessful) {
                 res.body()?.let {
                     onCompleteListener(NetworkResult.success(it))
-                } ?: onCompleteListener(NetworkResult.error("data not loaded please retry"))
+                } ?: onCompleteListener(NetworkResult.error(res.message()))
             } else {
-                getServerError<HadeethsResponse>(res.errorBody()) {
+                catchServerError<HadeethsResponse>(res.errorBody()) {
                     onCompleteListener(it)
                 }
             }
         } catch (e: Exception) {
             onCompleteListener(NetworkResult.error(e.message))
         }
+
     }
 
-    suspend fun clearHadeethsFromDb(categoryId: Int) {
-        database.getHadeeth().deleteAllHadeeths(categoryId)
+    suspend fun clearHadeethsFromDb() {
+        database.getHadeeth().deleteAllHadeeths()
     }
 
     suspend fun addHadithToDatabase(
@@ -185,11 +183,11 @@ class HadithAndLanguageRepository(private val database: PrayerDatabase) {
                                         database.getHadeeth()
                                             .insertHadeethsByCategory(*convertList.toTypedArray())
                                     }
+                                    _loading.postValue(false)
                                 } catch (e: java.lang.Exception) {
                                     e.printStackTrace()
                                 }
                             }
-                            _loading.postValue(false)
                         }
                     }
                     Status.LOADING -> {
