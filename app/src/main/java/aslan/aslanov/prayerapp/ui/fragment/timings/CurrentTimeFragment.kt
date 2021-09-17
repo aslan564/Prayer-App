@@ -1,7 +1,9 @@
 package aslan.aslanov.prayerapp.ui.fragment.timings
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -31,6 +33,7 @@ import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.BaseFragment
 import aslan.aslanov.prayerapp.util.calculateTime
+import aslan.aslanov.prayerapp.util.swipe
 import java.util.*
 
 
@@ -39,7 +42,6 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
 
     private lateinit var binding: FragmentCurrentTimeBinding
     private val viewModel by viewModels<CurrentTimingsViewModel>()
-    private lateinit var alarmReceiver: AlarmReceiver
     private var timings: TimingsEntity? = null
 
 
@@ -73,19 +75,16 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
                         checkAlarmState(
                             isAsr,
                             timings!!.asr!!,
-                            ivNotificationAsr,
-                            pendingIntentCreator()
+                            ivNotificationAsr
                         ) {
                             isAsr = it
                         }
-
                     }
                     binding.ivNotificationFajr.id -> {
                         checkAlarmState(
                             isFajr,
                             timings!!.fajr!!,
-                            ivNotificationFajr,
-                            pendingIntentCreator()
+                            ivNotificationFajr
                         ) {
                             isFajr = it
                         }
@@ -94,8 +93,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
                         checkAlarmState(
                             isMaghrib,
                             timings!!.maghrib!!,
-                            ivNotificationMaghrib,
-                            pendingIntentCreator()
+                            ivNotificationMaghrib
                         ) {
                             isMaghrib = it
                         }
@@ -104,8 +102,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
                         checkAlarmState(
                             isDhuhur,
                             timings!!.dhuhr!!,
-                            ivNotificationDhuhr,
-                            pendingIntentCreator()
+                            ivNotificationDhuhr
                         ) {
                             isDhuhur = it
                         }
@@ -114,8 +111,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
                         checkAlarmState(
                             isIsha,
                             timings!!.isha!!,
-                            ivNotificationIsha,
-                            pendingIntentCreator()
+                            ivNotificationIsha
                         ) {
                             isIsha = it
                         }
@@ -124,8 +120,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
                         checkAlarmState(
                             isImsak,
                             timings!!.imsak!!,
-                            ivNotificationImsak,
-                            pendingIntentCreator()
+                            ivNotificationImsak
                         ) {
                             isImsak = it
                         }
@@ -134,8 +129,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
                         checkAlarmState(
                             isMidnight,
                             timings!!.midnight!!,
-                            ivNotificationMidnight,
-                            pendingIntentCreator()
+                            ivNotificationMidnight
                         ) {
                             isMidnight = it
                         }
@@ -144,8 +138,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
                         checkAlarmState(
                             isSunset,
                             timings!!.sunset!!,
-                            ivNotificationSunset,
-                            pendingIntentCreator()
+                            ivNotificationSunset
                         ) {
                             isSunset = it
                         }
@@ -154,8 +147,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
                         checkAlarmState(
                             isSunrise,
                             timings!!.sunrise!!,
-                            ivNotificationSunrise,
-                            pendingIntentCreator()
+                            ivNotificationSunrise
                         ) {
                             isSunrise = it
                         }
@@ -165,24 +157,10 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
         }
     }
 
-    private fun pendingIntentCreator(): PendingIntent {
-        val pendingRequestCode = Random().nextInt()
-        val intent = Intent(context, AlarmReceiver::class.java)
-        intent.putExtra(EXTRA_MESSAGE, "prayer")
-        Log.d(TAG, "pendingIntentCreator: $pendingRequestCode")
-        return PendingIntent.getBroadcast(
-            context,
-            pendingRequestCode,
-            intent,
-            PendingIntent.FLAG_ONE_SHOT
-        )
-    }
-
     override fun bindUI(binding: ViewDataBinding) {
         super.bindUI(binding)
         if (binding is FragmentCurrentTimeBinding) {
             this.binding = binding
-            alarmReceiver = AlarmReceiver()
             binding.ivNotificationFajr.setOnClickListener(this@CurrentTimeFragment)
             binding.ivNotificationMaghrib.setOnClickListener(this@CurrentTimeFragment)
             binding.ivNotificationDhuhr.setOnClickListener(this@CurrentTimeFragment)
@@ -194,64 +172,77 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
             binding.ivNotificationIsha.setOnClickListener(this@CurrentTimeFragment)
             checkSharedPref()
 
-            binding.swipeLayoutCurrentTime.setOnRefreshListener {
-                if (locationCityName != null && locationCountryName != null) {
-                    getTimingsViewModel(
-                        locationCityName!!,
-                        locationCountryName!!,
-                        8
-                    )
-                } else {
-                    getTimingsViewModel(
-                        "Baku",
-                        "Azerbaijan",
-                        1
-                    )
+            binding.swipeLayoutCurrentTime.swipe {
+                if (it) {
+                    if (locationCityName != null && locationCountryName != null) {
+                        getTimingsViewModel(
+                            locationCityName!!,
+                            locationCountryName!!,
+                            8
+                        )
+                    } else {
+                        getTimingsViewModel(
+                            "Baku",
+                            "Azerbaijan",
+                            1
+                        )
+                    }
+                    binding.swipeLayoutCurrentTime.isRefreshing = false
                 }
-                binding.swipeLayoutCurrentTime.isRefreshing = false
             }
         }
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun pendingIntentCreator(prayer:String): PendingIntent {
+        val pendingRequestCode = Random().nextInt()
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        intent.putExtra(EXTRA_MESSAGE, prayer)
+        Log.d(TAG, "pendingIntentCreator: $pendingRequestCode")
+        return PendingIntent.getBroadcast(
+            requireContext(),
+            pendingRequestCode,
+            intent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
     }
 
     private fun setBgButtonThenSetAlarm(
         prayer: String,
         imageView: ImageView,
-        pendingIntent: PendingIntent,
         onComplete: (String) -> Unit
     ) {
-        timings?.let {
-            imageView.setImageResource(R.drawable.ic_custom_notification_on)
-            setAlarmManager(prayer, pendingIntent)
-            onComplete("Alarm Set Complete")
-        }
+        imageView.setImageResource(R.drawable.ic_custom_notification_on)
+        setAlarmManager(prayer, pendingIntentCreator(prayer))
+        onComplete("Alarm Set Complete")
     }
 
     private fun setButtonOfBgThenCancelAlarm(
         imageView: ImageView,
-        pendingIntent: PendingIntent,
         onComplete: (String) -> Unit
     ) {
         timings?.let {
             imageView.setImageResource(R.drawable.ic_custom_notification_off)
-            cancelAlarmManager(pendingIntent)
+            //cancelAlarmManager(pendingIntent)
             onComplete("Alarm Cancel Complete")
         }
     }
 
     private fun setAlarmManager(prayer: String, pendingIntent: PendingIntent) {
+        val alarmReceiver = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmTime = calculateTime(prayer)
         Log.d(TAG, "setAlarmManager: ${alarmTime.time}")
-        alarmReceiver.setAlarm(
-            requireContext(),
-            alarmTime.get(Calendar.HOUR_OF_DAY),
-            alarmTime.get(Calendar.MINUTE),
+        alarmReceiver.set(
+            AlarmManager.RTC_WAKEUP,
+            alarmTime.timeInMillis,
             pendingIntent
         )
-
+        Toast.makeText(requireContext(), "alarm added $prayer", Toast.LENGTH_SHORT).show()
     }
 
     private fun cancelAlarmManager(pendingIntent: PendingIntent) {
-        alarmReceiver.cancelAlarm(pendingIntent)
+        val alarmReceiver = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        //alarmReceiver.cancelAlarm(pendingIntent)
         Toast.makeText(requireContext(), "alarm cancelled", Toast.LENGTH_SHORT).show()
     }
 
@@ -259,15 +250,14 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
         state: Boolean,
         times: String,
         imageView: ImageView,
-        pendingIntent: PendingIntent,
         onComplete: (Boolean) -> Unit
     ) {
         if (!state) {
-            setBgButtonThenSetAlarm(times, imageView, pendingIntent) {
+            setBgButtonThenSetAlarm(times, imageView) {
                 onComplete(true)
             }
         } else {
-            setButtonOfBgThenCancelAlarm(imageView, pendingIntent) {
+            setButtonOfBgThenCancelAlarm(imageView) {
                 onComplete(false)
             }
         }
@@ -289,13 +279,13 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
             binding.textViewCountryName.text = locationCountryName
         }
 
-
         prayerTimingsLive.observe(viewLifecycleOwner, {
             it?.let {
                 binding.currentPrayerTime = it
                 timings = it
             }
         })
+
         errorMessage.observe(viewLifecycleOwner, {
             it?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()

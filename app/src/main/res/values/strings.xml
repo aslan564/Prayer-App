@@ -18,6 +18,7 @@
     <string name="maghrib">Maghrib</string>
     <string name="isha">Isha</string>
     <string name="imsak">Imsak</string>
+    <string name="nothing" translatable="false">Nothing</string>
     <string name="midnight" translatable="false">Midnight</string>
     <string name="permission">Location permission needed</string>
     <string name="location" translatable="false">Location</string>

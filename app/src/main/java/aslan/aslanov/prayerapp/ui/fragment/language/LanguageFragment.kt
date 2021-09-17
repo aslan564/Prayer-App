@@ -30,10 +30,10 @@ class LanguageFragment : BaseFragment(R.layout.fragment_language) {
                 when (LanguageFragmentArgs.fromBundle(it).layoutId) {
                     R.layout.layout_item_quran_language -> {
                         viewModel.getLanguageSurah { language ->
-                           val adapterLanguage = LanguageAdapter(
+                            val adapterLanguage = LanguageAdapter(
                                 language.data!!,
                                 R.layout.layout_item_quran_language
-                            ) { viewDataBinding, data, list, i ->
+                            ) { viewDataBinding, data, _, _ ->
                                 if (viewDataBinding is LayoutItemQuranLanguageBinding) {
                                     viewDataBinding.languageItem = data
                                     viewDataBinding.executePendingBindings()
@@ -45,21 +45,20 @@ class LanguageFragment : BaseFragment(R.layout.fragment_language) {
                             }
                             binding.recyclerViewLanguage.adapter = adapterLanguage
                         }
-
                     }
                     R.layout.layout_item_quran_language_hadith -> {
                         viewModel.getLanguageHadeeth { language ->
                             val adapterLanguage = LanguageAdapter(
                                 language,
                                 R.layout.layout_item_quran_language_hadith
-                            ) { viewDataBinding, data, list, i ->
+                            ) { viewDataBinding, data, _, _ ->
                                 if (viewDataBinding is LayoutItemQuranLanguageHadithBinding) {
                                     viewDataBinding.languageItem = data
                                     viewDataBinding.executePendingBindings()
                                     viewDataBinding.root.setOnClickListener {
                                         languageHadeeth = data.code
                                         viewModel.clearHadeethsFromDb()
-                                        viewModel.getHadithCategory{
+                                        viewModel.getHadithCategory {
                                             findNavController().popBackStack()
                                         }
                                     }
@@ -72,10 +71,7 @@ class LanguageFragment : BaseFragment(R.layout.fragment_language) {
                         null
                     }
                 }
-
-
             }
-
         }
     }
 

@@ -43,7 +43,7 @@
                     android:layout_margin="@dimen/small_2dp"
                     android:gravity="bottom|start"
                     android:padding="@dimen/margin_10dp"
-                    android:text="@string/dhuhr"
+                    android:text="@string/nothing"
                     android:textAppearance="@style/TextColumnSubHeader" />
 
                 <TextView

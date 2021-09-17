@@ -17,6 +17,7 @@ import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 @SuppressLint("ResourceType")
@@ -25,14 +26,13 @@ class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
     private lateinit var binding: FragmentRemainingTimeBinding
     private val viewModel by viewModels<RemainingViewModel>()
     private lateinit var currentDate: Calendar
-    private var timeList = ArrayList<Calendar>()
+    private var timeList = HashMap<Prayers,Date>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
     }
-
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -60,7 +60,7 @@ class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
         }
     }
 
-    override fun observeData() : Unit = with(viewModel) {
+    override fun observeData(): Unit = with(viewModel) {
         currentTime.observe(viewLifecycleOwner, { time ->
             time?.let {
                 binding.progressBar.visibility = View.GONE
@@ -75,7 +75,12 @@ class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
                 if (ayahs.isNotEmpty()) {
                     val random = Random()
                     val data = ayahs[random.nextInt(ayahs.size)]
-                    binding.textViewDailyAyah.text = addRandomAyahsWithSurah(data.number.toString(),data.surahEnglishName,data.surahArabicName,data.text)
+                    binding.textViewDailyAyah.text = addRandomAyahsWithSurah(
+                        data.number.toString(),
+                        data.surahEnglishName,
+                        data.surahArabicName,
+                        data.text
+                    )
                     binding.textViewDailyAyah.setOnClickListener {
                         val action =
                             RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs()
@@ -89,19 +94,32 @@ class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
             }
         })
 
-        randomHadeeths.observe(viewLifecycleOwner,{hadeeths->
+        randomHadeeths.observe(viewLifecycleOwner, { hadeeths ->
             hadeeths?.let {
                 if (hadeeths.isNotEmpty()) {
-                    val random=Random()
-                    val data=hadeeths[random.nextInt(hadeeths.size)]
-                    binding.textViewDailyHadeeths.text= addRandomAyahsWithSurah(data.id.toString(),data.categoryId.toString(),data.categoryName,data.title)
+                    val random = Random()
+                    val data = hadeeths[random.nextInt(hadeeths.size)]
+                    binding.textViewDailyHadeeths.text = addRandomAyahsWithSurah(
+                        data.id.toString(),
+                        data.categoryId.toString(),
+                        data.categoryName,
+                        data.title
+                    )
                     binding.textViewDailyHadeeths.setOnClickListener {
-                        val category= CategoryEntity(hadeeths.size.toString(),data.categoryId.toString(),"",data.categoryName)
-                        val action=RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationHadeeths(category)
+                        val category = CategoryEntity(
+                            hadeeths.size.toString(),
+                            data.categoryId.toString(),
+                            "",
+                            data.categoryName
+                        )
+                        val action =
+                            RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationHadeeths(
+                                category
+                            )
                         it.findNavController().navigate(action)
                     }
 
-                }else {
+                } else {
                     binding.textViewDailyAyah.text = getString(R.string.hadeeths_text)
                 }
             }
@@ -109,53 +127,81 @@ class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
     }
 
 
-    private fun addRandomAyahsWithSurah(umber: String,englishName:String,arabicName:String,text:String): String {
+    private fun addRandomAyahsWithSurah(
+        umber: String,
+        englishName: String,
+        arabicName: String,
+        text: String
+    ): String {
         return "$umber / $englishName / ${arabicName}\n\n${text}"
     }
 
 
-    private fun checkRemainingTimeHoursStatus(list: java.util.ArrayList<Calendar>) {
-        if (currentDate.time > list.first().time && currentDate.time <= list[1].time) {
-            textViewStatus(requireContext().getString(R.string.midnight))
-            setCountDownTextView(list[1])
+    private fun checkRemainingTimeHoursStatus(hashMap : HashMap<Prayers,Date>) {
+        hashMap.entries.forEachIndexed{index, mutableEntry ->
+            if (index < hashMap.size) {
+                if (currentDate.time.after(mutableEntry.value) && currentDate.time.before(mutableEntry.value)) {
+                    textViewStatus("$index")
+                    //setCountDownTextView(list[index])
+                }else{
+                    logApp("$index")
+                }
+            }
         }
-        if (currentDate.time > list[1].time && currentDate.time <= list[2].time) {
-            textViewStatus(requireContext().getString(R.string.imsak))
-            setCountDownTextView(list[2])
-        }
-        if (currentDate.time > list[2].time && currentDate.time <= list[3].time) {
-            textViewStatus(requireContext().getString(R.string.fajr))
-            setCountDownTextView(list[3])
-        }
-        if (currentDate.time > list[3].time && currentDate.time <= list[4].time) {
-            textViewStatus(requireContext().getString(R.string.sunrise))
-            setCountDownTextView(list[4])
-        }
-        if (currentDate.time > list[4].time && currentDate.time <= list[5].time) {
-            textViewStatus(requireContext().getString(R.string.dhuhr))
-            setCountDownTextView(list[5])
-        }
-        if (currentDate.time > list[5].time && currentDate.time <= list[6].time) {
-            textViewStatus(requireContext().getString(R.string.asr))
-            setCountDownTextView(list[6])
-        }
-        if (currentDate.time > list[6].time && currentDate.time <= list[7].time) {
-            textViewStatus(requireContext().getString(R.string.sunset))
-            setCountDownTextView(list[7])
-        }
-        if (currentDate.time > list[7].time && currentDate.time <= list[8].time) {
-            textViewStatus(requireContext().getString(R.string.maghrib))
-            setCountDownTextView(list[8])
-        }
-        if (currentDate.time > list[8].time && currentDate.time <= calculateNextTime(list[0]).time) {
-            textViewStatus(requireContext().getString(R.string.isha))
-            setCountDownTextView(calculateNextTime(list[0]))
-        }
+       /* { index, calendar ->
+            if (index < list.size) {
+                if (currentDate.time.after(calendar) && currentDate.time.before(list[index + 1])) {
+                    textViewStatus("$index")
+                    setCountDownTextView(list[index])
+                }else{
+                    logApp("$index")
+                }
+            }
 
+        }*/
+
+
+        /*  if (currentDate.time > list.first().time && currentDate.time <= list[1].time) {
+              textViewStatus(requireContext().getString(R.string.midnight))
+              setCountDownTextView(list[1])
+          }
+          if (currentDate.time > list[1].time && currentDate.time <= list[2].time) {
+              textViewStatus(requireContext().getString(R.string.imsak))
+              setCountDownTextView(list[2])
+          }
+          if (currentDate.time > list[2].time && currentDate.time <= list[3].time) {
+              textViewStatus(requireContext().getString(R.string.fajr))
+              setCountDownTextView(list[3])
+          }
+          if (currentDate.time > list[3].time && currentDate.time <= list[4].time) {
+              textViewStatus(requireContext().getString(R.string.sunrise))
+              setCountDownTextView(list[4])
+          }
+          if (currentDate.time > list[4].time && currentDate.time <= list[5].time) {
+              textViewStatus(requireContext().getString(R.string.dhuhr))
+              setCountDownTextView(list[5])
+          }
+          if (currentDate.time > list[5].time && currentDate.time <= list[6].time) {
+              textViewStatus(requireContext().getString(R.string.asr))
+              setCountDownTextView(list[6])
+          }
+          if (currentDate.time > list[6].time && currentDate.time <= list[7].time) {
+              textViewStatus(requireContext().getString(R.string.sunset))
+              setCountDownTextView(list[7])
+          }
+          if (currentDate.time > list[7].time && currentDate.time <= list[8].time) {
+              textViewStatus(requireContext().getString(R.string.maghrib))
+              setCountDownTextView(list[8])
+          }
+          if (currentDate.time > list[8].time && currentDate.time <= calculateNextTime(list[0]).time) {
+              textViewStatus(requireContext().getString(R.string.isha))
+              setCountDownTextView(calculateNextTime(list[0]))
+          }
+  */
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setCountDownTextView(stopDate: Calendar): Unit = with(binding) {
+    private fun setCountDownTextView(stopDate: Date): Unit = with(binding) {
         timeDifference(
             currentDate,
             stopDate
@@ -184,19 +230,19 @@ class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
 
     private fun createSortedList(
         it: TimingsEntity,
-        onComplete: (java.util.ArrayList<Calendar>) -> Unit
+        onComplete: (HashMap<Prayers,Date>) -> Unit
     ) {
-        timeList.add(calculateTime(it.asr!!))
-        timeList.add(calculateTime(it.imsak!!))
-        timeList.add(calculateTime(it.maghrib!!))
-        timeList.add(calculateTime(it.sunrise!!))
-        timeList.add(calculateTime(it.midnight!!))
-        timeList.add(calculateTime(it.fajr!!))
-        timeList.add(calculateTime(it.dhuhr!!))
-        timeList.add(calculateTime(it.isha!!))
-        timeList.add(calculateTime(it.sunset!!))
+        timeList[Prayers.ASR]=(calculateNextTime(it.asr!!).time)
+        timeList[Prayers.IMSAK]=(calculateNextTime(it.imsak!!).time)
+        timeList[Prayers.MAGHRIB]=(calculateNextTime(it.maghrib!!).time)
+        timeList[Prayers.SUNRISE]=(calculateNextTime(it.sunrise!!).time)
+        timeList[Prayers.MIDNIGHT]=(calculateNextTime(it.midnight!!).time)
+        timeList[Prayers.FAJR]=(calculateNextTime(it.fajr!!).time)
+        timeList[Prayers.DHUHUR]=(calculateNextTime(it.dhuhr!!).time)
+        timeList[Prayers.ISHA]=(calculateNextTime(it.isha!!).time)
+        timeList[Prayers.SUNSET]=(calculateNextTime(it.sunset!!).time)
         Log.d(TAG, "observeRemaining: ${timeList.size}")
-        timeList.sort()
+        timeList.toSortedMap()
         onComplete(timeList)
     }
 
