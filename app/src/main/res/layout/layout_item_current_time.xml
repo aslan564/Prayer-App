@@ -26,19 +26,19 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_36"
             android:text="@{String.valueOf(currentPrayerTime.prayerName.name)}"
-            tools:text="@string/fajr"
             android:textAppearance="@style/TextColumnSubHeader"
             app:layout_constraintBottom_toBottomOf="@+id/iv_notification"
             app:layout_constraintStart_toEndOf="@+id/iv_notification"
-            app:layout_constraintTop_toTopOf="@+id/iv_notification" />
+            app:layout_constraintTop_toTopOf="@+id/iv_notification"
+            tools:text="@string/fajr" />
 
         <ImageView
             android:id="@+id/iv_notification"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:contentDescription="@string/prayer_notification_icon"
-            android:padding="@dimen/small_2dp"
+            android:padding="@dimen/margin_4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -46,10 +46,10 @@
 
         <TextView
             android:id="@+id/text_view_clock"
+            dateConvertToString="@{currentPrayerTime.prayerTime}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            dateConvertToString="@{currentPrayerTime.prayerTime}"
             android:textAppearance="@style/TextColumnSubHeader"
             app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time"
             app:layout_constraintEnd_toEndOf="parent"
