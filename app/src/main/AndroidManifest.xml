@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".mainService.AlarmNotification" />
+       <!-- <service android:name=".mainService.AlarmNotification" />-->
         <receiver
             android:name=".mainService.AlarmReceiver"
             android:enabled="true" />

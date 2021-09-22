@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="currentPrayerTime"
+            type="aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/small_2dp"
+        android:layout_marginVertical="@dimen/margin_4dp"
+        android:background="@drawable/bg_view"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/margin_4dp">
+
+
+        <TextView
+            android:id="@+id/text_prayer_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_36"
+            android:text="@{String.valueOf(currentPrayerTime.prayerName.name)}"
+            tools:text="@string/fajr"
+            android:textAppearance="@style/TextColumnSubHeader"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_notification"
+            app:layout_constraintStart_toEndOf="@+id/iv_notification"
+            app:layout_constraintTop_toTopOf="@+id/iv_notification" />
+
+        <ImageView
+            android:id="@+id/iv_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:contentDescription="@string/prayer_notification_icon"
+            android:padding="@dimen/small_2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_custom_notification_on" />
+
+        <TextView
+            android:id="@+id/text_view_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            dateConvertToString="@{currentPrayerTime.prayerTime}"
+            android:textAppearance="@style/TextColumnSubHeader"
+            app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/text_prayer_time"
+            app:layout_constraintTop_toTopOf="@+id/text_prayer_time"
+            tools:text="04:40" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

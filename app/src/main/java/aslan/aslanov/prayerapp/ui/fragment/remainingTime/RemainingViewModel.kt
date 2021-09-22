@@ -12,9 +12,9 @@ class RemainingViewModel(application: Application) : AndroidViewModel(applicatio
     private val database = PrayerDatabase.getInstance(application)
     private val repository = PrayerTimingsRepository(database)
 
-    val currentTime= repository.getCurrentTimeLive()
+    val currentTime = repository.getCurrentTimeLive()
 
-    val randomAyah=repository.getRandomAyahFromQuran()
-    val randomHadeeths=repository.getRandomHadeethsFromQuran()
+    val randomAyah = repository.getRandomAyahFromQuran()
+    val randomHadeeths = repository.getRandomHadeethsFromQuran()
 
 }

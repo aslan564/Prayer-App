@@ -14,88 +14,91 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import aslan.aslanov.prayerapp.R
+import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.ui.activity.MainActivity
 import aslan.aslanov.prayerapp.ui.fragment.timings.CurrentTimeFragment
 import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_ID
 import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_COMPAT_ID
 import aslan.aslanov.prayerapp.util.currentDate
+import java.lang.Exception
 import java.util.*
 
 const val EXTRA_TYPE = "ExtraType"
 const val EXTRA_MESSAGE = "ExtraType"
 
 class AlarmReceiver : BroadcastReceiver() {
-    private  var alarmManager: AlarmManager?=null
+    private var alarmManager: AlarmManager? = null
 
 
-    override fun onReceive(context: Context?, p1: Intent?) {
+    override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
-            showAlarmNotification(it, p1)
+            showAlarmNotification(it, intent)
         }
 
-
-        p1?.let {
-
-        }
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
-    private fun showAlarmNotification(context: Context?, intentReceiver: Intent?) {
-        val type = intentReceiver?.getStringExtra(EXTRA_TYPE)
-        val message = intentReceiver?.getStringExtra(EXTRA_MESSAGE)
-        val intentMainActivity = Intent(context, MainActivity::class.java)
-        intentMainActivity.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-
-        val pendingIntent = PendingIntent.getActivity(context, 0, intentMainActivity, 0)
-
-
-        val builder = NotificationCompat.Builder(context!!, NOTIFICATION_ID)
-            .setSmallIcon(R.drawable.ic_mosque)
-            .setContentTitle("Prayer App notification")
-            .setContentText("$message prayer time")
-            .setSound(alarmSound, STREAM_MUSIC)
-            .setAutoCancel(true)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
-        val notificationCompatManager = NotificationManagerCompat.from(context)
-        notificationCompatManager.notify(NOTIFICATION_MANAGER_COMPAT_ID, builder.build())
-    }
-
-
-    @SuppressLint("SimpleDateFormat", "UnspecifiedImmutableFlag")
-    fun setAlarm(
-        context: Context,
-        elapsedHours: Int,
-        elapsedMinutes: Int,
-        pendingIntent: PendingIntent
-    ) {
-        val calendar = Calendar.getInstance(TimeZone.getDefault())
-        calendar.set(Calendar.HOUR_OF_DAY, elapsedHours)
-        calendar.set(Calendar.MINUTE, elapsedMinutes)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-        if (alarmManager == null) {
-            alarmManager =
-                context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        }
-        alarmManager!!.set(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            pendingIntent
-        )
-        Toast.makeText(
-            context,
-            "alarm set successfully ${calendar.timeInMillis}",
-            Toast.LENGTH_SHORT
-        ).show()
-        Log.d("TimingsFragment", "setAlarmManager: ${calendar.time}")
-        Log.d("TimingsFragment", "pendingIntent.creatorUid: ${pendingIntent.creatorUid}")
-    }
 
     fun cancelAlarm(pendingIntent: PendingIntent) {
         alarmManager?.cancel(pendingIntent)
+    }
+
+    companion object {
+        @SuppressLint("UnspecifiedImmutableFlag")
+        fun showAlarmNotification(context: Context?, intent: Intent?) {
+            try {
+                val type = intent?.getStringExtra(EXTRA_TYPE)
+                val message = intent?.getStringExtra(EXTRA_MESSAGE)
+                val intentMainActivity = Intent(context, MainActivity::class.java)
+                intentMainActivity.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+
+
+                val pendingIntent = PendingIntent.getActivity(context, 0, intentMainActivity, PendingIntent.FLAG_UPDATE_CURRENT)
+
+
+                val builder = NotificationCompat.Builder(context!!, NOTIFICATION_ID)
+                    .setSmallIcon(R.drawable.ic_mosque)
+                    .setContentTitle(type)
+                    .setContentText("$message prayer time")
+                    .setSound(alarmSound, STREAM_MUSIC)
+                    .setAutoCancel(true)
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setContentIntent(pendingIntent)
+                val notificationCompatManager = NotificationManagerCompat.from(context)
+                notificationCompatManager.notify(NOTIFICATION_MANAGER_COMPAT_ID, builder.build())
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+
+        fun setAlarmManager(prayer: TimingsConverted, context: Context) {
+            val alarmReceiver = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val alarmTime = Calendar.getInstance()
+            alarmTime.time = prayer.prayerTime
+            alarmReceiver.set(
+                AlarmManager.RTC_WAKEUP,
+                alarmTime.timeInMillis,
+                pendingIntentCreator(prayer, context)
+            )
+            Toast.makeText(context, "alarm added ${prayer.prayerName}", Toast.LENGTH_SHORT).show()
+        }
+
+        @SuppressLint("UnspecifiedImmutableFlag")
+        fun pendingIntentCreator(prayer: TimingsConverted, context: Context): PendingIntent {
+            val pendingRequestCode = Random().nextInt()
+            val intent = Intent(context, AlarmReceiver::class.java)
+            intent.putExtra(EXTRA_TYPE, prayer.prayerName.name.lowercase(Locale.getDefault()))
+            intent.putExtra(EXTRA_MESSAGE, prayer.prayerTime.toString().lowercase(Locale.getDefault()))
+            return PendingIntent.getBroadcast(
+                context,
+                pendingRequestCode,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT
+            )
+        }
     }
 }

@@ -5,9 +5,7 @@
 
     <data>
 
-        <variable
-            name="currentPrayerTime"
-            type="aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity" />
+
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -15,491 +13,68 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.fragment.timings.CurrentTimeFragment">
-        <ScrollView
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/margin_10dp">
+
+            <TextView
+                android:id="@+id/text_view_country_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="50dp"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="@dimen/margin_4dp"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextColumnHeader"
+                app:drawableStartCompat="@drawable/ic_location"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Azeribaijan" />
+
+            <TextView
+                android:id="@+id/text_view_city_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="@dimen/margin_4dp"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextColumnHeader"
+                app:drawableStartCompat="@drawable/ic_location_city"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_country_name"
+                tools:text="Baku" />
+
+            <ProgressBar
+                android:id="@+id/progress_current_time"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/margin_36"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_current_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/margin_10dp">
-                <TextView
-                    android:id="@+id/text_view_country_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginHorizontal="50dp"
-                    android:drawablePadding="@dimen/margin_4dp"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextColumnHeader"
-                    app:drawableStartCompat="@drawable/ic_location"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Azeribaijan" />
-
-                <TextView
-                    android:id="@+id/text_view_city_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginHorizontal="60dp"
-                    android:drawablePadding="@dimen/margin_4dp"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextColumnHeader"
-                    app:drawableStartCompat="@drawable/ic_location_city"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_country_name"
-                    tools:text="Baku" />
-
-                <ProgressBar
-                    android:id="@+id/progress_current_time"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:elevation="@dimen/margin_36"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/view_fajr"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_city_name" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_fajr"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/fajr"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_fajr"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_fajr"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_fajr" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_fajr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_fajr"
-                    app:layout_constraintStart_toStartOf="@+id/view_fajr"
-                    app:layout_constraintTop_toTopOf="@+id/view_fajr"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_fajr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.fajr}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_fajr"
-                    app:layout_constraintEnd_toEndOf="@+id/view_fajr"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_fajr"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_fajr"
-                    tools:text="04:40" />
-
-                <View
-                    android:id="@+id/view_sunrise"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view_fajr" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_sunrise"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_sunrise"
-                    app:layout_constraintStart_toStartOf="@+id/view_sunrise"
-                    app:layout_constraintTop_toTopOf="@+id/view_sunrise"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_sunrise"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.sunrise}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_sunrise"
-                    app:layout_constraintEnd_toEndOf="@+id/view_sunrise"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_sunrise"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_sunrise"
-                    tools:text="05:45" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_sunrise"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/sunrise"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_sunrise"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_sunrise"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_sunrise" />
-
-                <View
-                    android:id="@+id/view_dhuhr"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view_sunrise" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_dhuhr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_dhuhr"
-                    app:layout_constraintStart_toStartOf="@+id/view_dhuhr"
-                    app:layout_constraintTop_toTopOf="@+id/view_dhuhr"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_dhuhr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.dhuhr}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_dhuhr"
-                    app:layout_constraintEnd_toEndOf="@+id/view_sunrise"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_dhuhr"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_dhuhr"
-                    tools:text="05:45" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_dhuhr"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/dhuhr"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_dhuhr"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_dhuhr"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_dhuhr" />
-
-                <View
-                    android:id="@+id/view_asr"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view_dhuhr" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_asr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_asr"
-                    app:layout_constraintStart_toStartOf="@+id/view_asr"
-                    app:layout_constraintTop_toTopOf="@+id/view_asr"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_asr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.asr}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_asr"
-                    app:layout_constraintEnd_toEndOf="@+id/view_sunrise"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_asr"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_asr"
-                    tools:text="05:45" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_asr"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/asr"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_asr"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_asr"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_asr" />
-
-                <View
-                    android:id="@+id/view_sunset"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view_asr" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_sunset"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_sunset"
-                    app:layout_constraintStart_toStartOf="@+id/view_sunset"
-                    app:layout_constraintTop_toTopOf="@+id/view_sunset"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_sunset"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.sunset}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_sunset"
-                    app:layout_constraintEnd_toEndOf="@+id/view_sunrise"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_sunset"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_sunset"
-                    tools:text="05:45" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_sunset"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/sunset"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_sunset"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_sunset"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_sunset" />
-
-                <View
-                    android:id="@+id/view_maghrib"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view_sunset" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_maghrib"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_maghrib"
-                    app:layout_constraintStart_toStartOf="@+id/view_maghrib"
-                    app:layout_constraintTop_toTopOf="@+id/view_maghrib"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_maghrib"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.maghrib}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_maghrib"
-                    app:layout_constraintEnd_toEndOf="@+id/view_sunrise"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_maghrib"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_maghrib"
-                    tools:text="05:45" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_maghrib"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/maghrib"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_maghrib"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_maghrib"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_maghrib" />
-
-                <View
-                    android:id="@+id/view_isha"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view_maghrib" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_isha"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_isha"
-                    app:layout_constraintStart_toStartOf="@+id/view_isha"
-                    app:layout_constraintTop_toTopOf="@+id/view_isha"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_isha"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.isha}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_isha"
-                    app:layout_constraintEnd_toEndOf="@+id/view_sunrise"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_isha"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_isha"
-                    tools:text="05:45" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_isha"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/isha"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_isha"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_isha"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_isha" />
-
-                <View
-                    android:id="@+id/view_imsak"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view_isha" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_imsak"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_imsak"
-                    app:layout_constraintStart_toStartOf="@+id/view_imsak"
-                    app:layout_constraintTop_toTopOf="@+id/view_imsak"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_imsak"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.imsak}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_imsak"
-                    app:layout_constraintEnd_toEndOf="@+id/view_sunrise"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_imsak"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_imsak"
-                    tools:text="05:45" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_imsak"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/imsak"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_imsak"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_imsak"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_imsak" />
-
-                <View
-                    android:id="@+id/view_midnight"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="@dimen/margin_10dp"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:background="@drawable/bg_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view_imsak" />
-
-                <ImageView
-                    android:id="@+id/iv_notification_midnight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:contentDescription="@string/prayer_notification_icon"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/view_midnight"
-                    app:layout_constraintStart_toStartOf="@+id/view_midnight"
-                    app:layout_constraintTop_toTopOf="@+id/view_midnight"
-                    app:srcCompat="@drawable/ic_custom_notification_on" />
-
-                <TextView
-                    android:id="@+id/text_view_clock_midnight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{currentPrayerTime.midnight}"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_prayer_time_midnight"
-                    app:layout_constraintEnd_toEndOf="@+id/view_sunrise"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/text_prayer_time_midnight"
-                    app:layout_constraintTop_toTopOf="@+id/text_prayer_time_midnight"
-                    tools:text="05:45" />
-
-                <TextView
-                    android:id="@+id/text_prayer_time_midnight"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_36"
-                    android:text="@string/midnight"
-                    android:textAppearance="@style/TextColumnSubHeader"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_notification_midnight"
-                    app:layout_constraintStart_toEndOf="@+id/iv_notification_midnight"
-                    app:layout_constraintTop_toTopOf="@+id/iv_notification_midnight" />
+                android:layout_marginTop="@dimen/margin_10dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_city_name"
+                tools:listitem="@layout/layout_item_current_time" />
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </ScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

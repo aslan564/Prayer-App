@@ -6,6 +6,8 @@ import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
+import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 import aslan.aslanov.prayerapp.network.NetworkResult
 import com.google.gson.Gson
 import okhttp3.ResponseBody
@@ -49,7 +51,7 @@ fun calculateTime(
             if (currentTime.time.after(convertedCurrentTime.time)) {
                 convertedCurrentTime.add(Calendar.DATE, 1)
                 logApp("currentTime ----------------${convertedCurrentTime.time}")
-            }else{
+            } else {
                 logApp("convertedCurrentTime ******${convertedCurrentTime.time}")
             }
         }
@@ -81,9 +83,9 @@ fun calculateNextTime(
     return convertedCurrentTime
 }
 
+
 @SuppressLint("SimpleDateFormat")
 fun timeDifference(
-    currentDate: Calendar,
     stopDate: Date,
     onComplete: (elapsedHours: Long, elapsedMinutes: Long, elapsedSeconds: Long) -> Unit
 ) {
@@ -159,3 +161,30 @@ fun Context.makeToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
+fun TimingsEntity.createSortedList(
+    onComplete: (ArrayList<TimingsConverted>) -> Unit
+) {
+    val timeList = ArrayList<TimingsConverted>()
+    timeList.add(TimingsConverted(1, Prayers.MIDNIGHT, calculateNextTime(this.midnight!!).time))
+    timeList.add(TimingsConverted(2, Prayers.IMSAK, calculateNextTime(this.imsak!!).time))
+    timeList.add(TimingsConverted(3, Prayers.FAJR, calculateNextTime(this.fajr!!).time))
+    timeList.add(TimingsConverted(4, Prayers.SUNRISE, calculateNextTime(this.sunrise!!).time))
+    timeList.add(TimingsConverted(5, Prayers.DHUHUR, calculateNextTime(this.dhuhr!!).time))
+    timeList.add(TimingsConverted(6, Prayers.ASR, calculateNextTime(this.asr!!).time))
+    timeList.add(TimingsConverted(7, Prayers.SUNSET, calculateNextTime(this.sunset!!).time))
+    timeList.add(TimingsConverted(8, Prayers.MAGHRIB, calculateNextTime(this.maghrib!!).time))
+    timeList.add(TimingsConverted(9, Prayers.ISHA, calculateNextTime(this.isha!!).time))
+    timeList.sortedBy { timingsConverted ->
+        timingsConverted.prayerTime
+    }
+    onComplete(timeList)
+}
+
+fun addRandomAyahsWithSurah(
+    number: String,
+    englishName: String,
+    arabicName: String,
+    text: String
+): String {
+    return "$number / $englishName / ${arabicName}\n\n${text}"
+}

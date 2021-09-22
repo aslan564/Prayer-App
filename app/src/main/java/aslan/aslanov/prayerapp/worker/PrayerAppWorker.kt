@@ -1,15 +1,17 @@
 package aslan.aslanov.prayerapp.worker
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import aslan.aslanov.prayerapp.local.PrayerDatabase
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager
 import aslan.aslanov.prayerapp.mainService.AlarmReceiver
+import aslan.aslanov.prayerapp.mainService.EXTRA_MESSAGE
+import aslan.aslanov.prayerapp.mainService.EXTRA_TYPE
 import aslan.aslanov.prayerapp.repository.PrayerTimingsRepository
-import aslan.aslanov.prayerapp.ui.fragment.timings.CurrentTimingsViewModel
-import java.lang.Exception
+import java.util.*
 
 class PrayerAppWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(
     appContext,
@@ -20,6 +22,16 @@ class PrayerAppWorker(appContext: Context, params: WorkerParameters) : Coroutine
         return try {
             val database = PrayerDatabase.getInstance(applicationContext)
             val repository by lazy { PrayerTimingsRepository(database) }
+
+            val ayahs = database.getQuranDao().getRandomAyahsFromDatabase().value
+            val random = Random()
+            val ayah = ayahs?.get(random.nextInt(ayahs.size))
+            val intent = Intent(applicationContext, AlarmReceiver::class.java)
+            if (ayah != null) {
+                intent.putExtra(EXTRA_TYPE,ayah.surahEnglishName)
+                intent.putExtra(EXTRA_MESSAGE,ayah.text)
+                AlarmReceiver.showAlarmNotification(applicationContext, intent)
+            }
 
             if (SharedPreferenceManager.locationCityName != null && SharedPreferenceManager.locationCountryName != null) {
                 repository.getPrayerTimings(

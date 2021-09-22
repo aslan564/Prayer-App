@@ -4,18 +4,19 @@ import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCurrentTimeBinding
+import aslan.aslanov.prayerapp.databinding.LayoutItemCurrentTimeBinding
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isAsr
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isDhuhur
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isFajr
@@ -24,17 +25,15 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isIsha
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isMaghrib
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isMidnight
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isSunrise
-import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isSunset
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCityName
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCountryName
-import aslan.aslanov.prayerapp.mainService.AlarmReceiver
-import aslan.aslanov.prayerapp.mainService.EXTRA_MESSAGE
+import aslan.aslanov.prayerapp.mainService.AlarmReceiver.Companion.setAlarmManager
+import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
-import aslan.aslanov.prayerapp.util.BaseFragment
-import aslan.aslanov.prayerapp.util.calculateTime
-import aslan.aslanov.prayerapp.util.swipe
-import java.util.*
+import aslan.aslanov.prayerapp.ui.fragment.timings.adapter.CurrentTimeAdapter
+import aslan.aslanov.prayerapp.util.*
+import com.google.android.gms.tasks.OnCompleteListener
 
 
 @SuppressLint("ResourceType")
@@ -42,6 +41,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
 
     private lateinit var binding: FragmentCurrentTimeBinding
     private val viewModel by viewModels<CurrentTimingsViewModel>()
+    private lateinit var adapterCurrent: CurrentTimeAdapter
     private var timings: TimingsEntity? = null
 
 
@@ -69,91 +69,91 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
 
     override fun onClick(view: View?): Unit = with(binding) {
         view?.let {
-            if (timings != null) {
-                when (view.id) {
-                    binding.ivNotificationAsr.id -> {
-                        checkAlarmState(
-                            isAsr,
-                            timings!!.asr!!,
-                            ivNotificationAsr
-                        ) {
-                            isAsr = it
-                        }
-                    }
-                    binding.ivNotificationFajr.id -> {
-                        checkAlarmState(
-                            isFajr,
-                            timings!!.fajr!!,
-                            ivNotificationFajr
-                        ) {
-                            isFajr = it
-                        }
-                    }
-                    binding.ivNotificationMaghrib.id -> {
-                        checkAlarmState(
-                            isMaghrib,
-                            timings!!.maghrib!!,
-                            ivNotificationMaghrib
-                        ) {
-                            isMaghrib = it
-                        }
-                    }
-                    binding.ivNotificationDhuhr.id -> {
-                        checkAlarmState(
-                            isDhuhur,
-                            timings!!.dhuhr!!,
-                            ivNotificationDhuhr
-                        ) {
-                            isDhuhur = it
-                        }
-                    }
-                    binding.ivNotificationIsha.id -> {
-                        checkAlarmState(
-                            isIsha,
-                            timings!!.isha!!,
-                            ivNotificationIsha
-                        ) {
-                            isIsha = it
-                        }
-                    }
-                    binding.ivNotificationImsak.id -> {
-                        checkAlarmState(
-                            isImsak,
-                            timings!!.imsak!!,
-                            ivNotificationImsak
-                        ) {
-                            isImsak = it
-                        }
-                    }
-                    binding.ivNotificationMidnight.id -> {
-                        checkAlarmState(
-                            isMidnight,
-                            timings!!.midnight!!,
-                            ivNotificationMidnight
-                        ) {
-                            isMidnight = it
-                        }
-                    }
-                    binding.ivNotificationSunset.id -> {
-                        checkAlarmState(
-                            isSunset,
-                            timings!!.sunset!!,
-                            ivNotificationSunset
-                        ) {
-                            isSunset = it
-                        }
-                    }
-                    binding.ivNotificationSunrise.id -> {
-                        checkAlarmState(
-                            isSunrise,
-                            timings!!.sunrise!!,
-                            ivNotificationSunrise
-                        ) {
-                            isSunrise = it
-                        }
-                    }
-                }
-            }
+            /*  if (timings != null) {
+                  when (view.id) {
+                      binding.ivNotificationAsr.id -> {
+                          checkAlarmState(
+                              isAsr,
+                              timings!!.asr!!,
+                              ivNotificationAsr
+                          ) {
+                              isAsr = it
+                          }
+                      }
+                      binding.ivNotificationFajr.id -> {
+                          checkAlarmState(
+                              isFajr,
+                              timings!!.fajr!!,
+                              ivNotificationFajr
+                          ) {
+                              isFajr = it
+                          }
+                      }
+                      binding.ivNotificationMaghrib.id -> {
+                          checkAlarmState(
+                              isMaghrib,
+                              timings!!.maghrib!!,
+                              ivNotificationMaghrib
+                          ) {
+                              isMaghrib = it
+                          }
+                      }
+                      binding.ivNotificationDhuhr.id -> {
+                          checkAlarmState(
+                              isDhuhur,
+                              timings!!.dhuhr!!,
+                              ivNotificationDhuhr
+                          ) {
+                              isDhuhur = it
+                          }
+                      }
+                      binding.ivNotificationIsha.id -> {
+                          checkAlarmState(
+                              isIsha,
+                              timings!!.isha!!,
+                              ivNotificationIsha
+                          ) {
+                              isIsha = it
+                          }
+                      }
+                      binding.ivNotificationImsak.id -> {
+                          checkAlarmState(
+                              isImsak,
+                              timings!!.imsak!!,
+                              ivNotificationImsak
+                          ) {
+                              isImsak = it
+                          }
+                      }
+                      binding.ivNotificationMidnight.id -> {
+                          checkAlarmState(
+                              isMidnight,
+                              timings!!.midnight!!,
+                              ivNotificationMidnight
+                          ) {
+                              isMidnight = it
+                          }
+                      }
+                      binding.ivNotificationSunset.id -> {
+                          checkAlarmState(
+                              isSunset,
+                              timings!!.sunset!!,
+                              ivNotificationSunset
+                          ) {
+                              isSunset = it
+                          }
+                      }
+                      binding.ivNotificationSunrise.id -> {
+                          checkAlarmState(
+                              isSunrise,
+                              timings!!.sunrise!!,
+                              ivNotificationSunrise
+                          ) {
+                              isSunrise = it
+                          }
+                      }
+                  }
+              }*/
         }
     }
 
@@ -161,15 +161,6 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
         super.bindUI(binding)
         if (binding is FragmentCurrentTimeBinding) {
             this.binding = binding
-            binding.ivNotificationFajr.setOnClickListener(this@CurrentTimeFragment)
-            binding.ivNotificationMaghrib.setOnClickListener(this@CurrentTimeFragment)
-            binding.ivNotificationDhuhr.setOnClickListener(this@CurrentTimeFragment)
-            binding.ivNotificationAsr.setOnClickListener(this@CurrentTimeFragment)
-            binding.ivNotificationImsak.setOnClickListener(this@CurrentTimeFragment)
-            binding.ivNotificationMidnight.setOnClickListener(this@CurrentTimeFragment)
-            binding.ivNotificationSunset.setOnClickListener(this@CurrentTimeFragment)
-            binding.ivNotificationSunrise.setOnClickListener(this@CurrentTimeFragment)
-            binding.ivNotificationIsha.setOnClickListener(this@CurrentTimeFragment)
             checkSharedPref()
 
             binding.swipeLayoutCurrentTime.swipe {
@@ -192,87 +183,6 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
             }
         }
     }
-
-    @SuppressLint("UnspecifiedImmutableFlag")
-    private fun pendingIntentCreator(prayer:String): PendingIntent {
-        val pendingRequestCode = Random().nextInt()
-        val intent = Intent(requireContext(), AlarmReceiver::class.java)
-        intent.putExtra(EXTRA_MESSAGE, prayer)
-        Log.d(TAG, "pendingIntentCreator: $pendingRequestCode")
-        return PendingIntent.getBroadcast(
-            requireContext(),
-            pendingRequestCode,
-            intent,
-            PendingIntent.FLAG_ONE_SHOT
-        )
-    }
-
-    private fun setBgButtonThenSetAlarm(
-        prayer: String,
-        imageView: ImageView,
-        onComplete: (String) -> Unit
-    ) {
-        imageView.setImageResource(R.drawable.ic_custom_notification_on)
-        setAlarmManager(prayer, pendingIntentCreator(prayer))
-        onComplete("Alarm Set Complete")
-    }
-
-    private fun setButtonOfBgThenCancelAlarm(
-        imageView: ImageView,
-        onComplete: (String) -> Unit
-    ) {
-        timings?.let {
-            imageView.setImageResource(R.drawable.ic_custom_notification_off)
-            //cancelAlarmManager(pendingIntent)
-            onComplete("Alarm Cancel Complete")
-        }
-    }
-
-    private fun setAlarmManager(prayer: String, pendingIntent: PendingIntent) {
-        val alarmReceiver = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmTime = calculateTime(prayer)
-        Log.d(TAG, "setAlarmManager: ${alarmTime.time}")
-        alarmReceiver.set(
-            AlarmManager.RTC_WAKEUP,
-            alarmTime.timeInMillis,
-            pendingIntent
-        )
-        Toast.makeText(requireContext(), "alarm added $prayer", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun cancelAlarmManager(pendingIntent: PendingIntent) {
-        val alarmReceiver = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        //alarmReceiver.cancelAlarm(pendingIntent)
-        Toast.makeText(requireContext(), "alarm cancelled", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun checkAlarmState(
-        state: Boolean,
-        times: String,
-        imageView: ImageView,
-        onComplete: (Boolean) -> Unit
-    ) {
-        if (!state) {
-            setBgButtonThenSetAlarm(times, imageView) {
-                onComplete(true)
-            }
-        } else {
-            setButtonOfBgThenCancelAlarm(imageView) {
-                onComplete(false)
-            }
-        }
-    }
-
-    private fun getTimingsViewModel(
-        times: String, country: String, method: Int
-    ): Unit = with(viewModel) {
-        getTimingsPrayer(
-            times,
-            country,
-            method
-        )
-    }
-
     override fun observeData(): Unit = with(viewModel) {
         if (locationCityName != null && locationCountryName != null) {
             binding.textViewCityName.text = locationCityName
@@ -281,8 +191,23 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
 
         prayerTimingsLive.observe(viewLifecycleOwner, {
             it?.let {
-                binding.currentPrayerTime = it
-                timings = it
+                it.createSortedList { list ->
+                    adapterCurrent =
+                        CurrentTimeAdapter(list) { viewDataBinding, timingsConverted, _, i ->
+                            if (viewDataBinding is LayoutItemCurrentTimeBinding) {
+                                viewDataBinding.currentPrayerTime = timingsConverted
+                                viewDataBinding.executePendingBindings()
+                                logApp(timingsConverted.toString())
+                                viewDataBinding.ivNotification.setOnClickListener {
+                                    checkAlarmState(
+                                        timingsConverted,
+                                        viewDataBinding.ivNotification
+                                    )
+                                }
+                            }
+                        }
+                    binding.recyclerViewCurrentTime.adapter = adapterCurrent
+                }
             }
         })
 
@@ -303,60 +228,117 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
         })
     }
 
+
+
+    private fun setBgButtonThenSetAlarm(
+        prayer: TimingsConverted,
+        imageView: ImageView
+    ) {
+        imageView.setImageResource(R.drawable.ic_custom_notification_on)
+        setAlarmManager(prayer,requireContext())
+    }
+
+    private fun setButtonOfBgThenCancelAlarm(
+        prayer: TimingsConverted,
+        imageView: ImageView
+    ) {
+        timings?.let {
+            imageView.setImageResource(R.drawable.ic_custom_notification_off)
+            //cancelAlarmManager(pendingIntent)
+        }
+    }
+
+    private fun cancelAlarmManager(pendingIntent: PendingIntent) {
+        val alarmReceiver = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        //alarmReceiver.cancelAlarm(pendingIntent)
+        Toast.makeText(requireContext(), "alarm cancelled", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun checkAlarmState(
+        timingsConverted: TimingsConverted,
+        ivNotification: ImageView
+    ) {
+        when (timingsConverted.prayerName) {
+            Prayers.ASR -> {
+                checkAlarmButtonState(isAsr, timingsConverted, ivNotification){
+                    isAsr=it
+                }
+            }
+            Prayers.IMSAK -> {
+                checkAlarmButtonState(isImsak, timingsConverted, ivNotification){
+                    isImsak=it
+                }
+            }
+            Prayers.MAGHRIB -> {
+                checkAlarmButtonState(isMaghrib, timingsConverted, ivNotification){
+                    isMaghrib=it
+                }
+            }
+            Prayers.SUNRISE -> {
+                checkAlarmButtonState(isSunrise, timingsConverted, ivNotification){
+                    isSunrise=it
+                }
+            }
+            Prayers.MIDNIGHT -> {
+                checkAlarmButtonState(isMidnight, timingsConverted, ivNotification){
+                    isMidnight=it
+                }
+            }
+            Prayers.FAJR -> {
+                checkAlarmButtonState(isFajr, timingsConverted, ivNotification){
+                    isFajr=it
+                }
+            }
+            Prayers.DHUHUR -> {
+                checkAlarmButtonState(isDhuhur, timingsConverted, ivNotification){
+                    isDhuhur=it
+                }
+            }
+            Prayers.ISHA -> {
+                checkAlarmButtonState(isIsha, timingsConverted, ivNotification){
+                    isIsha=it
+                }
+            }
+            Prayers.SUNSET -> {
+                checkAlarmButtonState(isSunrise, timingsConverted, ivNotification){
+                    isSunrise=it
+                }
+            }
+        }
+    }
+
+    private fun checkAlarmButtonState(
+        state: Boolean,
+        timingsConverted: TimingsConverted,
+        imageView: ImageView,
+        onCompleteListener: (Boolean)->Unit
+    ) {
+        if (!state) {
+            setBgButtonThenSetAlarm(timingsConverted, imageView)
+            onCompleteListener(true)
+        } else {
+            setButtonOfBgThenCancelAlarm(timingsConverted, imageView)
+            onCompleteListener(false)
+        }
+    }
+
+    private fun getTimingsViewModel(
+        times: String, country: String, method: Int
+    ): Unit = with(viewModel) {
+        getTimingsPrayer(
+            times,
+            country,
+            method
+        )
+    }
+
+
     private fun checkSharedPref(): Unit = with(binding) {
-        if (isAsr) {
-            buttonBgState(ivNotificationAsr, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationAsr, R.drawable.ic_custom_notification_off)
-        }
-
-        if (isDhuhur) {
-            buttonBgState(ivNotificationDhuhr, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationDhuhr, R.drawable.ic_custom_notification_off)
-        }
-
-        if (isIsha) {
-            buttonBgState(ivNotificationIsha, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationIsha, R.drawable.ic_custom_notification_off)
-        }
-
-        if (isMaghrib) {
-            buttonBgState(ivNotificationMaghrib, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationMaghrib, R.drawable.ic_custom_notification_off)
-        }
-
-        if (isFajr) {
-            buttonBgState(ivNotificationFajr, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationFajr, R.drawable.ic_custom_notification_off)
-        }
-
-        if (isSunrise) {
-            buttonBgState(ivNotificationSunrise, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationSunrise, R.drawable.ic_custom_notification_off)
-        }
-
-        if (isSunset) {
-            buttonBgState(ivNotificationSunset, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationSunset, R.drawable.ic_custom_notification_off)
-        }
-
-        if (isMidnight) {
-            buttonBgState(ivNotificationMidnight, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationMidnight, R.drawable.ic_custom_notification_off)
-        }
-
-        if (isImsak) {
-            buttonBgState(ivNotificationImsak, R.drawable.ic_custom_notification_on)
-        } else {
-            buttonBgState(ivNotificationImsak, R.drawable.ic_custom_notification_off)
-        }
+         if (isAsr) {
+            // buttonBgState(ivNotificationAsr, R.drawable.ic_custom_notification_on)
+         } else {
+            // buttonBgState(ivNotificationAsr, R.drawable.ic_custom_notification_off)
+         }
     }
 
     private fun buttonBgState(imageView: ImageView, drawable: Int) {

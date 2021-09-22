@@ -1,10 +1,11 @@
 package aslan.aslanov.prayerapp.model.prayerCurrent
 
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import aslan.aslanov.prayerapp.util.Prayers
 import com.squareup.moshi.Json
+import java.util.Date
 
 data class Timings(
     @Json(name = "Asr")
@@ -39,4 +40,9 @@ data class TimingsEntity(
     val midnight: String?,
     val sunrise: String?,
     val sunset: String?
+)
+data class TimingsConverted(
+    val prayerID: Int,
+    val prayerName: Prayers,
+    val prayerTime: Date,
 )
