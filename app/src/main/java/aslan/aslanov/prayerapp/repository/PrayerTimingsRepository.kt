@@ -1,6 +1,7 @@
 package aslan.aslanov.prayerapp.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import aslan.aslanov.prayerapp.local.PrayerDatabase
 import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
 import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
@@ -11,6 +12,14 @@ import aslan.aslanov.prayerapp.network.RetrofitService
 import aslan.aslanov.prayerapp.util.catchServerError
 
 class PrayerTimingsRepository(private val database: PrayerDatabase) {
+    private var _baseErrorMessage = MutableLiveData<String>()
+    val baseErrorMessage: LiveData<String>
+        get() = _baseErrorMessage
+
+    private var _baseLoadingStatus = MutableLiveData<Boolean>()
+    val baseLoading: LiveData<Boolean>
+        get() = _baseLoadingStatus
+
     suspend fun getPrayerTimings(
         city: String, country: String, method: Int,
         onLoadCompleteListener: (NetworkResult<CurrentDayPrayerResponse>) -> Unit

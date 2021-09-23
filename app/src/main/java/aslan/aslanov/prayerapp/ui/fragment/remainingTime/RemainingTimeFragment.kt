@@ -62,9 +62,6 @@ class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
         super.bindUI(binding)
         if (binding is FragmentRemainingTimeBinding) {
             this.bindingFragment = binding
-            bindingFragment.textViewNextPrayer.setOnClickListener {
-
-            }
         }
     }
 

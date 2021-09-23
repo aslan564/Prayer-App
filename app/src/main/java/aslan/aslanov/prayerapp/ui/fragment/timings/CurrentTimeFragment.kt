@@ -37,7 +37,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 
 
 @SuppressLint("ResourceType")
-class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.OnClickListener {
+class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
 
     private lateinit var binding: FragmentCurrentTimeBinding
     private val viewModel by viewModels<CurrentTimingsViewModel>()
@@ -67,95 +67,6 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time), View.O
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onClick(view: View?): Unit = with(binding) {
-        view?.let {
-            /*  if (timings != null) {
-                  when (view.id) {
-                      binding.ivNotificationAsr.id -> {
-                          checkAlarmState(
-                              isAsr,
-                              timings!!.asr!!,
-                              ivNotificationAsr
-                          ) {
-                              isAsr = it
-                          }
-                      }
-                      binding.ivNotificationFajr.id -> {
-                          checkAlarmState(
-                              isFajr,
-                              timings!!.fajr!!,
-                              ivNotificationFajr
-                          ) {
-                              isFajr = it
-                          }
-                      }
-                      binding.ivNotificationMaghrib.id -> {
-                          checkAlarmState(
-                              isMaghrib,
-                              timings!!.maghrib!!,
-                              ivNotificationMaghrib
-                          ) {
-                              isMaghrib = it
-                          }
-                      }
-                      binding.ivNotificationDhuhr.id -> {
-                          checkAlarmState(
-                              isDhuhur,
-                              timings!!.dhuhr!!,
-                              ivNotificationDhuhr
-                          ) {
-                              isDhuhur = it
-                          }
-                      }
-                      binding.ivNotificationIsha.id -> {
-                          checkAlarmState(
-                              isIsha,
-                              timings!!.isha!!,
-                              ivNotificationIsha
-                          ) {
-                              isIsha = it
-                          }
-                      }
-                      binding.ivNotificationImsak.id -> {
-                          checkAlarmState(
-                              isImsak,
-                              timings!!.imsak!!,
-                              ivNotificationImsak
-                          ) {
-                              isImsak = it
-                          }
-                      }
-                      binding.ivNotificationMidnight.id -> {
-                          checkAlarmState(
-                              isMidnight,
-                              timings!!.midnight!!,
-                              ivNotificationMidnight
-                          ) {
-                              isMidnight = it
-                          }
-                      }
-                      binding.ivNotificationSunset.id -> {
-                          checkAlarmState(
-                              isSunset,
-                              timings!!.sunset!!,
-                              ivNotificationSunset
-                          ) {
-                              isSunset = it
-                          }
-                      }
-                      binding.ivNotificationSunrise.id -> {
-                          checkAlarmState(
-                              isSunrise,
-                              timings!!.sunrise!!,
-                              ivNotificationSunrise
-                          ) {
-                              isSunrise = it
-                          }
-                      }
-                  }
-              }*/
-        }
-    }
 
     override fun bindUI(binding: ViewDataBinding) {
         super.bindUI(binding)

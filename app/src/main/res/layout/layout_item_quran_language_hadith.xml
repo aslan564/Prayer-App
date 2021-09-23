@@ -23,9 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@{languageItem.native}"
             android:textAppearance="@style/TextColumnSubHeader"
-            android:textSize="18sp"
-            android:padding="@dimen/margin_4dp"
-            android:layout_marginVertical="@dimen/margin_4dp"
+            android:layout_marginVertical="@dimen/small_2dp"
             tools:text="@string/calendar" />
     </LinearLayout>
 </layout>

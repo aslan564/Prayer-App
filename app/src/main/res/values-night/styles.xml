@@ -13,13 +13,12 @@
     <style name="TextColumnHeader">
         <item name="fontFamily">@font/roboto_mono</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">17sp</item>
-
+        <item name="android:textSize">@dimen/reading_text_size</item>
     </style>
 
     <style name="TextColumnSubHeader">
         <item name="fontFamily">@font/roboto_mono</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/sub_header_size</item>
         <item name="android:textColor">@color/white</item>
     </style>
 </resources>

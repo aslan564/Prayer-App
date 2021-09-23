@@ -26,12 +26,15 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
 
     private val viewModel by viewModels<HadeethsViewModel>()
     private lateinit var binding: FragmentHadeethsBinding
-    private lateinit var adapter: HadeethsAdapter
-    private  var page: Int=1
+    private lateinit var adapterHadeeths: HadeethsAdapter
+    private var page: Int = 1
+    private var savedPage: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeData()
+        if (savedInstanceState != null) {
+            savedPage = savedInstanceState.getInt(HADEETHS_POSITION, 0)
+        }
     }
 
     override fun bindUI(binding: ViewDataBinding) {
@@ -39,6 +42,12 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
         if (binding is FragmentHadeethsBinding) {
             this.binding = binding
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val position = binding.recyclerViewHadeeths.scrollState
+        outState.putInt(HADEETHS_POSITION, position)
     }
 
     override fun observeData(): Unit = with(viewModel) {
@@ -56,20 +65,31 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
                 findNavController().popBackStack()
             }
             getHadithFromDb(category.id.toInt()).observe(viewLifecycleOwner, { res ->
-                if (res != null&& res.isNotEmpty()) {
-                    adapter =
+                if (res != null && res.isNotEmpty()) {
+                    adapterHadeeths =
                         HadeethsAdapter(res) { viewDataBinding, data, _, _ ->
 
                             if (viewDataBinding is LayoutItemQuranHadeethBinding) {
                                 viewDataBinding.hadithItem = data
                             }
                         }
-                    binding.recyclerViewHadeeths.adapter = adapter
+                    binding.recyclerViewHadeeths.adapter = adapterHadeeths
+                    adapterHadeeths.registerAdapterDataObserver(object :
+                        RecyclerView.AdapterDataObserver() {
+                        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                            savedPage?.let { it1 ->
+                                binding.recyclerViewHadeeths.scrollToPosition(
+                                    it1
+                                )
+                            }
+                        }
+                    })
                     binding.recyclerViewHadeeths.addOnScrollListener(
                         recyclerViewScrollChangeListener
                     )
-                }else{
-                   logApp("**************************************** ${res.size}")
+                    iJustWantToScroll()
+                } else {
+                    logApp("**************************************** ${res.size}")
                 }
             })
 
@@ -111,10 +131,22 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
                             category.title
                         )
                     }
-                   // requireContext().makeToast("$endHasBeenReached $totalItemCount")
+                    // requireContext().makeToast("$endHasBeenReached $totalItemCount")
                 }
             }
         }
+    }
+
+    private fun iJustWantToScroll(): Unit = with(binding) {
+        savedPage?.let {
+            recyclerViewHadeeths.postDelayed({
+                recyclerViewHadeeths.scrollToPosition(it)
+            }, 1000)
+        }
+    }
+
+    companion object {
+        const val HADEETHS_POSITION = "hadeeth_position"
     }
 }
 

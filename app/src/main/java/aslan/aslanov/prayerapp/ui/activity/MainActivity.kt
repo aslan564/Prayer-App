@@ -37,6 +37,7 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCit
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCountryName
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.AppConstant
+import aslan.aslanov.prayerapp.util.swipe
 import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -81,7 +82,10 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         createNotificationChannel()
-
+        binding.mainActivityContainer.setOnRefreshListener {
+            checkPermissionGetLocation()
+            binding.mainActivityContainer.isRefreshing = false
+        }
 
     }
 
