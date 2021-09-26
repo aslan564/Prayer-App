@@ -28,12 +28,19 @@ import kotlin.collections.HashMap
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("ResourceType")
-class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
+class RemainingTimeFragment : BaseFragment() {
 
-    private lateinit var bindingFragment: FragmentRemainingTimeBinding
+    private val bindingFragment by lazy { FragmentRemainingTimeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<RemainingViewModel>()
     private var currentDate = Calendar.getInstance()
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,11 +65,8 @@ class RemainingTimeFragment : BaseFragment(R.layout.fragment_remaining_time) {
     }
 
     @SuppressLint("SimpleDateFormat")
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
-        if (binding is FragmentRemainingTimeBinding) {
-            this.bindingFragment = binding
-        }
+    override fun bindUI():Unit= with(bindingFragment) {
+
     }
 
     override fun observeData(): Unit = with(viewModel) {

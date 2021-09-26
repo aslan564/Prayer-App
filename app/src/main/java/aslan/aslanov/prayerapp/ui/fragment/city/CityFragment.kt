@@ -18,35 +18,37 @@ import aslan.aslanov.prayerapp.util.BaseFragment
 
 
 @SuppressLint("ResourceType")
-class CityFragment : BaseFragment(R.layout.fragment_city) {
+class CityFragment : BaseFragment() {
     private val cityViewModel by viewModels<CityViewModel>()
-    private lateinit var binding : FragmentCityBinding
+    private val bindingFragment by lazy { FragmentCityBinding.inflate(layoutInflater) }
 
     private val adapterCity by lazy {
         AdapterCity(onClickListener = { viewDataBinding, city ->
             if (viewDataBinding is LayoutItemCityBinding) {
-                viewDataBinding.cityItem=city
+                viewDataBinding.cityItem = city
                 viewDataBinding.root.setOnClickListener {
-                    SharedPreferenceManager.isLocation=false
-                    SharedPreferenceManager.locationCountryName=city.countryCreatorId
-                    SharedPreferenceManager.locationCityName=city.city
+                    SharedPreferenceManager.isLocation = false
+                    SharedPreferenceManager.locationCountryName = city.countryCreatorId
+                    SharedPreferenceManager.locationCityName = city.city
                     findNavController().popBackStack()
                 }
             }
         })
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
     }
-
 
     override fun observeData(): Unit = with(cityViewModel) {
         arguments?.let {
             CityFragmentArgs.fromBundle(it).countryName?.let { country ->
-                cityViewModel.getAllCity(country){liveData->
-                    liveData.observe(viewLifecycleOwner,{list->
+                cityViewModel.getAllCity(country) { liveData ->
+                    liveData.observe(viewLifecycleOwner, { list ->
                         list?.let {
                             adapterCity.submitList(list)
                         }
@@ -54,18 +56,13 @@ class CityFragment : BaseFragment(R.layout.fragment_city) {
                 }
             }
         }
-        binding.recyclerViewCity.adapter = adapterCity
+        bindingFragment.recyclerViewCity.adapter = adapterCity
 
     }
 
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
-        if (binding is FragmentCityBinding) {
-            this.binding = binding
+    override fun bindUI(): Unit = with(bindingFragment) {
 
-        }
     }
-
 
 
     companion object {

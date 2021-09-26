@@ -2,8 +2,12 @@ package aslan.aslanov.prayerapp.ui.fragment.settings
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentSettingsBinding
@@ -11,41 +15,42 @@ import aslan.aslanov.prayerapp.util.BaseFragment
 
 
 @SuppressLint("ResourceType")
-class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
+class SettingsFragment : BaseFragment() {
+    private val bindingFragment by lazy { FragmentSettingsBinding.inflate(layoutInflater) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(false)
-
+        bindUI()
     }
 
-    override fun onStart() {
-        super.onStart()
-        observeData()
-    }
-
-
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
-        if (binding is FragmentSettingsBinding) {
-            binding.textViewCountry.setOnClickListener {
-                val action = SettingsFragmentDirections.actionSettingsToCountry()
-                it?.findNavController()?.navigate(action)
-            }
-            binding.textViewQuran.setOnClickListener {
-                val action = SettingsFragmentDirections.actionSettingsToQuran()
-                it?.findNavController()?.navigate(action)
-            }
-            binding.textViewHadeeths.setOnClickListener {
-                val action =
-                    SettingsFragmentDirections.actionNavigationSettingsToNavigationHadeethsCategory()
-                it?.findNavController()?.navigate(action)
-            }
-
+    override fun bindUI(): Unit = with(bindingFragment) {
+        textViewCountry.setOnClickListener {
+            val action = SettingsFragmentDirections.actionSettingsToCountry()
+            it?.findNavController()?.navigate(action)
+        }
+        textViewQuran.setOnClickListener {
+            val action = SettingsFragmentDirections.actionSettingsToQuran()
+            it?.findNavController()?.navigate(action)
+        }
+        textViewHadeeths.setOnClickListener {
+            val action =
+                SettingsFragmentDirections.actionNavigationSettingsToNavigationHadeethsCategory()
+            it?.findNavController()?.navigate(action)
         }
     }
 
-    override fun observeData(){
+    override fun observeData() {
 
     }
 

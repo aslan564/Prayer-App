@@ -1,10 +1,9 @@
 package aslan.aslanov.prayerapp.ui.fragment.categoryOfHadeeth
 
 import android.annotation.SuppressLint
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.os.Bundle
+import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -18,26 +17,34 @@ import aslan.aslanov.prayerapp.util.logApp
 import aslan.aslanov.prayerapp.util.makeToast
 
 @SuppressLint("ResourceType")
-class CategoryOfHadithFragment : BaseFragment(R.layout.fragment_category_of_hadith) {
+class CategoryOfHadithFragment : BaseFragment() {
 
-    private lateinit var bindingFragment: FragmentCategoryOfHadithBinding
+    private val bindingFragment by lazy { FragmentCategoryOfHadithBinding.inflate(layoutInflater) }
     private lateinit var adapter: HadithCategoryAdapter
     private val viewModel by viewModels<HadithCategoryViewModel>()
 
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
+    }
+
+    override fun bindUI(): Unit = with(bindingFragment) {
         setHasOptionsMenu(true)
-        if (binding is FragmentCategoryOfHadithBinding) {
-            this.bindingFragment = binding
-            binding.swipeLayoutHadithCategory.setOnRefreshListener {
-                viewModel.getHadithCategory()
-                binding.swipeLayoutHadithCategory.isRefreshing = false
-            }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this@CategoryOfHadithFragment,
+            onBackPressedCallback
+        )
+        swipeLayoutHadithCategory.setOnRefreshListener {
+            viewModel.getHadithCategory()
+            swipeLayoutHadithCategory.isRefreshing = false
         }
     }
 
     override fun observeData(): Unit = with(viewModel) {
-        if (languageHadeeth==null) {
+        if (languageHadeeth == null) {
             requireContext().makeToast("please select  any language")
         }
         categoryItem.observe(viewLifecycleOwner, { categoryItem ->
@@ -57,7 +64,7 @@ class CategoryOfHadithFragment : BaseFragment(R.layout.fragment_category_of_hadi
                         }
                     }
                 bindingFragment.recyclerViewHadeethsCategory.adapter = adapter
-            }?:requireContext().makeToast("please swipe layout")
+            } ?: requireContext().makeToast("please swipe layout")
         })
         error.observe(viewLifecycleOwner, {
             it?.let {
@@ -71,7 +78,7 @@ class CategoryOfHadithFragment : BaseFragment(R.layout.fragment_category_of_hadi
                 } else {
                     bindingFragment.progressBarHadithCategory.visibility = View.GONE
                 }
-            }?: logApp(it.toString())
+            } ?: logApp(it.toString())
         })
     }
 
@@ -90,6 +97,11 @@ class CategoryOfHadithFragment : BaseFragment(R.layout.fragment_category_of_hadi
             }
         }
         return true
+    }
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            findNavController().popBackStack()
+        }
     }
 }

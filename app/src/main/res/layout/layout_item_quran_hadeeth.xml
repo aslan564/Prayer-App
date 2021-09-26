@@ -18,19 +18,6 @@
         android:layout_marginVertical="@dimen/small_2dp"
         android:orientation="vertical"
         android:background="@drawable/bg_text_country">
-
-        <TextView
-            android:id="@+id/text_view_surah_arab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{hadithItem.title}"
-            android:textAppearance="@style/TextColumnHeader"
-            android:layout_marginVertical="@dimen/margin_4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginBottom="@dimen/small_2dp"
-            tools:text="@string/calendar" />
         <TextView
             android:id="@+id/text_view_surah_translations"
             android:layout_width="match_parent"
@@ -43,6 +30,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginBottom="@dimen/small_2dp"
             tools:text="@string/calendar" />
-
+        <TextView
+            android:id="@+id/text_view_surah_arab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{hadithItem.title}"
+            android:textAppearance="@style/TextColumnHeader"
+            android:layout_marginVertical="@dimen/margin_4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginBottom="@dimen/small_2dp"
+            tools:text="@string/calendar" />
     </LinearLayout>
 </layout>

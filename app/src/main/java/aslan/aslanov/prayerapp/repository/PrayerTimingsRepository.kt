@@ -16,9 +16,6 @@ class PrayerTimingsRepository(private val database: PrayerDatabase) {
     val baseErrorMessage: LiveData<String>
         get() = _baseErrorMessage
 
-    private var _baseLoadingStatus = MutableLiveData<Boolean>()
-    val baseLoading: LiveData<Boolean>
-        get() = _baseLoadingStatus
 
     suspend fun getPrayerTimings(
         city: String, country: String, method: Int,

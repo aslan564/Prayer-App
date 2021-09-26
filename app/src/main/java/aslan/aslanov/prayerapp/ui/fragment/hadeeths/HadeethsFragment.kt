@@ -2,7 +2,11 @@ package aslan.aslanov.prayerapp.ui.fragment.hadeeths
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -11,8 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentHadeethsBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranHadeethBinding
-import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
+import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
+import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
 import aslan.aslanov.prayerapp.ui.activity.MainActivity
 import aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter.HadeethsAdapter
 import aslan.aslanov.prayerapp.util.BaseFragment
@@ -22,37 +27,44 @@ import kotlin.reflect.cast
 
 
 @SuppressLint("ResourceType")
-class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
+class HadeethsFragment : BaseFragment() {
 
     private val viewModel by viewModels<HadeethsViewModel>()
-    private lateinit var binding: FragmentHadeethsBinding
+    private val bindingFragment by lazy { FragmentHadeethsBinding.inflate(layoutInflater) }
     private lateinit var adapterHadeeths: HadeethsAdapter
     private var page: Int = 1
-    private var savedPage: Int? = null
+    private var whereWereWe: WhereWereWe? = null
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null) {
-            savedPage = savedInstanceState.getInt(HADEETHS_POSITION, 0)
-        }
+        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
     }
 
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
-        if (binding is FragmentHadeethsBinding) {
-            this.binding = binding
-        }
+    override fun bindUI(): Unit = with(bindingFragment) {
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val position = binding.recyclerViewHadeeths.scrollState
-        outState.putInt(HADEETHS_POSITION, position)
+        if (whereWereWe != null) {
+            viewModel.setWhereWee(whereWereWe!!)
+        }
     }
+
 
     override fun observeData(): Unit = with(viewModel) {
         arguments?.let {
             val category = HadeethsFragmentArgs.fromBundle(it).category
+            viewModel.getWhereWee(category.id.toInt())
             (activity as MainActivity).supportActionBar!!.title = category.title
             if (languageHadeeth != null) {
                 addHadith(
@@ -67,32 +79,30 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
             getHadithFromDb(category.id.toInt()).observe(viewLifecycleOwner, { res ->
                 if (res != null && res.isNotEmpty()) {
                     adapterHadeeths =
-                        HadeethsAdapter(res) { viewDataBinding, data, _, _ ->
-
+                        HadeethsAdapter(res) { viewDataBinding, data, _, positionAdapter ->
                             if (viewDataBinding is LayoutItemQuranHadeethBinding) {
                                 viewDataBinding.hadithItem = data
-                            }
-                        }
-                    binding.recyclerViewHadeeths.adapter = adapterHadeeths
-                    adapterHadeeths.registerAdapterDataObserver(object :
-                        RecyclerView.AdapterDataObserver() {
-                        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                            savedPage?.let { it1 ->
-                                binding.recyclerViewHadeeths.scrollToPosition(
-                                    it1
+                                whereWereWe = WhereWereWe(
+                                    data.categoryId,
+                                    positionAdapter,
+                                    data.id.toInt(),
+                                    AyahsOrSurah.HADEETHS.name,
                                 )
                             }
                         }
-                    })
-                    binding.recyclerViewHadeeths.addOnScrollListener(
+                    bindingFragment.recyclerViewHadeeths.adapter = adapterHadeeths
+                    bindingFragment.recyclerViewHadeeths.addOnScrollListener(
                         recyclerViewScrollChangeListener
                     )
-                    iJustWantToScroll()
                 } else {
                     logApp("**************************************** ${res.size}")
                 }
             })
-
+            whereWereLiveData.observe(viewLifecycleOwner, { whereWereLiveData ->
+                whereWereLiveData?.let {
+                    iJustWantToScroll(whereWereLiveData.position)
+                }
+            })
 
             error.observe(viewLifecycleOwner, { error ->
                 error?.let {
@@ -102,9 +112,9 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
             loading.observe(viewLifecycleOwner, { state ->
                 state?.let {
                     if (state) {
-                        binding.progressBarHadith.visibility = View.VISIBLE
+                        bindingFragment.progressBarHadith.visibility = View.VISIBLE
                     } else {
-                        binding.progressBarHadith.visibility = View.GONE
+                        bindingFragment.progressBarHadith.visibility = View.GONE
                     }
                 }
             })
@@ -115,7 +125,7 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
     private val recyclerViewScrollChangeListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val layoutManager =
-                LinearLayoutManager::class.cast(binding.recyclerViewHadeeths.layoutManager)
+                LinearLayoutManager::class.cast(bindingFragment.recyclerViewHadeeths.layoutManager)
             val totalItemCount = layoutManager.itemCount
             val lastVisible = layoutManager.findLastVisibleItemPosition()
 
@@ -131,17 +141,23 @@ class HadeethsFragment : BaseFragment(R.layout.fragment_hadeeths) {
                             category.title
                         )
                     }
-                    // requireContext().makeToast("$endHasBeenReached $totalItemCount")
                 }
             }
         }
     }
 
-    private fun iJustWantToScroll(): Unit = with(binding) {
-        savedPage?.let {
-            recyclerViewHadeeths.postDelayed({
-                recyclerViewHadeeths.scrollToPosition(it)
-            }, 1000)
+    private fun iJustWantToScroll(position: Int): Unit = with(bindingFragment) {
+        recyclerViewHadeeths.postDelayed({
+            recyclerViewHadeeths.scrollToPosition(position)
+        }, 1000)
+    }
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (whereWereWe != null) {
+                viewModel.setWhereWee(whereWereWe!!)
+            }
+            findNavController().popBackStack()
         }
     }
 

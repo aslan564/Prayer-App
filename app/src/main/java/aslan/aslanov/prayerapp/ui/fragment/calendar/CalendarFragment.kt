@@ -3,8 +3,6 @@ package aslan.aslanov.prayerapp.ui.fragment.calendar
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
-import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
@@ -16,18 +14,23 @@ import aslan.aslanov.prayerapp.util.BaseFragment
 
 
 @SuppressLint("ResourceType")
-class CalendarFragment : BaseFragment(R.layout.fragment_calendar) {
-    private lateinit var binding : FragmentCalendarBinding
+class CalendarFragment : BaseFragment() {
+    private val bindingFragment by lazy { FragmentCalendarBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<CalendarViewModel>()
     private val adapterCalendarFragment by lazy {
         CalendarAdapter { viewDataBinding, data ->
             if (viewDataBinding is LayoutCalendarItemBinding) {
-                val itemBinding=viewDataBinding as LayoutCalendarItemBinding
-                itemBinding.itemPrayer=data
+                viewDataBinding.itemPrayer = data
             }
         }
     }
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
@@ -47,15 +50,14 @@ class CalendarFragment : BaseFragment(R.layout.fragment_calendar) {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
-        if (binding is FragmentCalendarBinding) {
-            this.binding = binding
-            binding.recyclerViewCalendar.apply {
+    override fun bindUI():Unit= with(bindingFragment) {
+
+
+
+            recyclerViewCalendar.apply {
                 adapter=adapterCalendarFragment
             }
             viewModel.getMonthTimingByCity()
-        }
     }
 
     override fun observeData(): Unit = with(viewModel) {
@@ -73,9 +75,9 @@ class CalendarFragment : BaseFragment(R.layout.fragment_calendar) {
         viewModel.loading.observe(viewLifecycleOwner, {
             it?.let {
                 if (it) {
-                    binding.progressBar.visibility = android.view.View.VISIBLE
+                    bindingFragment.progressBar.visibility = View.VISIBLE
                 } else {
-                    binding.progressBar.visibility = android.view.View.GONE
+                    bindingFragment.progressBar.visibility = View.GONE
                 }
             }
         })

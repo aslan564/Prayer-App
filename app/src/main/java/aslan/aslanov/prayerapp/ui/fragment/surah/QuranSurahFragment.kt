@@ -17,10 +17,18 @@ import aslan.aslanov.prayerapp.util.BaseFragment
 import aslan.aslanov.prayerapp.util.makeToast
 
 @SuppressLint("ResourceType")
-class QuranSurahFragment : BaseFragment(R.layout.fragment_quran_surahs) {
-    private var binding: FragmentQuranSurahsBinding? = null
+class QuranSurahFragment : BaseFragment() {
+    private val bindingFragment by lazy { FragmentQuranSurahsBinding.inflate(layoutInflater) }
     private val viewModel by activityViewModels<QuranSurahsViewModel>()
     private lateinit var quranSurahAdapter: QuranSurahAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,16 +53,13 @@ class QuranSurahFragment : BaseFragment(R.layout.fragment_quran_surahs) {
 
     @SuppressLint("NotifyDataSetChanged")
 
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
-        if (binding is FragmentQuranSurahsBinding) {
-            this.binding = binding
-            binding.swipeLayoutSurah.setOnRefreshListener {
-                viewModel.fetchSurahs()
-                binding.swipeLayoutSurah.isRefreshing = false
-            }
+    override fun bindUI(): Unit = with(bindingFragment) {
+        swipeLayoutSurah.setOnRefreshListener {
+            viewModel.fetchSurahs()
+            swipeLayoutSurah.isRefreshing = false
         }
     }
+
     @SuppressLint("NotifyDataSetChanged")
     override fun observeData(): Unit = with(viewModel) {
         surahs.observe(viewLifecycleOwner, {
@@ -76,15 +81,15 @@ class QuranSurahFragment : BaseFragment(R.layout.fragment_quran_surahs) {
                     }
 
                 }.apply { notifyDataSetChanged() }
-                binding?.recyclerViewQuran?.adapter = quranSurahAdapter
+                bindingFragment.recyclerViewQuran.adapter = quranSurahAdapter
             }
         })
         quranUiState.observe(viewLifecycleOwner, {
             it?.let {
                 if (it) {
-                    binding?.progressBarQuran?.visibility = View.VISIBLE
+                    bindingFragment.progressBarQuran.visibility = View.VISIBLE
                 } else {
-                    binding?.progressBarQuran?.visibility = View.GONE
+                    bindingFragment.progressBarQuran.visibility = View.GONE
                 }
             }
         })
@@ -95,7 +100,6 @@ class QuranSurahFragment : BaseFragment(R.layout.fragment_quran_surahs) {
             }
         })
     }
-
 
 
     companion object {

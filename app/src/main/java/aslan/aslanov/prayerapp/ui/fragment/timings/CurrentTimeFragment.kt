@@ -5,13 +5,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
@@ -37,18 +35,25 @@ import com.google.android.gms.tasks.OnCompleteListener
 
 
 @SuppressLint("ResourceType")
-class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
+class CurrentTimeFragment : Fragment() {
 
-    private lateinit var binding: FragmentCurrentTimeBinding
+    private val bindingFragment by lazy { FragmentCurrentTimeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<CurrentTimingsViewModel>()
     private lateinit var adapterCurrent: CurrentTimeAdapter
     private var timings: TimingsEntity? = null
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        observeData()
+        bindUI()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -67,37 +72,42 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onStart() {
+        super.onStart()
+        observeData()
+    }
 
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
-        if (binding is FragmentCurrentTimeBinding) {
-            this.binding = binding
-            checkSharedPref()
 
-            binding.swipeLayoutCurrentTime.swipe {
-                if (it) {
-                    if (locationCityName != null && locationCountryName != null) {
-                        getTimingsViewModel(
-                            locationCityName!!,
-                            locationCountryName!!,
-                            8
-                        )
-                    } else {
-                        getTimingsViewModel(
-                            "Baku",
-                            "Azerbaijan",
-                            1
-                        )
-                    }
-                    binding.swipeLayoutCurrentTime.isRefreshing = false
-                }
+    private fun bindUI(): Unit = with(bindingFragment) {
+        // checkSharedPref()
+
+        swipeLayoutCurrentTime.setOnRefreshListener {
+            if (locationCityName != null && locationCountryName != null) {
+                getTimingsViewModel(
+                    locationCityName!!,
+                    locationCountryName!!,
+                    8
+                )
+            } else {
+                getTimingsViewModel(
+                    "Baku",
+                    "Azerbaijan",
+                    8
+                )
             }
+             swipeLayoutCurrentTime.isRefreshing = false
         }
     }
-    override fun observeData(): Unit = with(viewModel) {
+
+    private fun observeData(): Unit = with(viewModel) {
         if (locationCityName != null && locationCountryName != null) {
-            binding.textViewCityName.text = locationCityName
-            binding.textViewCountryName.text = locationCountryName
+            bindingFragment.textViewCityName.text = locationCityName
+            bindingFragment.textViewCountryName.text = locationCountryName
+            getTimingsViewModel(
+                locationCityName!!,
+                locationCountryName!!,
+                8
+            )
         }
 
         prayerTimingsLive.observe(viewLifecycleOwner, {
@@ -117,7 +127,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
                                 }
                             }
                         }
-                    binding.recyclerViewCurrentTime.adapter = adapterCurrent
+                    bindingFragment.recyclerViewCurrentTime.adapter = adapterCurrent
                 }
             }
         })
@@ -131,14 +141,13 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
         loading.observe(viewLifecycleOwner, {
             it?.let {
                 if (it) {
-                    binding.progressCurrentTime.visibility = View.VISIBLE
+                    bindingFragment.progressCurrentTime.visibility = View.VISIBLE
                 } else {
-                    binding.progressCurrentTime.visibility = View.GONE
+                    bindingFragment.progressCurrentTime.visibility = View.GONE
                 }
             }
         })
     }
-
 
 
     private fun setBgButtonThenSetAlarm(
@@ -146,7 +155,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
         imageView: ImageView
     ) {
         imageView.setImageResource(R.drawable.ic_custom_notification_on)
-        setAlarmManager(prayer,requireContext())
+        setAlarmManager(prayer, requireContext())
     }
 
     private fun setButtonOfBgThenCancelAlarm(
@@ -171,48 +180,48 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
     ) {
         when (timingsConverted.prayerName) {
             Prayers.ASR -> {
-                checkAlarmButtonState(isAsr, timingsConverted, ivNotification){
-                    isAsr=it
+                checkAlarmButtonState(isAsr, timingsConverted, ivNotification) {
+                    isAsr = it
                 }
             }
             Prayers.IMSAK -> {
-                checkAlarmButtonState(isImsak, timingsConverted, ivNotification){
-                    isImsak=it
+                checkAlarmButtonState(isImsak, timingsConverted, ivNotification) {
+                    isImsak = it
                 }
             }
             Prayers.MAGHRIB -> {
-                checkAlarmButtonState(isMaghrib, timingsConverted, ivNotification){
-                    isMaghrib=it
+                checkAlarmButtonState(isMaghrib, timingsConverted, ivNotification) {
+                    isMaghrib = it
                 }
             }
             Prayers.SUNRISE -> {
-                checkAlarmButtonState(isSunrise, timingsConverted, ivNotification){
-                    isSunrise=it
+                checkAlarmButtonState(isSunrise, timingsConverted, ivNotification) {
+                    isSunrise = it
                 }
             }
             Prayers.MIDNIGHT -> {
-                checkAlarmButtonState(isMidnight, timingsConverted, ivNotification){
-                    isMidnight=it
+                checkAlarmButtonState(isMidnight, timingsConverted, ivNotification) {
+                    isMidnight = it
                 }
             }
             Prayers.FAJR -> {
-                checkAlarmButtonState(isFajr, timingsConverted, ivNotification){
-                    isFajr=it
+                checkAlarmButtonState(isFajr, timingsConverted, ivNotification) {
+                    isFajr = it
                 }
             }
             Prayers.DHUHUR -> {
-                checkAlarmButtonState(isDhuhur, timingsConverted, ivNotification){
-                    isDhuhur=it
+                checkAlarmButtonState(isDhuhur, timingsConverted, ivNotification) {
+                    isDhuhur = it
                 }
             }
             Prayers.ISHA -> {
-                checkAlarmButtonState(isIsha, timingsConverted, ivNotification){
-                    isIsha=it
+                checkAlarmButtonState(isIsha, timingsConverted, ivNotification) {
+                    isIsha = it
                 }
             }
             Prayers.SUNSET -> {
-                checkAlarmButtonState(isSunrise, timingsConverted, ivNotification){
-                    isSunrise=it
+                checkAlarmButtonState(isSunrise, timingsConverted, ivNotification) {
+                    isSunrise = it
                 }
             }
         }
@@ -222,7 +231,7 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
         state: Boolean,
         timingsConverted: TimingsConverted,
         imageView: ImageView,
-        onCompleteListener: (Boolean)->Unit
+        onCompleteListener: (Boolean) -> Unit
     ) {
         if (!state) {
             setBgButtonThenSetAlarm(timingsConverted, imageView)
@@ -244,12 +253,12 @@ class CurrentTimeFragment : BaseFragment(R.layout.fragment_current_time) {
     }
 
 
-    private fun checkSharedPref(): Unit = with(binding) {
-         if (isAsr) {
+    private fun checkSharedPref(): Unit = with(bindingFragment) {
+        if (isAsr) {
             // buttonBgState(ivNotificationAsr, R.drawable.ic_custom_notification_on)
-         } else {
+        } else {
             // buttonBgState(ivNotificationAsr, R.drawable.ic_custom_notification_off)
-         }
+        }
     }
 
     private fun buttonBgState(imageView: ImageView, drawable: Int) {

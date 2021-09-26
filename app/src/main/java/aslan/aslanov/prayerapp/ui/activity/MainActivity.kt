@@ -15,8 +15,6 @@ import android.os.Looper
 import android.os.PersistableBundle
 import android.provider.Settings
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -35,9 +34,7 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isLatitude
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isLongitude
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCityName
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCountryName
-import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.AppConstant
-import aslan.aslanov.prayerapp.util.swipe
 import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -96,8 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressedDispatcher.onBackPressed()
-        return super.onSupportNavigateUp()
+        return findNavController(R.id.fragment_container_view).navigateUp()
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -180,11 +176,11 @@ class MainActivity : AppCompatActivity() {
             binding.root,
             getString(R.string.permission),
             Snackbar.LENGTH_INDEFINITE
-        ).setAction("Settings", View.OnClickListener {
+        ).setAction("Settings") {
             it?.let {
                 startActivity(intent)
             }
-        }).show()
+        }.show()
     }
 
     private fun createNotificationChannel() {

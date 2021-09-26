@@ -13,16 +13,20 @@ import aslan.aslanov.prayerapp.util.BaseFragment
 
 
 @SuppressLint("ResourceType")
-class QiblaFragment : BaseFragment(R.layout.fragment_qibla) {
+class QiblaFragment : BaseFragment() {
 
-    private lateinit var binding : FragmentQiblaBinding
+    private val bindingFragment by lazy { FragmentQiblaBinding.inflate(layoutInflater) }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return bindingFragment.root
+    }
 
-    override fun bindUI(binding: ViewDataBinding) {
-        super.bindUI(binding)
-        if (binding is FragmentQiblaBinding) {
-            this.binding = binding
-        }
+    override fun bindUI():Unit= with(bindingFragment) {
+
     }
 
     override fun observeData() {
