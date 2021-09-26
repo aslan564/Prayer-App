@@ -48,10 +48,16 @@ class PrayerTimingsRepository(private val database: PrayerDatabase) {
     fun getCurrentTimeLive(): LiveData<TimingsEntity> {
         return database.getCountryDao().getTimingsEntityLive()
     }
-    fun getRandomAyahFromQuran():LiveData<List<AyahEntity>>{
-        return  database.getQuranDao().getRandomAyahsFromDatabase()
+
+    fun getRandomAyahFromQuran(): LiveData<List<AyahEntity>> {
+        return database.getQuranDao().getRandomAyahsFromDatabase()
     }
-    fun getRandomHadeethsFromQuran():LiveData<List<HadeethsEntity>>{
-        return  database.getHadeeth().getRandomHadeethsFromQuran()
+
+    suspend fun getRandomAyahFromQuranList(): List<AyahEntity> {
+        return database.getQuranDao().getRandomAyahsListFromDatabase()
+    }
+
+    fun getRandomHadeethsFromQuran(): LiveData<List<HadeethsEntity>> {
+        return database.getHadeeth().getRandomHadeethsFromQuran()
     }
 }

@@ -27,4 +27,7 @@ interface QuranDAO {
 
     @Query("SELECT * FROM table_ayahs")
     fun getRandomAyahsFromDatabase(): LiveData<List<AyahEntity>>
+
+    @Query("SELECT * FROM table_ayahs")
+    suspend fun getRandomAyahsListFromDatabase(): List<AyahEntity>
 }

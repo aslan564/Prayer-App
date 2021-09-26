@@ -23,15 +23,7 @@ class PrayerAppWorker(appContext: Context, params: WorkerParameters) : Coroutine
             val database = PrayerDatabase.getInstance(applicationContext)
             val repository by lazy { PrayerTimingsRepository(database) }
 
-            val ayahs = database.getQuranDao().getRandomAyahsFromDatabase().value
-            val random = Random()
-            val ayah = ayahs?.get(random.nextInt(ayahs.size))
-            val intent = Intent(applicationContext, AlarmReceiver::class.java)
-            if (ayah != null) {
-                intent.putExtra(EXTRA_TYPE,ayah.surahEnglishName)
-                intent.putExtra(EXTRA_MESSAGE,ayah.text)
-                AlarmReceiver.showAlarmNotification(applicationContext, intent)
-            }
+            makeDailyAyahRemainder(repository)
 
             if (SharedPreferenceManager.locationCityName != null && SharedPreferenceManager.locationCountryName != null) {
                 repository.getPrayerTimings(
@@ -55,6 +47,16 @@ class PrayerAppWorker(appContext: Context, params: WorkerParameters) : Coroutine
         } catch (ex: Exception) {
             Result.retry()
         }
+    }
+
+    private suspend fun makeDailyAyahRemainder(repository: PrayerTimingsRepository) {
+        val ayahs = repository.getRandomAyahFromQuranList()
+        val random = Random()
+        val ayah = ayahs[random.nextInt(ayahs.size)]
+        val intent = Intent(applicationContext, AlarmReceiver::class.java)
+        intent.putExtra(EXTRA_TYPE, ayah.surahEnglishName)
+        intent.putExtra(EXTRA_MESSAGE, ayah.text)
+        AlarmReceiver.showAlarmNotification(applicationContext, intent)
     }
 
 
