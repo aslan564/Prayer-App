@@ -18,6 +18,7 @@
         android:roundIcon="@drawable/praying"
         android:supportsRtl="true"
         android:theme="@style/Theme.PrayerApp"
+        android:launchMode="singleTask"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity

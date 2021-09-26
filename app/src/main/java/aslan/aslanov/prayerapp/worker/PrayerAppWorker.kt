@@ -10,7 +10,10 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager
 import aslan.aslanov.prayerapp.mainService.AlarmReceiver
 import aslan.aslanov.prayerapp.mainService.EXTRA_MESSAGE
 import aslan.aslanov.prayerapp.mainService.EXTRA_TYPE
+import aslan.aslanov.prayerapp.model.surahs.SurahEntity
+import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.repository.PrayerTimingsRepository
+import aslan.aslanov.prayerapp.util.PendingRequests.REQUEST_CODE_AYAHS
 import java.util.*
 
 class PrayerAppWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(
@@ -54,9 +57,9 @@ class PrayerAppWorker(appContext: Context, params: WorkerParameters) : Coroutine
         val random = Random()
         val ayah = ayahs[random.nextInt(ayahs.size)]
         val intent = Intent(applicationContext, AlarmReceiver::class.java)
-        intent.putExtra(EXTRA_TYPE, ayah.surahEnglishName)
+        intent.putExtra(EXTRA_TYPE, AyahsOrSurah.AYAHS.name)
         intent.putExtra(EXTRA_MESSAGE, ayah.text)
-        AlarmReceiver.showAlarmNotification(applicationContext, intent)
+        AlarmReceiver.showAlarmNotification(applicationContext, intent,REQUEST_CODE_AYAHS)
     }
 
 

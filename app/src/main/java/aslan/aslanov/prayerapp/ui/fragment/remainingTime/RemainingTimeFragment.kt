@@ -4,27 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentRemainingTimeBinding
 import aslan.aslanov.prayerapp.mainService.AlarmReceiver
-import aslan.aslanov.prayerapp.mainService.AlarmReceiver.Companion.showAlarmNotification
 import aslan.aslanov.prayerapp.mainService.EXTRA_MESSAGE
-import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
+import aslan.aslanov.prayerapp.mainService.EXTRA_TYPE
 import aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
-import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
+import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.*
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("ResourceType")
@@ -65,8 +60,15 @@ class RemainingTimeFragment : BaseFragment() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    override fun bindUI():Unit= with(bindingFragment) {
-
+    override fun bindUI(): Unit = with(bindingFragment) {
+        textViewNextPrayer.setOnClickListener {
+            val intent = Intent(requireContext(), AlarmReceiver::class.java)
+            intent.putExtra(EXTRA_TYPE, AyahsOrSurah.HADEETHS.name)
+            intent.putExtra(EXTRA_MESSAGE, "REQUEST_CODE_HADEETHS")
+            AlarmReceiver.showAlarmNotification(requireContext(), intent,
+                PendingRequests.REQUEST_CODE_HADEETHS
+            )
+        }
     }
 
     override fun observeData(): Unit = with(viewModel) {
@@ -134,9 +136,6 @@ class RemainingTimeFragment : BaseFragment() {
             }
         })
     }
-
-
-
 
 
     private fun checkRemainingTimeHoursStatus(hashMap: ArrayList<TimingsConverted>) {

@@ -17,5 +17,5 @@ data class WhereWereWe(
     val surahOrAyahs: String
 )
 enum class AyahsOrSurah{
-    AYAHS,HADEETHS
+    AYAHS,HADEETHS,PRAYER
 }
