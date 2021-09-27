@@ -12,5 +12,5 @@ interface WhereWereDAO {
     suspend fun insertWhereWere(vararg whereWereWe: WhereWereWe)
 
     @Query("SELECT * FROM table_where_were WHERE id=:incomeID")
-    suspend fun getWhereWere(incomeID:Int):WhereWereWe
+    suspend fun getWhereWere(incomeID:String):WhereWereWe
 }

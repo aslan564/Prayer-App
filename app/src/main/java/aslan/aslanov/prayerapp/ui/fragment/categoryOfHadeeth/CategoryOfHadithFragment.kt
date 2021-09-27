@@ -45,7 +45,7 @@ class CategoryOfHadithFragment : BaseFragment() {
 
     override fun observeData(): Unit = with(viewModel) {
         if (languageHadeeth == null) {
-            requireContext().makeToast("please select  any language")
+            requireContext().makeToast(getString(R.string.language_quran))
         }
         categoryItem.observe(viewLifecycleOwner, { categoryItem ->
             categoryItem?.let {

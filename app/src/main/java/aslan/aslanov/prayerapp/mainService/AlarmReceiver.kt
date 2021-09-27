@@ -17,7 +17,10 @@ import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.ui.activity.MainActivity
 import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_ID
-import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_COMPAT_ID
+import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_AYAH_ID
+import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_HADEETHS_ID
+import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_PRAYER_ID
+import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_SALAWAT_ID
 import aslan.aslanov.prayerapp.util.PendingRequests.CATCH_REQUEST_CODE_FROM_MAIN
 import aslan.aslanov.prayerapp.util.PendingRequests.REQUEST_CODE_PRAYER_TIME
 import java.lang.Exception
@@ -47,17 +50,25 @@ class AlarmReceiver : BroadcastReceiver() {
         fun showAlarmNotification(context: Context?, intent: Intent?, requestCode: Int) {
             try {
                 var messageTitle = ""
+                var messageChannelId = 0
                 val type = intent?.getStringExtra(EXTRA_TYPE)
                 if (type != null) {
-                    messageTitle = when (type) {
+                     when (type) {
                         AyahsOrSurah.AYAHS.name -> {
-                            type
+                            messageTitle =  type
+                            messageChannelId=NOTIFICATION_MANAGER_AYAH_ID
                         }
                         AyahsOrSurah.HADEETHS.name -> {
-                            type
+                            messageTitle =  type
+                            messageChannelId= NOTIFICATION_MANAGER_HADEETHS_ID
+                        }
+                        AyahsOrSurah.SALAWAT.name -> {
+                            messageTitle = type
+                            messageChannelId= NOTIFICATION_MANAGER_SALAWAT_ID
                         }
                         else -> {
-                            "$type time"
+                            messageTitle =  "$type time"
+                            messageChannelId= NOTIFICATION_MANAGER_PRAYER_ID
                         }
                     }
 
@@ -84,11 +95,12 @@ class AlarmReceiver : BroadcastReceiver() {
                     .setContentText("$message ")
                     .setSound(alarmSound, STREAM_MUSIC)
                     .setAutoCancel(true)
+                    .setVibrate(longArrayOf(100 , 200 , 300 , 400 , 500 , 400 , 300 , 200 , 400))
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(pendingIntent)
                 val notificationCompatManager = NotificationManagerCompat.from(context)
-                notificationCompatManager.notify(NOTIFICATION_MANAGER_COMPAT_ID, builder.build())
+                notificationCompatManager.notify(messageChannelId, builder.build())
 
             } catch (e: Exception) {
                 e.printStackTrace()

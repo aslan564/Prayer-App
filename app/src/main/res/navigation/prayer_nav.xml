@@ -109,6 +109,9 @@
             android:name="surahNum"
             android:defaultValue="0"
             app:argType="integer" />
+        <argument
+            android:name="surahName"
+            app:argType="string" />
     </fragment>
 
 
@@ -131,11 +134,10 @@
         android:id="@+id/navigation_hadeeths"
         android:name="aslan.aslanov.prayerapp.ui.fragment.hadeeths.HadeethsFragment"
         android:label="Hadeeths"
-        tools:layout="@layout/fragment_hadeeths" >
+        tools:layout="@layout/fragment_hadeeths">
         <argument
             android:name="category"
-            app:argType="aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity"
-            />
+            app:argType="aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity" />
     </fragment>
 
 

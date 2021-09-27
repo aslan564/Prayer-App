@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
@@ -61,6 +62,14 @@ class RemainingTimeFragment : BaseFragment() {
 
     @SuppressLint("SimpleDateFormat")
     override fun bindUI(): Unit = with(bindingFragment) {
+        textViewPrayerTime.setOnClickListener {
+            val intent = Intent(requireContext(), AlarmReceiver::class.java)
+            intent.putExtra(EXTRA_TYPE, AyahsOrSurah.SALAWAT.name)
+            intent.putExtra(EXTRA_MESSAGE, "makeSalawat")
+            AlarmReceiver.showAlarmNotification(requireContext(), intent,
+                PendingRequests.REQUEST_CODE_SALAWAT
+            )
+        }
         textViewNextPrayer.setOnClickListener {
             val intent = Intent(requireContext(), AlarmReceiver::class.java)
             intent.putExtra(EXTRA_TYPE, AyahsOrSurah.HADEETHS.name)
@@ -94,8 +103,8 @@ class RemainingTimeFragment : BaseFragment() {
                     )
                     bindingFragment.textViewDailyAyah.setOnClickListener {
                         val action =
-                            RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs()
-                                .setSurahNum(data.surahId)
+                            RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs(data.surahEnglishName)
+                        action.surahNum = data.surahId
                         it.findNavController().navigate(action)
                     }
 

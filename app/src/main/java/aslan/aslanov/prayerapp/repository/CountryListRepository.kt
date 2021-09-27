@@ -38,7 +38,7 @@ class CountryListRepository(private val database: PrayerDatabase) {
         }
     }
 
-    fun getCountryDatabase(): LiveData<List<CountryWithCities>> {
+    suspend fun getCountryDatabase(): List<CountryWithCities> {
         return database.getCountryDao().getCountryWithCities()
     }
 

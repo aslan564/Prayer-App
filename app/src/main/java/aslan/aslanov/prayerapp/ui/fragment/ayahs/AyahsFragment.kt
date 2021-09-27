@@ -3,8 +3,10 @@ package aslan.aslanov.prayerapp.ui.fragment.ayahs
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentAyahsBinding
 import aslan.aslanov.prayerapp.databinding.FragmentCurrentTimeBinding
@@ -44,16 +46,17 @@ class AyahsFragment : BaseFragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun bindUI(): Unit = with(bindingFragment) {
         viewModelSurahName = viewModel
+        requireActivity().onBackPressedDispatcher.addCallback(this@AyahsFragment,onBackPressedCallback)
 
         arguments?.let {
-            val argsSurahNum = AyahsFragmentArgs.fromBundle(it).surahNum
-            viewModel.getWhereWee(argsSurahNum)
+            val surahName = AyahsFragmentArgs.fromBundle(it).surahName
+            val surahNum = AyahsFragmentArgs.fromBundle(it).surahNum
+            viewModel.getWhereWee(surahName)
             if (languageSurah != null) {
-                viewModel.fetchSurahAyahs(argsSurahNum, languageSurah!!)
-                getAndRefreshAyahs(argsSurahNum)
+                getAndRefreshAyahs(surahNum)
             }
             swipeLayoutAyahs.setOnRefreshListener {
-                getAndRefreshAyahs(argsSurahNum)
+                getAndRefreshAyahs(surahNum)
                 swipeLayoutAyahs.isRefreshing = false
             }
         }
@@ -87,10 +90,13 @@ class AyahsFragment : BaseFragment() {
     ): Unit = with(bindingFragment) {
         viewModel.getAyahsFromDatabase(argsSurahNum) { liveData ->
             liveData.observe(viewLifecycleOwner, { ayahs ->
-                ayahs?.let {
-                    logApp(ayahs.toString())
+                if (ayahs!=null) {
+                    if (ayahs.isEmpty()) {
+                        viewModel.fetchSurahAyahs(argsSurahNum, languageSurah!!)
+                        return@observe
+                    }
                     ayahsAdapter =
-                        AyahsAdapter(ayahs) { viewDataBinding, ayah, list, i ->
+                        AyahsAdapter(ayahs) { viewDataBinding, ayah, _, i ->
                             textViewSurahName.text = ayah.surahEnglishName
                             (activity as MainActivity).supportActionBar!!.title =
                                 ayah.surahArabicName
@@ -98,15 +104,17 @@ class AyahsFragment : BaseFragment() {
                                 viewDataBinding.quranItem = ayah
                                 viewDataBinding.executePendingBindings()
                                 whereWereWe = WhereWereWe(
-                                    argsSurahNum,
+                                    ayah.surahEnglishName,
                                     i,
                                     ayah.surahId,
-                                    AyahsOrSurah.HADEETHS.name,
+                                    AyahsOrSurah.AYAHS.name,
+                                    ayah.surahEnglishName
                                 )
                             }
                         }.apply { notifyDataSetChanged() }
                     recyclerViewAyahs.adapter = ayahsAdapter
                 }
+
             })
         }
     }
@@ -115,6 +123,16 @@ class AyahsFragment : BaseFragment() {
         recyclerViewAyahs.postDelayed({
             recyclerViewAyahs.scrollToPosition(position)
         }, 1000)
+    }
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (whereWereWe != null) {
+                viewModel.setWhereWee(whereWereWe!!)
+            }
+            findNavController().popBackStack()
+        }
+
     }
 
     companion object {

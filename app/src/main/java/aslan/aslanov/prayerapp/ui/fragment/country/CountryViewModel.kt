@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import aslan.aslanov.prayerapp.local.PrayerDatabase
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager
+import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
 import aslan.aslanov.prayerapp.model.countryModel.Data
 import aslan.aslanov.prayerapp.repository.CountryListRepository
 import kotlinx.coroutines.launch
@@ -16,7 +17,13 @@ class CountryViewModel(application: Application) : AndroidViewModel(application)
     private val database = PrayerDatabase.getInstance(application)
     private val repository = CountryListRepository(database)
 
-    val country= repository.getCountryDatabase()
+    private var _country = MutableLiveData<List<CountryWithCities>>()
+    val country: LiveData<List<CountryWithCities>>
+        get() = _country
+
+    fun getCountryDatabase() = viewModelScope.launch {
+        _country.value = repository.getCountryDatabase()
+    }
 
 
     private var _stateProgress = MutableLiveData<Boolean>()
@@ -25,8 +32,11 @@ class CountryViewModel(application: Application) : AndroidViewModel(application)
 
     val countryListError = repository.countryListError
 
+    init {
+        getAllCountry()
+    }
 
-    fun getAllCountry() = viewModelScope.launch {
+    private fun getAllCountry() = viewModelScope.launch {
         if (!SharedPreferenceManager.isFirstTime) {
             SharedPreferenceManager.isFirstTime = true
             repository.convertedList { list: List<Data>?, b: Boolean ->

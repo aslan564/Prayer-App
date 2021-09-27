@@ -41,7 +41,7 @@ class AyahsViewModel(application: Application) : AndroidViewModel(application) {
         repositoryWhereWereWe.setPositionFromDatabase(whereWereWe)
     }
 
-    fun getWhereWee(id: Int) = viewModelScope.launch {
+    fun getWhereWee(id: String) = viewModelScope.launch {
         _whereWereWe.value = repositoryWhereWereWe.getPositionFromDatabase(id)
     }
 

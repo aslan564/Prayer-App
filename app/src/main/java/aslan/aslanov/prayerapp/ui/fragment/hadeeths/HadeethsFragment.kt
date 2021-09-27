@@ -44,13 +44,12 @@ class HadeethsFragment : BaseFragment() {
         return bindingFragment.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
-    }
 
     override fun bindUI(): Unit = with(bindingFragment) {
-
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this@HadeethsFragment,
+            backPressedCallback
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -64,7 +63,8 @@ class HadeethsFragment : BaseFragment() {
     override fun observeData(): Unit = with(viewModel) {
         arguments?.let {
             val category = HadeethsFragmentArgs.fromBundle(it).category
-            viewModel.getWhereWee(category.id.toInt())
+            viewModel.getWhereWee(category.title)
+
             (activity as MainActivity).supportActionBar!!.title = category.title
             if (languageHadeeth != null) {
                 addHadith(
@@ -83,10 +83,11 @@ class HadeethsFragment : BaseFragment() {
                             if (viewDataBinding is LayoutItemQuranHadeethBinding) {
                                 viewDataBinding.hadithItem = data
                                 whereWereWe = WhereWereWe(
-                                    data.categoryId,
+                                    data.categoryName,
                                     positionAdapter,
                                     data.id.toInt(),
                                     AyahsOrSurah.HADEETHS.name,
+                                    data.categoryName
                                 )
                             }
                         }

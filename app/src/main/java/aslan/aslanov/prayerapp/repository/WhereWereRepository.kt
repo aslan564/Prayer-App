@@ -14,7 +14,7 @@ class WhereWereRepository(private val database: PrayerDatabase) {
         }
     }
 
-    suspend fun getPositionFromDatabase(id:Int): WhereWereWe? {
+    suspend fun getPositionFromDatabase(id:String): WhereWereWe? {
         return try {
             database.getWhereWere().getWhereWere(id)
         } catch (e: Exception) {

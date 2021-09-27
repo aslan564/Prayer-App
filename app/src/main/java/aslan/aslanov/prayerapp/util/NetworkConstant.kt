@@ -10,5 +10,8 @@ object NetworkConstant {
 }
 object AppConstant {
     const val NOTIFICATION_ID="aslanaslanovprayerapputil"
-    const val NOTIFICATION_MANAGER_COMPAT_ID=123
+    const val NOTIFICATION_MANAGER_AYAH_ID=123
+    const val NOTIFICATION_MANAGER_HADEETHS_ID=223
+    const val NOTIFICATION_MANAGER_SALAWAT_ID=325
+    const val NOTIFICATION_MANAGER_PRAYER_ID=426
 }

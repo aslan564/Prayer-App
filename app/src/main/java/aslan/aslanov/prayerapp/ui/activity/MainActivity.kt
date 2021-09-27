@@ -84,12 +84,6 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         createNotificationChannel()
-        binding.mainActivityContainer.setOnRefreshListener {
-            checkPermissionGetLocation()
-            binding.mainActivityContainer.isRefreshing = false
-        }
-
-
     }
 
     override fun onNewIntent(intent: Intent?) {

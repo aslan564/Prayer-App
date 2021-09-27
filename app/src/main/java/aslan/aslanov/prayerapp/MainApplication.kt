@@ -45,7 +45,7 @@ class MainApplication : Application() {
 
     companion object {
         private const val TAG = "MainApplication"
-        private const val WORK_NAME: String = "aslan.aslanov.prayerapp"
+        private const val WORK_NAME: String = "aslan.aslanov.prayerapp.worker"
         const val WORK_INTENT_HOURS = "workerInputDataHours"
         const val WORK_INTENT_MINUTE = "workerInputDataMinute"
 

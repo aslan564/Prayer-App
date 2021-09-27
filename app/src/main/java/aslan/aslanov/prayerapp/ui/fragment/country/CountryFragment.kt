@@ -15,9 +15,9 @@ import aslan.aslanov.prayerapp.databinding.LayoutItemCountryBinding
 import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
 import aslan.aslanov.prayerapp.ui.fragment.country.adapterCountry.AdapterCountry
 import aslan.aslanov.prayerapp.util.BaseFragment
+import aslan.aslanov.prayerapp.util.addRandomAyahsWithSurah
 
 
-@SuppressLint("ResourceType")
 class CountryFragment : BaseFragment() {
     private val bindingFragment by lazy { FragmentCountryBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<CountryViewModel>()
@@ -31,10 +31,15 @@ class CountryFragment : BaseFragment() {
         return bindingFragment.root
     }
 
+    override fun bindUI(): Unit = with(bindingFragment) {
+        lifecycleOwner = this@CountryFragment
+        swipeLayoutCountry.setOnRefreshListener {
+            viewModel.getCountryDatabase()
+        }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     override fun observeData(): Unit = with(viewModel) {
-        getAllCountry()
-
         countryListError.observe(viewLifecycleOwner, {
             it?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -56,9 +61,8 @@ class CountryFragment : BaseFragment() {
                                     view.findNavController().navigate(action)
                                 }
                             }
-                        }).apply { notifyDataSetChanged() }
+                        })
                 bindingFragment.recyclerViewCountry.adapter = adapterCountry
-
             }
         })
 
@@ -74,8 +78,6 @@ class CountryFragment : BaseFragment() {
         })
     }
 
-    override fun bindUI(): Unit = with(bindingFragment) {
-    }
 
     companion object {
         //private const val TAG = "CountryFragment"

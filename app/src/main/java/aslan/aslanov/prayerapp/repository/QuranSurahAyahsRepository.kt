@@ -43,7 +43,6 @@ class QuranSurahAyahsRepository(private val database: PrayerDatabase) {
                     onCompleteListener(it)
                 }
             }
-
         } catch (e: Exception) {
             onCompleteListener(NetworkResult.error(e.message))
         }
@@ -96,6 +95,7 @@ class QuranSurahAyahsRepository(private val database: PrayerDatabase) {
 
     fun getAyahsFromDatabase(surah: Int, onCompleteListener: (LiveData<List<AyahEntity>>) -> Unit) {
         onCompleteListener(database.getQuranDao().getAyahsFromDatabase(surah))
+        _baseLoadingStatus.postValue(false)
     }
 
 }

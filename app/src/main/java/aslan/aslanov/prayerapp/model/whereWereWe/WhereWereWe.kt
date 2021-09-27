@@ -8,14 +8,17 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "table_where_were")
 data class WhereWereWe(
     @PrimaryKey(autoGenerate = false)
-    val id:Int,
+    val id: String,
     @ColumnInfo(name = "scrollPosition")
     val position: Int,
     @ColumnInfo(name = "categoryId")
     val categoryId: Int,
     @ColumnInfo(name = "surahOrAyahs")
-    val surahOrAyahs: String
+    val surahOrAyahs: String,
+    @ColumnInfo(name = "surahOrAyahsName")
+    val surahOrAyahsName: String
 )
-enum class AyahsOrSurah{
-    AYAHS,HADEETHS,PRAYER
+
+enum class AyahsOrSurah {
+    AYAHS, HADEETHS, PRAYER,SALAWAT
 }

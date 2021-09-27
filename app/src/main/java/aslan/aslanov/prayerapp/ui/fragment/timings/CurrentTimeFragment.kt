@@ -103,18 +103,13 @@ class CurrentTimeFragment : Fragment() {
         if (locationCityName != null && locationCountryName != null) {
             bindingFragment.textViewCityName.text = locationCityName
             bindingFragment.textViewCountryName.text = locationCountryName
-            getTimingsViewModel(
-                locationCityName!!,
-                locationCountryName!!,
-                8
-            )
         }
 
         prayerTimingsLive.observe(viewLifecycleOwner, {
             it?.let {
                 it.createSortedList { list ->
                     adapterCurrent =
-                        CurrentTimeAdapter(list) { viewDataBinding, timingsConverted, _, i ->
+                        CurrentTimeAdapter(list) { viewDataBinding, timingsConverted, _, _ ->
                             if (viewDataBinding is LayoutItemCurrentTimeBinding) {
                                 viewDataBinding.currentPrayerTime = timingsConverted
                                 viewDataBinding.executePendingBindings()

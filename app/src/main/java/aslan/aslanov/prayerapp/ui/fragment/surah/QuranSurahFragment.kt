@@ -64,13 +64,15 @@ class QuranSurahFragment : BaseFragment() {
     override fun observeData(): Unit = with(viewModel) {
         surahs.observe(viewLifecycleOwner, {
             it?.let {
-                quranSurahAdapter = QuranSurahAdapter(it) { viewDataBinding, list, i, surah ->
+                quranSurahAdapter = QuranSurahAdapter(it) { viewDataBinding, _, _, surah ->
                     if (viewDataBinding is LayoutItemQuranSurahsBinding) {
                         viewDataBinding.quranItem = surah
                         viewDataBinding.root.setOnClickListener { v ->
                             if (languageSurah != null) {
                                 val action =
-                                    QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranAyahs()
+                                    QuranSurahFragmentDirections.actionNavigationQuranToNavigationQuranAyahs(
+                                        surah.englishName
+                                    )
                                 action.surahNum = surah.number
                                 v.findNavController().navigate(action)
                             } else {
