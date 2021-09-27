@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -15,6 +16,8 @@ import aslan.aslanov.prayerapp.databinding.FragmentRemainingTimeBinding
 import aslan.aslanov.prayerapp.mainService.AlarmReceiver
 import aslan.aslanov.prayerapp.mainService.EXTRA_MESSAGE
 import aslan.aslanov.prayerapp.mainService.EXTRA_TYPE
+import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
+import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
 import aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
@@ -29,6 +32,8 @@ class RemainingTimeFragment : BaseFragment() {
     private val bindingFragment by lazy { FragmentRemainingTimeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<RemainingViewModel>()
     private var currentDate = Calendar.getInstance()
+    private lateinit var randomAyahRemaining:AyahEntity
+    private lateinit var randomHadeethsRemaining:HadeethsEntity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,21 +67,25 @@ class RemainingTimeFragment : BaseFragment() {
 
     @SuppressLint("SimpleDateFormat")
     override fun bindUI(): Unit = with(bindingFragment) {
-        textViewPrayerTime.setOnClickListener {
-            val intent = Intent(requireContext(), AlarmReceiver::class.java)
-            intent.putExtra(EXTRA_TYPE, AyahsOrSurah.SALAWAT.name)
-            intent.putExtra(EXTRA_MESSAGE, "makeSalawat")
-            AlarmReceiver.showAlarmNotification(requireContext(), intent,
-                PendingRequests.REQUEST_CODE_SALAWAT
-            )
+        imageViewShareHadeeths.setOnClickListener {
+            share(randomHadeethsRemaining.categoryName, randomHadeethsRemaining.title, randomHadeethsRemaining.id,
+                { intent: Intent ->
+                    startActivity(Intent.createChooser(intent, null))
+                }, { b: Boolean ->
+                    requireActivity().runOnUiThread {
+                        progressBar.isVisible=b
+                    }
+                })
         }
-        textViewNextPrayer.setOnClickListener {
-            val intent = Intent(requireContext(), AlarmReceiver::class.java)
-            intent.putExtra(EXTRA_TYPE, AyahsOrSurah.HADEETHS.name)
-            intent.putExtra(EXTRA_MESSAGE, "REQUEST_CODE_HADEETHS")
-            AlarmReceiver.showAlarmNotification(requireContext(), intent,
-                PendingRequests.REQUEST_CODE_HADEETHS
-            )
+        imageViewShareAyah.setOnClickListener {
+            share(randomAyahRemaining.surahEnglishName, randomAyahRemaining.text, randomAyahRemaining.number.toString(),
+                { intent: Intent ->
+                    startActivity(Intent.createChooser(intent, null))
+                }, { b: Boolean ->
+                    requireActivity().runOnUiThread {
+                        progressBar.isVisible=b
+                    }
+                })
         }
     }
 
@@ -94,17 +103,19 @@ class RemainingTimeFragment : BaseFragment() {
             ayahs?.let {
                 if (ayahs.isNotEmpty()) {
                     val random = Random()
-                    val data = ayahs[random.nextInt(ayahs.size)]
+                    randomAyahRemaining = ayahs[random.nextInt(ayahs.size)]
                     bindingFragment.textViewDailyAyah.text = addRandomAyahsWithSurah(
-                        data.number.toString(),
-                        data.surahEnglishName,
-                        data.surahArabicName,
-                        data.text
+                        randomAyahRemaining.number.toString(),
+                        randomAyahRemaining.surahEnglishName,
+                        randomAyahRemaining.surahArabicName,
+                        randomAyahRemaining.text
                     )
                     bindingFragment.textViewDailyAyah.setOnClickListener {
                         val action =
-                            RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs(data.surahEnglishName)
-                        action.surahNum = data.surahId
+                            RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs(
+                                randomAyahRemaining.surahEnglishName
+                            )
+                        action.surahNum = randomAyahRemaining.surahId
                         it.findNavController().navigate(action)
                     }
 
@@ -118,19 +129,19 @@ class RemainingTimeFragment : BaseFragment() {
             hadeeths?.let {
                 if (hadeeths.isNotEmpty()) {
                     val random = Random()
-                    val data = hadeeths[random.nextInt(hadeeths.size)]
+                     randomHadeethsRemaining = hadeeths[random.nextInt(hadeeths.size)]
                     bindingFragment.textViewDailyHadeeths.text = addRandomAyahsWithSurah(
-                        data.id,
-                        data.categoryId.toString(),
-                        data.categoryName,
-                        data.title
+                        randomHadeethsRemaining.id,
+                        randomHadeethsRemaining.categoryId.toString(),
+                        randomHadeethsRemaining.categoryName,
+                        randomHadeethsRemaining.title
                     )
                     bindingFragment.textViewDailyHadeeths.setOnClickListener {
                         val category = CategoryEntity(
                             hadeeths.size.toString(),
-                            data.categoryId.toString(),
+                            randomHadeethsRemaining.categoryId.toString(),
                             "",
-                            data.categoryName
+                            randomHadeethsRemaining.categoryName
                         )
                         val action =
                             RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationHadeeths(

@@ -1,14 +1,21 @@
 package aslan.aslanov.prayerapp.util
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 import aslan.aslanov.prayerapp.network.NetworkResult
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import java.text.SimpleDateFormat
@@ -161,6 +168,21 @@ fun Context.makeToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
+fun View.makeDialog(context: Context, isComplete: (Boolean) -> Unit) {
+    val dialog = AlertDialog.Builder(context)
+    dialog.setTitle(context.getString(R.string.share_content))
+    dialog.setPositiveButton(context.getString(R.string.share)) { dialogInterface, i ->
+        isComplete.invoke(true)
+        dialogInterface.dismiss()
+    }
+    dialog.setNegativeButton(context.getString(R.string.cancel)) { dialogInterface, i ->
+        isComplete.invoke(false)
+        dialogInterface.dismiss()
+    }
+    dialog.setCancelable(false)
+    dialog.show()
+}
+
 fun TimingsEntity.createSortedList(
     onComplete: (ArrayList<TimingsConverted>) -> Unit
 ) {
@@ -188,3 +210,24 @@ fun addRandomAyahsWithSurah(
 ): String {
     return "$number / $englishName / ${arabicName}\n\n${text}"
 }
+
+fun share(
+    title: String,
+    desc: String,
+    surahNum: String,
+    callback: (Intent) -> Unit,
+    visibleCallback: (Boolean) -> Unit
+) {
+    visibleCallback.invoke(true)
+    Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, "$title $surahNum\n \n$desc")
+        type = "text/*"
+        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        visibleCallback.invoke(false)
+        callback.invoke(this)
+    }
+
+}
+
+//"Momsco İçeriğine Göz At!\\n$title\\n$desc\\n\\n$shareUrl")

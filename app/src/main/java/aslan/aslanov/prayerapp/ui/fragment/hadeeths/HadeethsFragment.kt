@@ -1,12 +1,14 @@
 package aslan.aslanov.prayerapp.ui.fragment.hadeeths
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
+import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,13 +18,13 @@ import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentHadeethsBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranHadeethBinding
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
+import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
 import aslan.aslanov.prayerapp.ui.activity.MainActivity
 import aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter.HadeethsAdapter
-import aslan.aslanov.prayerapp.util.BaseFragment
-import aslan.aslanov.prayerapp.util.logApp
-import aslan.aslanov.prayerapp.util.makeToast
+import aslan.aslanov.prayerapp.util.*
+import com.google.android.material.snackbar.Snackbar
 import kotlin.reflect.cast
 
 
@@ -82,6 +84,7 @@ class HadeethsFragment : BaseFragment() {
                         HadeethsAdapter(res) { viewDataBinding, data, _, positionAdapter ->
                             if (viewDataBinding is LayoutItemQuranHadeethBinding) {
                                 viewDataBinding.hadithItem = data
+
                                 whereWereWe = WhereWereWe(
                                     data.categoryName,
                                     positionAdapter,
@@ -89,6 +92,26 @@ class HadeethsFragment : BaseFragment() {
                                     AyahsOrSurah.HADEETHS.name,
                                     data.categoryName
                                 )
+                                viewDataBinding.root.setOnClickListener { view ->
+                                    view.makeDialog(requireContext()) { state ->
+                                        if (state) {
+                                            share(data.categoryName, data.title, data.id,
+                                                { intent: Intent ->
+                                                    startActivity(
+                                                        Intent.createChooser(
+                                                            intent,
+                                                            null
+                                                        )
+                                                    )
+                                                }, { b: Boolean ->
+                                                    requireActivity().runOnUiThread {
+                                                        bindingFragment.progressBarHadith.isVisible =
+                                                            b
+                                                    }
+                                                })
+                                        }
+                                    }
+                                }
                             }
                         }
                     bindingFragment.recyclerViewHadeeths.adapter = adapterHadeeths

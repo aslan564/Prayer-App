@@ -57,7 +57,7 @@
                     android:textAppearance="@style/TextColumnSubHeader" />
             </LinearLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -73,7 +73,7 @@
                     android:progressDrawable="@drawable/bg_custome_progres"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_prayer_remaining" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/text_view_daily_ayah"
@@ -84,7 +84,9 @@
                     android:maxLines="13"
                     android:text="@string/ayah_text"
                     android:textAppearance="@style/TextColumnHeader"
-                    tools:ignore="TextContrastCheck" />
+                    app:layout_constraintTop_toBottomOf="@+id/content_loading_progress"
+                    tools:ignore="TextContrastCheck"
+                    tools:layout_editor_absoluteX="10dp" />
 
                 <TextView
                     android:id="@+id/text_view_daily_hadeeths"
@@ -93,10 +95,33 @@
                     android:layout_marginVertical="@dimen/margin_10dp"
                     android:background="@drawable/bg_text_country"
                     android:maxLines="13"
+                    app:layout_constraintTop_toBottomOf="@+id/text_view_daily_ayah"
                     android:text="@string/ayah_text"
                     android:textAppearance="@style/TextColumnHeader"
                     tools:ignore="TextContrastCheck" />
-            </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/image_view_share_ayah"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_2dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/share"
+                    app:layout_constraintEnd_toEndOf="@+id/text_view_daily_ayah"
+                    app:layout_constraintTop_toTopOf="@+id/text_view_daily_ayah"
+                    app:srcCompat="@android:drawable/ic_menu_share" />
+                <ImageView
+                    android:id="@+id/image_view_share_hadeeths"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_2dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/share"
+                    app:layout_constraintEnd_toEndOf="@+id/text_view_daily_hadeeths"
+                    app:layout_constraintTop_toTopOf="@+id/text_view_daily_hadeeths"
+                    app:srcCompat="@android:drawable/ic_menu_share" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ProgressBar
                 android:id="@+id/progressBar"
