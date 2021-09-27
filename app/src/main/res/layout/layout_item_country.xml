@@ -31,7 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginBottom="@dimen/small_2dp"
-            tools:text="@string/calendar" />
+            tools:text="@string/text_view_country" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/prayer_nav"
     app:startDestination="@id/navigation_remaining_time">
+
+    <action
+        android:id="@+id/action_to_navigate_to_settings"
+        app:destination="@+id/navigation_settings" />
+
     <fragment
         android:id="@+id/navigation_remaining_time"
         android:name="aslan.aslanov.prayerapp.ui.fragment.remainingTime.RemainingTimeFragment"
@@ -16,6 +21,7 @@
             android:id="@+id/action_navigation_remaining_time_to_navigation_hadeeths"
             app:destination="@id/navigation_hadeeths" />
     </fragment>
+
     <fragment
         android:id="@+id/navigation_prayer_time"
         android:name="aslan.aslanov.prayerapp.ui.fragment.timings.CurrentTimeFragment"
@@ -36,23 +42,22 @@
         android:name="aslan.aslanov.prayerapp.ui.fragment.events.EventsFragment"
         android:label="Prayer Calendar"
         tools:layout="@layout/fragment_events" />
-    <action
-        android:id="@+id/action_to_navigate_to_settings"
-        app:destination="@+id/navigation_settings" />
+
     <fragment
         android:id="@+id/navigation_settings"
         android:name="aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings">
-        <action
-            android:id="@+id/action_settings_to_country"
-            app:destination="@+id/navigation_country" />
+
         <action
             android:id="@+id/action_settings_to_quran"
             app:destination="@+id/navigation_quran" />
         <action
             android:id="@+id/action_navigation_settings_to_navigation_hadeeths_category"
             app:destination="@id/navigation_hadeeths_category" />
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_country"
+            app:destination="@id/navigation_country" />
     </fragment>
 
     <fragment
@@ -61,8 +66,8 @@
         android:label="Country"
         tools:layout="@layout/fragment_country">
         <action
-            android:id="@+id/action_country_to_city_fragment"
-            app:destination="@+id/navigation_city" />
+            android:id="@+id/action_navigation_country_to_navigation_city"
+            app:destination="@id/navigation_city" />
     </fragment>
     <fragment
         android:id="@+id/navigation_city"

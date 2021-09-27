@@ -28,4 +28,7 @@
     <string name="others">Digərləri</string>
     <string name="language_quran">Please select any language</string>
     <string name="hadeeths">Hadeeths</string>
+    <string name="share" translatable="false">Share</string>
+    <string name="cancel" translatable="false">Cancel</string>
+    <string name="share_content" translatable="false">Are you sure you want to share?</string>
 </resources>

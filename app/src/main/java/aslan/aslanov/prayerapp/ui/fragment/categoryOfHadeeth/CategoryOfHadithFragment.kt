@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
@@ -17,7 +18,7 @@ import aslan.aslanov.prayerapp.util.logApp
 import aslan.aslanov.prayerapp.util.makeToast
 
 @SuppressLint("ResourceType")
-class CategoryOfHadithFragment : BaseFragment() {
+class CategoryOfHadithFragment : Fragment() {
 
     private val bindingFragment by lazy { FragmentCategoryOfHadithBinding.inflate(layoutInflater) }
     private lateinit var adapter: HadithCategoryAdapter
@@ -31,10 +32,18 @@ class CategoryOfHadithFragment : BaseFragment() {
         return bindingFragment.root
     }
 
-    override fun bindUI(): Unit = with(bindingFragment) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindUI()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        observeData()
+    }
+    private fun bindUI(): Unit = with(bindingFragment) {
         setHasOptionsMenu(true)
         requireActivity().onBackPressedDispatcher.addCallback(
-            this@CategoryOfHadithFragment,
             onBackPressedCallback
         )
         swipeLayoutHadithCategory.setOnRefreshListener {
@@ -43,7 +52,7 @@ class CategoryOfHadithFragment : BaseFragment() {
         }
     }
 
-    override fun observeData(): Unit = with(viewModel) {
+    private fun observeData(): Unit = with(viewModel) {
         if (languageHadeeth == null) {
             requireContext().makeToast(getString(R.string.language_quran))
         }

@@ -7,24 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.core.view.isVisible
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentHadeethsBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranHadeethBinding
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
-import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
 import aslan.aslanov.prayerapp.ui.activity.MainActivity
 import aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter.HadeethsAdapter
 import aslan.aslanov.prayerapp.util.*
-import com.google.android.material.snackbar.Snackbar
 import kotlin.reflect.cast
 
 
@@ -92,8 +87,8 @@ class HadeethsFragment : BaseFragment() {
                                     AyahsOrSurah.HADEETHS.name,
                                     data.categoryName
                                 )
-                                viewDataBinding.root.setOnClickListener { view ->
-                                    view.makeDialog(requireContext()) { state ->
+                                viewDataBinding.root.setOnClickListener {
+                                    makeDialog(requireContext()) { state ->
                                         if (state) {
                                             share(data.categoryName, data.title, data.id,
                                                 { intent: Intent ->

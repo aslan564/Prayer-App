@@ -31,4 +31,7 @@
     <string name="others" translatable="false">Digərləri</string>
     <string name="language_quran" translatable="false">Zəhmət olmasa hər hansı bir dili seçin</string>
     <string name="hadeeths" translatable="false">Hədislər</string>
+    <string name="share" translatable="false">Paylaşın</string>
+    <string name="cancel" translatable="false">Ləğv et</string>
+    <string name="share_content" translatable="false">Paylaşmaq istədiyinizə əminsiniz?</string>
 </resources>

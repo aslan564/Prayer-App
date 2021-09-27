@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import aslan.aslanov.prayerapp.R
@@ -18,7 +19,7 @@ import aslan.aslanov.prayerapp.util.BaseFragment
 import aslan.aslanov.prayerapp.util.addRandomAyahsWithSurah
 
 
-class CountryFragment : BaseFragment() {
+class CountryFragment : Fragment() {
     private val bindingFragment by lazy { FragmentCountryBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<CountryViewModel>()
     private var adapterCountry: AdapterCountry? = null
@@ -27,19 +28,26 @@ class CountryFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return bindingFragment.root
+    ): View = bindingFragment.root
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindUI()
     }
 
-    override fun bindUI(): Unit = with(bindingFragment) {
-        lifecycleOwner = this@CountryFragment
-        swipeLayoutCountry.setOnRefreshListener {
+    override fun onStart() {
+        super.onStart()
+        observeData()
+    }
+
+    private fun bindUI(): Unit = with(bindingFragment) {
+        bindingFragment.swipeLayoutCountry.setOnRefreshListener {
             viewModel.getCountryDatabase()
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun observeData(): Unit = with(viewModel) {
+    private fun observeData(): Unit = with(viewModel) {
         countryListError.observe(viewLifecycleOwner, {
             it?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -56,7 +64,7 @@ class CountryFragment : BaseFragment() {
                                 viewDataBinding.countryItem = list[i].country
                                 viewDataBinding.root.setOnClickListener { view ->
                                     val action =
-                                        CountryFragmentDirections.actionCountryToCityFragment()
+                                        CountryFragmentDirections.actionNavigationCountryToNavigationCity()
                                             .setCountryName(item.country.country)
                                     view.findNavController().navigate(action)
                                 }

@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentSettingsBinding
 import aslan.aslanov.prayerapp.util.BaseFragment
@@ -36,17 +37,17 @@ class SettingsFragment : BaseFragment() {
 
     override fun bindUI(): Unit = with(bindingFragment) {
         textViewCountry.setOnClickListener {
-            val action = SettingsFragmentDirections.actionSettingsToCountry()
-            it?.findNavController()?.navigate(action)
+            val action = SettingsFragmentDirections.actionNavigationSettingsToNavigationCountry()
+            findNavController().navigate(action)
         }
         textViewQuran.setOnClickListener {
             val action = SettingsFragmentDirections.actionSettingsToQuran()
-            it?.findNavController()?.navigate(action)
+            findNavController().navigate(action)
         }
         textViewHadeeths.setOnClickListener {
             val action =
                 SettingsFragmentDirections.actionNavigationSettingsToNavigationHadeethsCategory()
-            it?.findNavController()?.navigate(action)
+            findNavController().navigate(action)
         }
     }
 
