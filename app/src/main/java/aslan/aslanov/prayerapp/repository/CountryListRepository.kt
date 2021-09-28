@@ -19,6 +19,10 @@ class CountryListRepository(private val database: PrayerDatabase) {
     val countryListError: LiveData<String>
         get() = _countryListError
 
+    private var _stateProgress = MutableLiveData(true)
+    val uiState: LiveData<Boolean>
+        get() = _stateProgress
+
 
     private suspend fun getAllCountry(onCompletionListener: (NetworkResult<CountryResponse>) -> Unit) {
         try {
@@ -38,7 +42,8 @@ class CountryListRepository(private val database: PrayerDatabase) {
         }
     }
 
-    suspend fun getCountryDatabase(): List<CountryWithCities> {
+    fun getCountryDatabase(): LiveData<List<CountryWithCities>> {
+        _stateProgress.postValue(false)
         return database.getCountryDao().getCountryWithCities()
     }
 
@@ -60,6 +65,7 @@ class CountryListRepository(private val database: PrayerDatabase) {
                                         )
                                     )
                                 }
+                                _stateProgress.postValue(false)
                             }
                         }
                     }
@@ -67,10 +73,12 @@ class CountryListRepository(private val database: PrayerDatabase) {
                         res.msg?.let {
                             _countryListError.value = it
                             onCompletionListener(null, false)
+                            _stateProgress.postValue(false)
                         }
                     }
                     Status.LOADING -> {
                         onCompletionListener(null, true)
+                        _stateProgress.postValue(true)
                     }
                 }
 

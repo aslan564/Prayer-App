@@ -5,22 +5,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import aslan.aslanov.prayerapp.R
-import aslan.aslanov.prayerapp.databinding.FragmentCountryBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import aslan.aslanov.prayerapp.databinding.FragmentCountriesBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemCountryBinding
 import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
 import aslan.aslanov.prayerapp.ui.fragment.country.adapterCountry.AdapterCountry
 import aslan.aslanov.prayerapp.util.BaseFragment
-import aslan.aslanov.prayerapp.util.addRandomAyahsWithSurah
+import aslan.aslanov.prayerapp.util.makeToast
 
 
-class CountryFragment : Fragment() {
-    private val bindingFragment by lazy { FragmentCountryBinding.inflate(layoutInflater) }
+class CountryFragment : BaseFragment() {
+    private val bindingFragment by lazy { FragmentCountriesBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<CountryViewModel>()
     private var adapterCountry: AdapterCountry? = null
 
@@ -30,27 +29,20 @@ class CountryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = bindingFragment.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bindUI()
-    }
 
-    override fun onStart() {
-        super.onStart()
-        observeData()
-    }
-
-    private fun bindUI(): Unit = with(bindingFragment) {
-        bindingFragment.swipeLayoutCountry.setOnRefreshListener {
-            viewModel.getCountryDatabase()
+    override fun bindUI(): Unit = with(bindingFragment) {
+        swipeLayoutCountryTest.setOnRefreshListener {
+            viewModel.getAllCountry()
+            swipeLayoutCountryTest.isRefreshing = false
         }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun observeData(): Unit = with(viewModel) {
+    override fun observeData(): Unit = with(viewModel) {
         countryListError.observe(viewLifecycleOwner, {
             it?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                requireContext().makeToast(it)
             }
         })
 
@@ -70,7 +62,10 @@ class CountryFragment : Fragment() {
                                 }
                             }
                         })
-                bindingFragment.recyclerViewCountry.adapter = adapterCountry
+                bindingFragment.recyclerViewCountryTest.apply {
+                    layoutManager = LinearLayoutManager(requireContext())
+                    adapter = adapterCountry
+                }
             }
         })
 

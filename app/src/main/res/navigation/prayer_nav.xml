@@ -64,7 +64,7 @@
         android:id="@+id/navigation_country"
         android:name="aslan.aslanov.prayerapp.ui.fragment.country.CountryFragment"
         android:label="Country"
-        tools:layout="@layout/fragment_country">
+        tools:layout="@layout/fragment_countries">
         <action
             android:id="@+id/action_navigation_country_to_navigation_city"
             app:destination="@id/navigation_city" />

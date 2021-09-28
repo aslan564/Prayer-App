@@ -8,6 +8,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCategoryOfHadithBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranHadeethCategoryBinding
@@ -21,7 +22,7 @@ import aslan.aslanov.prayerapp.util.makeToast
 class CategoryOfHadithFragment : Fragment() {
 
     private val bindingFragment by lazy { FragmentCategoryOfHadithBinding.inflate(layoutInflater) }
-    private lateinit var adapter: HadithCategoryAdapter
+    private lateinit var adapterHadith: HadithCategoryAdapter
     private val viewModel by viewModels<HadithCategoryViewModel>()
 
     override fun onCreateView(
@@ -58,7 +59,7 @@ class CategoryOfHadithFragment : Fragment() {
         }
         categoryItem.observe(viewLifecycleOwner, { categoryItem ->
             categoryItem?.let {
-                adapter =
+                adapterHadith =
                     HadithCategoryAdapter(categoryItem) { viewDataBinding, categoryItem, _, _ ->
                         if (viewDataBinding is LayoutItemQuranHadeethCategoryBinding) {
                             viewDataBinding.categoryItem = categoryItem
@@ -72,7 +73,10 @@ class CategoryOfHadithFragment : Fragment() {
                             }
                         }
                     }
-                bindingFragment.recyclerViewHadeethsCategory.adapter = adapter
+                bindingFragment.recyclerViewHadeethsCategory.apply {
+                    layoutManager=LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+                    adapter = adapterHadith
+                }
             } ?: requireContext().makeToast("please swipe layout")
         })
         error.observe(viewLifecycleOwner, {
