@@ -19,7 +19,11 @@ import aslan.aslanov.prayerapp.util.BaseFragment
 class CalendarFragment : BaseFragment() {
     private val bindingFragment by lazy { FragmentCalendarBinding.inflate(layoutInflater) }
     private val factory by lazy { ViewModelFactory(requireContext()) }
-    private val viewModel by  lazy { ViewModelProvider(requireActivity(),factory).get(CalendarViewModel::class.java) }
+    private val viewModel by lazy {
+        ViewModelProvider(requireActivity(), factory).get(
+            CalendarViewModel::class.java
+        )
+    }
     private val adapterCalendarFragment by lazy {
         CalendarAdapter { viewDataBinding, data ->
             if (viewDataBinding is LayoutCalendarItemBinding) {
@@ -27,6 +31,7 @@ class CalendarFragment : BaseFragment() {
             }
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,10 +39,12 @@ class CalendarFragment : BaseFragment() {
     ): View {
         return bindingFragment.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
     }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.settings_menu, menu)
     }
@@ -53,14 +60,13 @@ class CalendarFragment : BaseFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun bindUI():Unit= with(bindingFragment) {
+    override fun bindUI(): Unit = with(bindingFragment) {
 
 
-
-            recyclerViewCalendar.apply {
-                adapter=adapterCalendarFragment
-            }
-            viewModel.getMonthTimingByCity()
+        recyclerViewCalendar.apply {
+            adapter = adapterCalendarFragment
+        }
+        viewModel.getMonthTimingByCity()
     }
 
     override fun observeData(): Unit = with(viewModel) {
@@ -71,7 +77,11 @@ class CalendarFragment : BaseFragment() {
         })
         viewModel.errorMessage.observe(viewLifecycleOwner, {
             it?.let {
-                android.widget.Toast.makeText(requireContext(), it, android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    it,
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
             }
         })
 
