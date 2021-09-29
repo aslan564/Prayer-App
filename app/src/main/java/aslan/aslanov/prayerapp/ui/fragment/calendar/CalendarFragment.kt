@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCalendarBinding
 import aslan.aslanov.prayerapp.databinding.LayoutCalendarItemBinding
+import aslan.aslanov.prayerapp.ui.activity.ViewModelFactory
 import aslan.aslanov.prayerapp.ui.fragment.calendar.adapter.CalendarAdapter
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.BaseFragment
@@ -16,7 +18,8 @@ import aslan.aslanov.prayerapp.util.BaseFragment
 @SuppressLint("ResourceType")
 class CalendarFragment : BaseFragment() {
     private val bindingFragment by lazy { FragmentCalendarBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<CalendarViewModel>()
+    private val factory by lazy { ViewModelFactory(requireContext()) }
+    private val viewModel by  lazy { ViewModelProvider(requireActivity(),factory).get(CalendarViewModel::class.java) }
     private val adapterCalendarFragment by lazy {
         CalendarAdapter { viewDataBinding, data ->
             if (viewDataBinding is LayoutCalendarItemBinding) {
