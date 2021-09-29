@@ -53,32 +53,32 @@ class AlarmReceiver : BroadcastReceiver() {
                 var messageChannelId = 0
                 val type = intent?.getStringExtra(EXTRA_TYPE)
                 if (type != null) {
-                     when (type) {
+                    when (type) {
                         AyahsOrSurah.AYAHS.name -> {
-                            messageTitle =  type
-                            messageChannelId=NOTIFICATION_MANAGER_AYAH_ID
+                            messageTitle = type
+                            messageChannelId = NOTIFICATION_MANAGER_AYAH_ID
                         }
                         AyahsOrSurah.HADEETHS.name -> {
-                            messageTitle =  type
-                            messageChannelId= NOTIFICATION_MANAGER_HADEETHS_ID
+                            messageTitle = type
+                            messageChannelId = NOTIFICATION_MANAGER_HADEETHS_ID
                         }
                         AyahsOrSurah.SALAWAT.name -> {
                             messageTitle = type
-                            messageChannelId= NOTIFICATION_MANAGER_SALAWAT_ID
+                            messageChannelId = NOTIFICATION_MANAGER_SALAWAT_ID
                         }
                         else -> {
-                            messageTitle =  "$type time"
-                            messageChannelId= NOTIFICATION_MANAGER_PRAYER_ID
+                            messageTitle = "$type time"
+                            messageChannelId = NOTIFICATION_MANAGER_PRAYER_ID
                         }
                     }
 
                 }
 
                 val message = intent?.getStringExtra(EXTRA_MESSAGE)
-                val intentMainActivity = Intent(context, MainActivity::class.java)
-                intentMainActivity.flags =
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                intentMainActivity.putExtra(CATCH_REQUEST_CODE_FROM_MAIN, requestCode)
+                val intentMainActivity = Intent(context, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    putExtra(CATCH_REQUEST_CODE_FROM_MAIN, requestCode)
+                }
                 val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
 
 
@@ -92,12 +92,13 @@ class AlarmReceiver : BroadcastReceiver() {
                 val builder = NotificationCompat.Builder(context!!, NOTIFICATION_ID)
                     .setSmallIcon(R.drawable.ic_mosque)
                     .setContentTitle(messageTitle)
-                    .setContentText("$message ")
+                    .setContentText(message)
                     .setSound(alarmSound, STREAM_MUSIC)
                     .setAutoCancel(true)
-                    .setVibrate(longArrayOf(100 , 200 , 300 , 400 , 500 , 400 , 300 , 200 , 400))
+                    .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400))
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setStyle(NotificationCompat.BigTextStyle().bigText(message))
                     .setContentIntent(pendingIntent)
                 val notificationCompatManager = NotificationManagerCompat.from(context)
                 notificationCompatManager.notify(messageChannelId, builder.build())

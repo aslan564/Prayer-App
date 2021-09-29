@@ -34,4 +34,6 @@
     <string name="share" translatable="false">Paylaşın</string>
     <string name="cancel" translatable="false">Ləğv et</string>
     <string name="share_content" translatable="false">Paylaşmaq istədiyinizə əminsiniz?</string>
+    <string name="providerOrNetwork">şəbəkə və ya provayder aktiv deyil</string>
+    <string name="illegalArgument">Viewmodel qurmaq olmur</string>
 </resources>

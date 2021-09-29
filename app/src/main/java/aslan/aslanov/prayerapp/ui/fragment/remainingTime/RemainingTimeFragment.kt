@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
+import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentRemainingTimeBinding
@@ -23,6 +21,8 @@ import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.*
+import aslan.aslanov.prayerapp.util.PendingRequests.REQUEST_CODE_AYAHS
+import aslan.aslanov.prayerapp.util.PendingRequests.REQUEST_CODE_HADEETHS
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -32,8 +32,10 @@ class RemainingTimeFragment : BaseFragment() {
     private val bindingFragment by lazy { FragmentRemainingTimeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<RemainingViewModel>()
     private var currentDate = Calendar.getInstance()
-    private lateinit var randomAyahRemaining:AyahEntity
-    private lateinit var randomHadeethsRemaining:HadeethsEntity
+    private lateinit var randomAyahRemaining: AyahEntity
+    private lateinit var randomHadeethsRemaining: HadeethsEntity
+    private lateinit var category: CategoryEntity
+    private lateinit var code: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,30 +62,71 @@ class RemainingTimeFragment : BaseFragment() {
                 val action = SettingsFragmentDirections.actionToNavigateToSettings()
                 findNavController().navigate(action)
             }
-
         }
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onStart() {
+        super.onStart()
+        code =
+            requireActivity().intent.extras?.get(PendingRequests.CATCH_REQUEST_CODE_FROM_MAIN)
+                .toString()
+        getSpecificFragment()
+
+    }
+
     @SuppressLint("SimpleDateFormat")
     override fun bindUI(): Unit = with(bindingFragment) {
+        bindingFragment.textViewDailyHadeeths.setOnClickListener {
+            navigateFragment(REQUEST_CODE_HADEETHS)
+        }
+        bindingFragment.textViewDailyAyah.setOnClickListener {
+            navigateFragment(REQUEST_CODE_AYAHS)
+        }
+
+        textViewNextPrayer.setOnClickListener {
+            val intent = Intent(requireContext(), AlarmReceiver::class.java)
+            intent.putExtra(EXTRA_TYPE, AyahsOrSurah.AYAHS.name)
+            intent.putExtra(EXTRA_MESSAGE, randomAyahRemaining.text)
+            AlarmReceiver.showAlarmNotification(
+                requireContext(),
+                intent,
+                REQUEST_CODE_AYAHS
+            )
+        }
+        textViewPrayerTime.setOnClickListener {
+            val intent = Intent(requireContext(), AlarmReceiver::class.java)
+            intent.putExtra(EXTRA_TYPE, AyahsOrSurah.HADEETHS.name)
+            intent.putExtra(EXTRA_MESSAGE, randomHadeethsRemaining.title)
+            AlarmReceiver.showAlarmNotification(
+                requireContext(),
+                intent,
+                REQUEST_CODE_HADEETHS
+            )
+        }
         imageViewShareHadeeths.setOnClickListener {
-            share(randomHadeethsRemaining.categoryName, randomHadeethsRemaining.title, randomHadeethsRemaining.id,
+            share(randomHadeethsRemaining.categoryName,
+                randomHadeethsRemaining.title,
+                randomHadeethsRemaining.id,
                 { intent: Intent ->
                     startActivity(Intent.createChooser(intent, null))
-                }, { b: Boolean ->
+                },
+                { b: Boolean ->
                     requireActivity().runOnUiThread {
-                        progressBar.isVisible=b
+                        //progressBar.isVisible=b
                     }
                 })
         }
         imageViewShareAyah.setOnClickListener {
-            share(randomAyahRemaining.surahEnglishName, randomAyahRemaining.text, randomAyahRemaining.number.toString(),
+            share(randomAyahRemaining.surahEnglishName,
+                randomAyahRemaining.text,
+                randomAyahRemaining.number.toString(),
                 { intent: Intent ->
                     startActivity(Intent.createChooser(intent, null))
-                }, { b: Boolean ->
+                },
+                { b: Boolean ->
                     requireActivity().runOnUiThread {
-                        progressBar.isVisible=b
+                        //progressBar.isVisible=b
                     }
                 })
         }
@@ -92,7 +135,6 @@ class RemainingTimeFragment : BaseFragment() {
     override fun observeData(): Unit = with(viewModel) {
         currentTime.observe(viewLifecycleOwner, { time ->
             time?.let {
-                bindingFragment.progressBar.visibility = View.GONE
                 it.createSortedList { list ->
                     checkRemainingTimeHoursStatus(list)
                 }
@@ -110,14 +152,6 @@ class RemainingTimeFragment : BaseFragment() {
                         randomAyahRemaining.surahArabicName,
                         randomAyahRemaining.text
                     )
-                    bindingFragment.textViewDailyAyah.setOnClickListener {
-                        val action =
-                            RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs(
-                                randomAyahRemaining.surahEnglishName
-                            )
-                        action.surahNum = randomAyahRemaining.surahId
-                        it.findNavController().navigate(action)
-                    }
 
                 } else {
                     bindingFragment.textViewDailyAyah.text = getString(R.string.ayah_text)
@@ -129,32 +163,66 @@ class RemainingTimeFragment : BaseFragment() {
             hadeeths?.let {
                 if (hadeeths.isNotEmpty()) {
                     val random = Random()
-                     randomHadeethsRemaining = hadeeths[random.nextInt(hadeeths.size)]
+
+                    randomHadeethsRemaining = hadeeths[random.nextInt(hadeeths.size)]
                     bindingFragment.textViewDailyHadeeths.text = addRandomAyahsWithSurah(
                         randomHadeethsRemaining.id,
                         randomHadeethsRemaining.categoryId.toString(),
                         randomHadeethsRemaining.categoryName,
                         randomHadeethsRemaining.title
                     )
-                    bindingFragment.textViewDailyHadeeths.setOnClickListener {
-                        val category = CategoryEntity(
-                            hadeeths.size.toString(),
-                            randomHadeethsRemaining.categoryId.toString(),
-                            "",
-                            randomHadeethsRemaining.categoryName
-                        )
-                        val action =
-                            RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationHadeeths(
-                                category
-                            )
-                        it.findNavController().navigate(action)
-                    }
-
+                    category = CategoryEntity(
+                        hadeeths.size.toString(),
+                        randomHadeethsRemaining.categoryId.toString(),
+                        "",
+                        randomHadeethsRemaining.categoryName
+                    )
                 } else {
                     bindingFragment.textViewDailyAyah.text = getString(R.string.hadeeths_text)
                 }
             }
         })
+
+
+    }
+
+    private fun getSpecificFragment() {
+        if (this::code.isInitialized) {
+            when (code) {
+                REQUEST_CODE_AYAHS.toString() -> {
+                    navigateFragment(REQUEST_CODE_AYAHS)
+                }
+                REQUEST_CODE_HADEETHS.toString() -> {
+                    navigateFragment(REQUEST_CODE_HADEETHS)
+                }
+                else -> {
+                    Log.d(TAG, "onStart: $code")
+                }
+            }
+        }
+    }
+
+    private fun navigateFragment(actionCode: Int) {
+        if (actionCode == REQUEST_CODE_AYAHS) {
+            if (this::randomAyahRemaining.isInitialized) {
+                val action =
+                    RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs(
+                        randomAyahRemaining.surahEnglishName
+                    )
+                action.surahNum = randomAyahRemaining.surahId
+                findNavController().navigate(action)
+            }
+        } else {
+            if (this::category.isInitialized) {
+                val action =
+                    RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationHadeeths(
+                        category
+                    )
+                findNavController().navigate(action)
+            }
+        }
+
+
     }
 
 

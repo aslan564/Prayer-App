@@ -28,7 +28,7 @@ class PrayerAppWorker(appContext: Context, params: WorkerParameters) : Coroutine
         return try {
             val database = PrayerDatabase.getInstance(applicationContext)
             val repository by lazy { PrayerTimingsRepository(database) }
-            if (currentDay.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+            if (currentDay.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                 makeSalawat()
             } else {
                 logApp("${currentDay.get(Calendar.DAY_OF_WEEK)}")

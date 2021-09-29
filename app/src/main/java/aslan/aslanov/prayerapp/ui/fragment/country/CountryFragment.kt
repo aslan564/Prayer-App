@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import aslan.aslanov.prayerapp.databinding.FragmentCountriesBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemCountryBinding
 import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
+import aslan.aslanov.prayerapp.ui.activity.MainViewModel
+import aslan.aslanov.prayerapp.ui.activity.ViewModelFactory
 import aslan.aslanov.prayerapp.ui.fragment.country.adapterCountry.AdapterCountry
 import aslan.aslanov.prayerapp.util.BaseFragment
 import aslan.aslanov.prayerapp.util.makeToast
@@ -20,7 +23,8 @@ import aslan.aslanov.prayerapp.util.makeToast
 
 class CountryFragment : BaseFragment() {
     private val bindingFragment by lazy { FragmentCountriesBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<CountryViewModel>()
+    private val factory by lazy { ViewModelFactory(requireContext()) }
+    private val viewModel by lazy { ViewModelProvider(this,factory).get(CountryViewModel::class.java)}
     private var adapterCountry: AdapterCountry? = null
 
     override fun onCreateView(
@@ -31,11 +35,6 @@ class CountryFragment : BaseFragment() {
 
 
     override fun bindUI(): Unit = with(bindingFragment) {
-        swipeLayoutCountryTest.setOnRefreshListener {
-            viewModel.getAllCountry()
-            swipeLayoutCountryTest.isRefreshing = false
-        }
-
     }
 
     @SuppressLint("NotifyDataSetChanged")

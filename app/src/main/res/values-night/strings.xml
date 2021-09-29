@@ -31,4 +31,6 @@
     <string name="share" translatable="false">Share</string>
     <string name="cancel" translatable="false">Cancel</string>
     <string name="share_content" translatable="false">Are you sure you want to share?</string>
+    <string name="providerOrNetwork">network or provider not enable</string>
+    <string name="illegalArgument">Unable to constructor viewmodel</string>
 </resources>
