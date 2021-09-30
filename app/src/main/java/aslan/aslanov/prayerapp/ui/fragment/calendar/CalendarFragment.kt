@@ -57,15 +57,13 @@ class CalendarFragment : BaseFragment() {
 
     override fun bindUI(): Unit = with(bindingFragment) {
 
-
-
         viewModel.getMonthTimingByCity()
     }
 
     override fun observeData(): Unit = with(viewModel) {
         viewModel.prayerTimeByHijriCalendar.observe(viewLifecycleOwner, {
             it?.let {list->
-                adapterCalendarFragment=CalendarAdapter(list.data!!){viewDataBinding, data, list, i ->
+                adapterCalendarFragment=CalendarAdapter(list.data!!){ viewDataBinding, data, _, _ ->
                     if (viewDataBinding is LayoutCalendarItemBinding) {
                         viewDataBinding.itemPrayer=data
                         viewDataBinding.executePendingBindings()
