@@ -17,7 +17,7 @@ import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
 import aslan.aslanov.prayerapp.model.surahs.SurahEntity
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
 
-@Database(entities = [Country::class, WhereWereWe::class, City::class, TimingsEntity::class,SurahEntity::class, AyahEntity::class, CategoryEntity::class, HadeethsEntity::class],version = 1,exportSchema = false)
+@Database(entities = [Country::class, WhereWereWe::class, City::class, TimingsEntity::class,SurahEntity::class, AyahEntity::class, CategoryEntity::class, HadeethsEntity::class],version = 2,exportSchema = false)
 abstract class PrayerDatabase : RoomDatabase() {
     abstract fun getCountryDao(): CountryDAO
     abstract fun getQuranDao(): QuranDAO

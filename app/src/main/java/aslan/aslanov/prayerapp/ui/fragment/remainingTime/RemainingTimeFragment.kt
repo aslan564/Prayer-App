@@ -77,13 +77,41 @@ class RemainingTimeFragment : BaseFragment() {
 
     @SuppressLint("SimpleDateFormat")
     override fun bindUI(): Unit = with(bindingFragment) {
-        bindingFragment.textViewDailyHadeeths.setOnClickListener {
+        textViewDailyHadeeths.setOnClickListener {
             navigateFragment(REQUEST_CODE_HADEETHS)
         }
-        bindingFragment.textViewDailyAyah.setOnClickListener {
+        textViewDailyAyah.setOnClickListener {
             navigateFragment(REQUEST_CODE_AYAHS)
         }
+        textViewDailyHadeeths.setOnLongClickListener(View.OnLongClickListener {
+            share(randomHadeethsRemaining.categoryName,
+                randomHadeethsRemaining.title,
+                randomHadeethsRemaining.id,
+                { intent: Intent ->
+                    startActivity(Intent.createChooser(intent, null))
+                },
+                { b: Boolean ->
+                    requireActivity().runOnUiThread {
+                        //progressBar.isVisible=b
+                    }
+                })
+            return@OnLongClickListener true
+        })
 
+        textViewDailyAyah.setOnLongClickListener(View.OnLongClickListener {
+            share(randomAyahRemaining.surahEnglishName,
+                randomAyahRemaining.text,
+                randomAyahRemaining.number.toString(),
+                { intent: Intent ->
+                    startActivity(Intent.createChooser(intent, null))
+                },
+                { b: Boolean ->
+                    requireActivity().runOnUiThread {
+                        //progressBar.isVisible=b
+                    }
+                })
+            return@OnLongClickListener true
+        })
         textViewNextPrayer.setOnClickListener {
             val intent = Intent(requireContext(), AlarmReceiver::class.java)
             intent.putExtra(EXTRA_TYPE, AyahsOrSurah.AYAHS.name)
@@ -103,32 +131,6 @@ class RemainingTimeFragment : BaseFragment() {
                 intent,
                 REQUEST_CODE_HADEETHS
             )
-        }
-        imageViewShareHadeeths.setOnClickListener {
-            share(randomHadeethsRemaining.categoryName,
-                randomHadeethsRemaining.title,
-                randomHadeethsRemaining.id,
-                { intent: Intent ->
-                    startActivity(Intent.createChooser(intent, null))
-                },
-                { b: Boolean ->
-                    requireActivity().runOnUiThread {
-                        //progressBar.isVisible=b
-                    }
-                })
-        }
-        imageViewShareAyah.setOnClickListener {
-            share(randomAyahRemaining.surahEnglishName,
-                randomAyahRemaining.text,
-                randomAyahRemaining.number.toString(),
-                { intent: Intent ->
-                    startActivity(Intent.createChooser(intent, null))
-                },
-                { b: Boolean ->
-                    requireActivity().runOnUiThread {
-                        //progressBar.isVisible=b
-                    }
-                })
         }
     }
 

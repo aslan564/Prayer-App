@@ -104,30 +104,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/text_view_daily_ayah"
                     tools:ignore="TextContrastCheck" />
 
-                <ImageView
-                    android:id="@+id/image_view_share_ayah"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/share"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintEnd_toEndOf="@+id/text_view_daily_ayah"
-                    app:layout_constraintTop_toTopOf="@+id/text_view_daily_ayah"
-                    app:srcCompat="@android:drawable/ic_menu_share"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageView
-                    android:id="@+id/image_view_share_hadeeths"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/share"
-                    android:padding="@dimen/small_2dp"
-                    app:layout_constraintEnd_toEndOf="@+id/text_view_daily_hadeeths"
-                    app:layout_constraintTop_toTopOf="@+id/text_view_daily_hadeeths"
-                    app:srcCompat="@android:drawable/ic_menu_share"
-                    tools:ignore="ImageContrastCheck" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
