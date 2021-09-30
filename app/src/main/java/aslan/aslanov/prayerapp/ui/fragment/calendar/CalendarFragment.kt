@@ -24,13 +24,8 @@ class CalendarFragment : BaseFragment() {
             CalendarViewModel::class.java
         )
     }
-    private val adapterCalendarFragment by lazy {
-        CalendarAdapter { viewDataBinding, data ->
-            if (viewDataBinding is LayoutCalendarItemBinding) {
-                viewDataBinding.itemPrayer = data
-            }
-        }
-    }
+    private lateinit var adapterCalendarFragment :
+        CalendarAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,16 +58,22 @@ class CalendarFragment : BaseFragment() {
     override fun bindUI(): Unit = with(bindingFragment) {
 
 
-        recyclerViewCalendar.apply {
-            adapter = adapterCalendarFragment
-        }
+
         viewModel.getMonthTimingByCity()
     }
 
     override fun observeData(): Unit = with(viewModel) {
         viewModel.prayerTimeByHijriCalendar.observe(viewLifecycleOwner, {
-            it?.let {
-                adapterCalendarFragment.submitList(it.data)
+            it?.let {list->
+                adapterCalendarFragment=CalendarAdapter(list.data!!){viewDataBinding, data, list, i ->
+                    if (viewDataBinding is LayoutCalendarItemBinding) {
+                        viewDataBinding.itemPrayer=data
+                        viewDataBinding.executePendingBindings()
+                    }
+                }
+                bindingFragment.recyclerViewCalendar.apply {
+                    adapter = adapterCalendarFragment
+                }
             }
         })
         viewModel.errorMessage.observe(viewLifecycleOwner, {
