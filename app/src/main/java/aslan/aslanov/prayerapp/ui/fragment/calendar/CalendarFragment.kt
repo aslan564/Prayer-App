@@ -1,15 +1,16 @@
 package aslan.aslanov.prayerapp.ui.fragment.calendar
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCalendarBinding
 import aslan.aslanov.prayerapp.databinding.LayoutCalendarItemBinding
-import aslan.aslanov.prayerapp.ui.activity.ViewModelFactory
+import aslan.aslanov.prayerapp.ui.activity.main.ViewModelFactory
+import aslan.aslanov.prayerapp.ui.activity.reading.ReadingActivity
 import aslan.aslanov.prayerapp.ui.fragment.calendar.adapter.CalendarAdapter
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.BaseFragment
@@ -47,8 +48,7 @@ class CalendarFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_settings -> {
-                val action = SettingsFragmentDirections.actionToNavigateToSettings()
-                findNavController().navigate(action)
+                requireActivity().startActivity(Intent(requireContext(),ReadingActivity::class.java))
             }
 
         }

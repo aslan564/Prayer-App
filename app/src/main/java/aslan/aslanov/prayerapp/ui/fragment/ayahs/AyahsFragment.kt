@@ -4,20 +4,16 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.activity.OnBackPressedCallback
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentAyahsBinding
-import aslan.aslanov.prayerapp.databinding.FragmentCurrentTimeBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranAyahsBinding
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
-import aslan.aslanov.prayerapp.ui.activity.MainActivity
+import aslan.aslanov.prayerapp.ui.activity.main.MainActivity
 import aslan.aslanov.prayerapp.ui.fragment.ayahs.adapter.AyahsAdapter
 import aslan.aslanov.prayerapp.util.BaseFragment
-import aslan.aslanov.prayerapp.util.logApp
 import aslan.aslanov.prayerapp.util.makeToast
 
 @SuppressLint("ResourceType")

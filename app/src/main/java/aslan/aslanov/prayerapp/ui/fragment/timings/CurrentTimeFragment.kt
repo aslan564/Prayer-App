@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
@@ -28,6 +29,7 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCou
 import aslan.aslanov.prayerapp.mainService.AlarmReceiver.Companion.setAlarmManager
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
+import aslan.aslanov.prayerapp.ui.activity.reading.ReadingActivity
 import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.ui.fragment.timings.adapter.CurrentTimeAdapter
 import aslan.aslanov.prayerapp.util.*
@@ -64,8 +66,10 @@ class CurrentTimeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_settings -> {
-                val action = SettingsFragmentDirections.actionToNavigateToSettings()
-                findNavController().navigate(action)
+                requireActivity().startActivity(
+                    Intent(requireContext(),
+                        ReadingActivity::class.java)
+                )
             }
 
         }

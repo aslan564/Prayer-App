@@ -17,7 +17,7 @@ import aslan.aslanov.prayerapp.databinding.LayoutItemQuranHadeethBinding
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
-import aslan.aslanov.prayerapp.ui.activity.MainActivity
+import aslan.aslanov.prayerapp.ui.activity.main.MainActivity
 import aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter.HadeethsAdapter
 import aslan.aslanov.prayerapp.util.*
 import kotlin.reflect.cast

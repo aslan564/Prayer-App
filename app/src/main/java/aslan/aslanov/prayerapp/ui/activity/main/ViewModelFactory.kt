@@ -1,4 +1,4 @@
-package aslan.aslanov.prayerapp.ui.activity
+package aslan.aslanov.prayerapp.ui.activity.main
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

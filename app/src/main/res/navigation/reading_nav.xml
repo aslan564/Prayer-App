@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reading_nav"
+    app:startDestination="@+id/navigation_settings">
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragment"
+        tools:layout="@layout/fragment_settings"
+        android:label="Settings">
+
+        <action
+            android:id="@+id/action_settings_to_quran"
+            app:destination="@+id/navigation_quran" />
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_hadeeths_category"
+            app:destination="@id/navigation_hadeeths_category" />
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_country"
+            app:destination="@id/navigation_country" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_country"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.country.CountryFragment"
+        tools:layout="@layout/fragment_countries"
+        android:label="Country">
+        <action
+            android:id="@+id/action_navigation_country_to_navigation_city"
+            app:destination="@id/navigation_city" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_city"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.city.CityFragment"
+        tools:layout="@layout/fragment_city"
+        android:label="City">
+        <argument
+            android:name="countryName"
+            android:defaultValue="Azerbaijan"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_quran"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.surah.QuranSurahFragment"
+        tools:layout="@layout/fragment_quran_surahs"
+        android:label="Quran">
+        <action
+            android:id="@+id/action_navigation_quran_to_navigation_quran_ayahs"
+            app:destination="@+id/navigation_quran_ayahs" />
+        <action
+            android:id="@+id/action_navigation_quran_to_navigation_quran_language"
+            app:destination="@id/navigation_quran_language" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_quran_language"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.language.LanguageFragment"
+        tools:layout="@layout/fragment_language"
+        android:label="Quran Language">
+        <argument
+            android:name="layoutId"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_quran_ayahs"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.ayahs.AyahsFragment"
+        tools:layout="@layout/fragment_ayahs"
+        android:label="Quran Ayahs">
+        <argument
+            android:name="surahNum"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="surahName"
+            app:argType="string" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/navigation_hadeeths_category"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.categoryOfHadeeth.CategoryOfHadithFragment"
+        tools:layout="@layout/fragment_category_of_hadith"
+        android:label="Hadeeths Category">
+        <action
+            android:id="@+id/action_navigation_hadeeths_category_to_navigation_hadeeths"
+            app:destination="@id/navigation_hadeeths" />
+
+        <action
+            android:id="@+id/action_navigation_hadeeths_category_to_navigation_quran_language"
+            app:destination="@id/navigation_quran_language" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_hadeeths"
+        android:name="aslan.aslanov.prayerapp.ui.fragment.hadeeths.HadeethsFragment"
+        tools:layout="@layout/fragment_hadeeths"
+        android:label="Hadeeths">
+        <argument
+            android:name="category"
+            app:argType="aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity" />
+    </fragment>
+
+
+</navigation>

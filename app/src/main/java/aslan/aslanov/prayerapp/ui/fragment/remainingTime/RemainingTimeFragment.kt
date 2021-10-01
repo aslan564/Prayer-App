@@ -19,7 +19,7 @@ import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
 import aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
-import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
+import aslan.aslanov.prayerapp.ui.activity.reading.ReadingActivity
 import aslan.aslanov.prayerapp.util.*
 import aslan.aslanov.prayerapp.util.PendingRequests.REQUEST_CODE_AYAHS
 import aslan.aslanov.prayerapp.util.PendingRequests.REQUEST_CODE_HADEETHS
@@ -59,8 +59,7 @@ class RemainingTimeFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_settings -> {
-                val action = SettingsFragmentDirections.actionToNavigateToSettings()
-                findNavController().navigate(action)
+                startIntent("ahjksdhkajshdjk",5)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -207,26 +206,23 @@ class RemainingTimeFragment : BaseFragment() {
     private fun navigateFragment(actionCode: Int) {
         if (actionCode == REQUEST_CODE_AYAHS) {
             if (this::randomAyahRemaining.isInitialized) {
-                val action =
-                    RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationQuranAyahs(
-                        randomAyahRemaining.surahEnglishName
-                    )
-                action.surahNum = randomAyahRemaining.surahId
-                findNavController().navigate(action)
+
+                startIntent(randomAyahRemaining.surahEnglishName,REQUEST_CODE_AYAHS)
             }
         } else {
             if (this::category.isInitialized) {
-                val action =
-                    RemainingTimeFragmentDirections.actionNavigationRemainingTimeToNavigationHadeeths(
-                        category
-                    )
-                findNavController().navigate(action)
+
+                startIntent(category.toString(), REQUEST_CODE_HADEETHS)
             }
         }
 
 
     }
 
+   private fun startIntent(surahEnglishName: String, REQUEST_CODE_AYAHS: Int) {
+        val intent = Intent(requireActivity(), ReadingActivity::class.java)
+        requireActivity().startActivity(intent)
+    }
 
     private fun checkRemainingTimeHoursStatus(hashMap: ArrayList<TimingsConverted>) {
         hashMap.forEachIndexed { index, mutableEntry ->

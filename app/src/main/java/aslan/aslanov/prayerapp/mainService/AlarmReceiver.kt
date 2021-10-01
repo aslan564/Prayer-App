@@ -8,14 +8,13 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager.STREAM_MUSIC
 import android.media.RingtoneManager
-import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
-import aslan.aslanov.prayerapp.ui.activity.MainActivity
+import aslan.aslanov.prayerapp.ui.activity.main.MainActivity
 import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_ID
 import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_AYAH_ID
 import aslan.aslanov.prayerapp.util.AppConstant.NOTIFICATION_MANAGER_HADEETHS_ID
