@@ -18,6 +18,7 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHad
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
 import aslan.aslanov.prayerapp.ui.activity.main.MainActivity
+import aslan.aslanov.prayerapp.ui.activity.reading.ReadingActivity
 import aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter.HadeethsAdapter
 import aslan.aslanov.prayerapp.util.*
 import kotlin.reflect.cast
@@ -62,7 +63,7 @@ class HadeethsFragment : BaseFragment() {
             val category = HadeethsFragmentArgs.fromBundle(it).category
             viewModel.getWhereWee(category.title)
 
-            (activity as MainActivity).supportActionBar!!.title = category.title
+            (activity as ReadingActivity).supportActionBar!!.title = category.title
             if (languageHadeeth != null) {
                 addHadith(
                     category.id.toInt(),
@@ -73,7 +74,7 @@ class HadeethsFragment : BaseFragment() {
             } else {
                 findNavController().popBackStack()
             }
-            getHadithFromDb(category.id.toInt()).observe(viewLifecycleOwner, { res ->
+            getHadithFromDb(category.id.toInt()).observe(viewLifecycleOwner) { res ->
                 if (res != null && res.isNotEmpty()) {
                     adapterHadeeths =
                         HadeethsAdapter(res) { viewDataBinding, data, _, positionAdapter ->
@@ -116,19 +117,19 @@ class HadeethsFragment : BaseFragment() {
                 } else {
                     logApp("**************************************** ${res.size}")
                 }
-            })
-            whereWereLiveData.observe(viewLifecycleOwner, { whereWereLiveData ->
+            }
+            whereWereLiveData.observe(viewLifecycleOwner) { whereWereLiveData ->
                 whereWereLiveData?.let {
                     iJustWantToScroll(whereWereLiveData.position)
                 }
-            })
+            }
 
-            error.observe(viewLifecycleOwner, { error ->
+            error.observe(viewLifecycleOwner) { error ->
                 error?.let {
                     requireContext().makeToast(error)
                 }
-            })
-            loading.observe(viewLifecycleOwner, { state ->
+            }
+            loading.observe(viewLifecycleOwner) { state ->
                 state?.let {
                     if (state) {
                         bindingFragment.progressBarHadith.visibility = View.VISIBLE
@@ -136,7 +137,7 @@ class HadeethsFragment : BaseFragment() {
                         bindingFragment.progressBarHadith.visibility = View.GONE
                     }
                 }
-            })
+            }
 
         }
     }
