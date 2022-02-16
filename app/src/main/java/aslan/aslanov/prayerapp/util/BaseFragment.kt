@@ -16,6 +16,10 @@ abstract class BaseFragment() : Fragment() {
         observeData()
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     protected open fun bindUI(): Unit = with(this.binding) {
         this?.lifecycleOwner = this@BaseFragment
     }
