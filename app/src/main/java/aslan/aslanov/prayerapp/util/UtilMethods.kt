@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
+import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
 import aslan.aslanov.prayerapp.network.NetworkResult
 import com.google.gson.Gson
 import okhttp3.ResponseBody
@@ -224,6 +225,9 @@ fun share(
         callback.invoke(this)
     }
 
+}
+fun WhereWereWe?.isNullOrEmptyField(): WhereWereWe {
+    return this ?: WhereWereWe("0",0,0,"0","0")
 }
 
 //"Momsco İçeriğine Göz At!\\n$title\\n$desc\\n\\n$shareUrl")

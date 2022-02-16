@@ -12,8 +12,10 @@ import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageSur
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
 import aslan.aslanov.prayerapp.ui.activity.main.MainActivity
+import aslan.aslanov.prayerapp.ui.activity.reading.ReadingActivity
 import aslan.aslanov.prayerapp.ui.fragment.ayahs.adapter.AyahsAdapter
 import aslan.aslanov.prayerapp.util.BaseFragment
+import aslan.aslanov.prayerapp.util.isNullOrEmptyField
 import aslan.aslanov.prayerapp.util.makeToast
 
 @SuppressLint("ResourceType")
@@ -42,7 +44,10 @@ class AyahsFragment : BaseFragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun bindUI(): Unit = with(bindingFragment) {
         viewModelSurahName = viewModel
-        requireActivity().onBackPressedDispatcher.addCallback(this@AyahsFragment,onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this@AyahsFragment,
+            onBackPressedCallback
+        )
 
         arguments?.let {
             val surahName = AyahsFragmentArgs.fromBundle(it).surahName
@@ -60,24 +65,24 @@ class AyahsFragment : BaseFragment() {
     }
 
     override fun observeData(): Unit = with(viewModel) {
-        ayahsStatus.observe(viewLifecycleOwner, { status ->
+        ayahsStatus.observe(viewLifecycleOwner) { status ->
             if (status) {
                 bindingFragment.progressBarQuranAyahs.visibility = View.VISIBLE
             } else {
                 bindingFragment.progressBarQuranAyahs.visibility = View.GONE
             }
-        })
-        errorMsg.observe(viewLifecycleOwner, {
+        }
+        errorMsg.observe(viewLifecycleOwner) {
             it?.let {
                 requireContext().makeToast(it)
             }
-        })
+        }
 
-        whereWereLiveData.observe(viewLifecycleOwner, { whereWereLiveData ->
+        whereWereLiveData.observe(viewLifecycleOwner) { whereWereLiveData ->
             whereWereLiveData?.let {
                 iJustWantToScroll(whereWereLiveData.position)
             }
-        })
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -85,8 +90,8 @@ class AyahsFragment : BaseFragment() {
         argsSurahNum: Int
     ): Unit = with(bindingFragment) {
         viewModel.getAyahsFromDatabase(argsSurahNum) { liveData ->
-            liveData.observe(viewLifecycleOwner, { ayahs ->
-                if (ayahs!=null) {
+            liveData.observe(viewLifecycleOwner) { ayahs ->
+                if (ayahs != null) {
                     if (ayahs.isEmpty()) {
                         viewModel.fetchSurahAyahs(argsSurahNum, languageSurah!!)
                         return@observe
@@ -94,7 +99,7 @@ class AyahsFragment : BaseFragment() {
                     ayahsAdapter =
                         AyahsAdapter(ayahs) { viewDataBinding, ayah, _, i ->
                             textViewSurahName.text = ayah.surahEnglishName
-                            (activity as MainActivity).supportActionBar!!.title =
+                            (activity as ReadingActivity).supportActionBar!!.title =
                                 ayah.surahArabicName
                             if (viewDataBinding is LayoutItemQuranAyahsBinding) {
                                 viewDataBinding.quranItem = ayah
@@ -111,7 +116,7 @@ class AyahsFragment : BaseFragment() {
                     recyclerViewAyahs.adapter = ayahsAdapter
                 }
 
-            })
+            }
         }
     }
 
@@ -123,9 +128,7 @@ class AyahsFragment : BaseFragment() {
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (whereWereWe != null) {
-                viewModel.setWhereWee(whereWereWe!!)
-            }
+            viewModel.setWhereWee(whereWereWe.isNullOrEmptyField())
             findNavController().popBackStack()
         }
 

@@ -16,5 +16,4 @@ class AyahsAdapter(
     R.layout.layout_item_quran_ayahs,
     onCompleteListener = { viewDataBinding, ayah, list, i ->
         onClickAyahListener(viewDataBinding, ayah, list, i)
-
     })
