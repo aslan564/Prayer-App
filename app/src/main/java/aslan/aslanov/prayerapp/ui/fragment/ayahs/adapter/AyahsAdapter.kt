@@ -3,9 +3,8 @@ package aslan.aslanov.prayerapp.ui.fragment.ayahs.adapter
 import android.annotation.SuppressLint
 import androidx.databinding.ViewDataBinding
 import aslan.aslanov.prayerapp.R
-import aslan.aslanov.prayerapp.model.ayahs.Ayah
 import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
-import aslan.aslanov.prayerapp.ui.fragment.city.adapterCity.GenericRecyclerViewAdapter
+import aslan.aslanov.prayerapp.util.GenericRecyclerViewAdapter
 
 @SuppressLint("ResourceType")
 class AyahsAdapter(

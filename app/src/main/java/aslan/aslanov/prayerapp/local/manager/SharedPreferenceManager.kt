@@ -22,12 +22,12 @@ object SharedPreferenceManager {
 
     private val IS_SURAH_FIRST = Pair("isSurahFirst", false)
     private val IS_LOCATION = Pair("isLocation", true)
-    private val IS_FIRST_TIME = Pair("isFirstTime", false)
+    private val IS_FIRST_TIME = Pair("isFirstTime", true)
     private val LATITUDE = Pair<String, String?>("latitude", null)
     private val LONGITUDE = Pair<String, String?>("longitude", null)
     private val CITY_NAME = Pair<String, String?>("location", null)
     private val COUNTRY_NAME = Pair<String, String?>("country_name", null)
-    private val QURAN_LANGUAGE_SURAH = Pair<String, String?>("quran_language_surah", null)
+    private val QURAN_LANGUAGE_SURAH = Pair("quran_language_surah", "en.asad")
     private val QURAN_LANGUAGE_HADEETH = Pair<String, String?>("quran_language_hadeeth", null)
 
     fun instance(context: Context) {
@@ -39,7 +39,6 @@ object SharedPreferenceManager {
         operation(editor)
         editor.apply()
     }
-
 
 
     var isLatitude: String?
@@ -68,8 +67,11 @@ object SharedPreferenceManager {
         set(value) = sharedPreferences.edit {
             it.putString(QURAN_LANGUAGE_SURAH.first, value)
         }
-    var languageHadeeth: String?
-        get() = sharedPreferences.getString(QURAN_LANGUAGE_HADEETH.first, QURAN_LANGUAGE_HADEETH.second)
+    var languageHadeth: String?
+        get() = sharedPreferences.getString(
+            QURAN_LANGUAGE_HADEETH.first,
+            QURAN_LANGUAGE_HADEETH.second
+        )
         set(value) = sharedPreferences.edit {
             it.putString(QURAN_LANGUAGE_HADEETH.first, value)
         }
@@ -88,7 +90,6 @@ object SharedPreferenceManager {
         set(value) = sharedPreferences.edit {
             it.putBoolean(IS_SURAH_FIRST.first, value)
         }
-
 
 
     //Notification checker

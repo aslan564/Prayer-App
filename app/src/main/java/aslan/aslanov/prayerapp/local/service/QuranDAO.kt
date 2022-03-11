@@ -14,7 +14,7 @@ interface QuranDAO {
     suspend fun insertSurah(vararg surahEntity: SurahEntity)
 
     @Query("SELECT * FROM table_surah")
-    fun getSurahsFromDatabase(): LiveData<List<SurahEntity>>
+    suspend fun getSurahsFromDatabase(): List<SurahEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuranAyah(vararg ayahs: AyahEntity)

@@ -21,7 +21,7 @@ interface CountryDAO {
 
     @Transaction
     @Query("SELECT * FROM table_country")
-    fun getCountryWithCities(): LiveData<List<CountryWithCities>>
+    suspend fun getCountryWithCities(): List<CountryWithCities>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTime(vararg timings: TimingsEntity)

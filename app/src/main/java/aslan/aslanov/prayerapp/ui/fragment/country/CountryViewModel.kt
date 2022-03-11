@@ -1,28 +1,24 @@
 package aslan.aslanov.prayerapp.ui.fragment.country
 
-import android.app.Application
 import android.content.Context
-import android.util.Log
-import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.viewModelScope
 import aslan.aslanov.prayerapp.local.PrayerDatabase
-import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager
+import aslan.aslanov.prayerapp.model.baseViewModel.BaseViewModel
 import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
-import aslan.aslanov.prayerapp.model.countryModel.Data
+import aslan.aslanov.prayerapp.network.RetrofitService
 import aslan.aslanov.prayerapp.repository.CountryListRepository
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
 
-class CountryViewModel(context: Context) : ViewModel() {
-    private val database = PrayerDatabase.getInstance(context)
-    private val repository = CountryListRepository(database)
+class CountryViewModel(database: PrayerDatabase, context: Context,retrofit: RetrofitService) : BaseViewModel<List<CountryWithCities>>() {
+    private val repository = CountryListRepository(database,context, retrofit)
 
-    val country = repository.getCountryDatabase()
 
-    val state = repository.uiState
-
-    val countryListError = repository.countryListError
-
-    companion object {
-        private const val TAG = "MainActivityViewModel"
+    fun getCountry() = viewModelScope.launch {
+        setLoading(true)
+        setData(repository.getCountryDatabase()) {
+            setLoading(false)
+        }
     }
+
 }

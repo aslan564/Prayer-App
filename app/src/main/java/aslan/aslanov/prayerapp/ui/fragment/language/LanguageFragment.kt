@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentLanguageBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranLanguageBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranLanguageHadithBinding
-import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
+import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeth
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageSurah
 import aslan.aslanov.prayerapp.ui.fragment.language.adapter.LanguageAdapter
 import aslan.aslanov.prayerapp.util.BaseFragment
@@ -64,7 +63,7 @@ class LanguageFragment : BaseFragment() {
                                 viewDataBinding.languageItem = data
                                 viewDataBinding.executePendingBindings()
                                 viewDataBinding.root.setOnClickListener {
-                                    languageHadeeth = data.code
+                                    languageHadeth = data.code
                                     viewModel.clearHadeethsFromDb()
                                     viewModel.getHadithCategory {
                                         findNavController().popBackStack()

@@ -5,7 +5,7 @@ import androidx.room.*
 import com.squareup.moshi.Json
 import java.util.*
 
-data class Data(
+data class CountryData(
     @Json(name = "cities")
     val cities: List<String>?,
     @Json(name = "country")

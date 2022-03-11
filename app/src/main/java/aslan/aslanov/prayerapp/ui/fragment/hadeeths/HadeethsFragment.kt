@@ -14,10 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import aslan.aslanov.prayerapp.databinding.FragmentHadeethsBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranHadeethBinding
-import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
+import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeth
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
-import aslan.aslanov.prayerapp.ui.activity.main.MainActivity
 import aslan.aslanov.prayerapp.ui.activity.reading.ReadingActivity
 import aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter.HadeethsAdapter
 import aslan.aslanov.prayerapp.util.*
@@ -43,7 +42,7 @@ class HadeethsFragment : BaseFragment() {
     }
 
 
-    override fun bindUI(): Unit = with(bindingFragment) {
+    override fun bindUI() {
         requireActivity().onBackPressedDispatcher.addCallback(
             this@HadeethsFragment,
             backPressedCallback
@@ -64,7 +63,7 @@ class HadeethsFragment : BaseFragment() {
             viewModel.getWhereWee(category.title)
 
             (activity as ReadingActivity).supportActionBar!!.title = category.title
-            if (languageHadeeth != null) {
+            if (languageHadeth != null) {
                 addHadith(
                     category.id.toInt(),
                     page,
@@ -153,7 +152,7 @@ class HadeethsFragment : BaseFragment() {
             if (totalItemCount > 0 && endHasBeenReached) {
                 arguments?.let {
                     val category = HadeethsFragmentArgs.fromBundle(it).category
-                    if (languageHadeeth != null) {
+                    if (languageHadeth != null) {
                         viewModel.addHadith(
                             category.id.toInt(),
                             page++,
@@ -182,7 +181,6 @@ class HadeethsFragment : BaseFragment() {
     }
 
     companion object {
-        const val HADEETHS_POSITION = "hadeeth_position"
     }
 }
 

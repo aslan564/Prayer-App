@@ -226,8 +226,9 @@ fun share(
     }
 
 }
+
 fun WhereWereWe?.isNullOrEmptyField(): WhereWereWe {
-    return this ?: WhereWereWe("0",0,0,"0","0")
+    return this ?: WhereWereWe("0", 0, 0, "0", "0")
 }
 
-//"Momsco İçeriğine Göz At!\\n$title\\n$desc\\n\\n$shareUrl")
+fun getLanguage() = Locale.getDefault().language

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.databinding.ViewDataBinding
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsConverted
-import aslan.aslanov.prayerapp.ui.fragment.city.adapterCity.GenericRecyclerViewAdapter
+import aslan.aslanov.prayerapp.util.GenericRecyclerViewAdapter
 
 @SuppressLint("ResourceType")
 class CurrentTimeAdapter(

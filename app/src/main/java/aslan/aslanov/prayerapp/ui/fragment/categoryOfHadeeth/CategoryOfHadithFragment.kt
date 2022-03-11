@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.activity.OnBackPressedCallback
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,9 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCategoryOfHadithBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranHadeethCategoryBinding
-import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
+import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeth
 import aslan.aslanov.prayerapp.ui.fragment.categoryOfHadeeth.adapter.HadithCategoryAdapter
-import aslan.aslanov.prayerapp.util.BaseFragment
 import aslan.aslanov.prayerapp.util.logApp
 import aslan.aslanov.prayerapp.util.makeToast
 
@@ -54,7 +52,7 @@ class CategoryOfHadithFragment : Fragment() {
     }
 
     private fun observeData(): Unit = with(viewModel) {
-        if (languageHadeeth == null) {
+        if (languageHadeth == null) {
             requireContext().makeToast(getString(R.string.language_quran))
         }
         categoryItem.observe(viewLifecycleOwner, { categoryItem ->

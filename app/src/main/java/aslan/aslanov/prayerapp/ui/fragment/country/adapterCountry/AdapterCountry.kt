@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.databinding.ViewDataBinding
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
-import aslan.aslanov.prayerapp.ui.fragment.city.adapterCity.GenericRecyclerViewAdapter
+import aslan.aslanov.prayerapp.util.GenericRecyclerViewAdapter
 
 @SuppressLint("ResourceType")
 class AdapterCountry(newList:List<CountryWithCities>,onCompletionListener: (ViewDataBinding, List<CountryWithCities>, Int,CountryWithCities) -> Unit) :
