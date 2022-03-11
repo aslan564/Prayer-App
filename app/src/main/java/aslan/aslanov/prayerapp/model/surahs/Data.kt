@@ -5,23 +5,10 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import aslan.aslanov.prayerapp.model.newQuranModel.Ayah
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
 
-data class Data(
-    @Json(name = "englishName")
-    val englishName: String?,
-    @Json(name = "englishNameTranslation")
-    val englishNameTranslation: String?,
-    @Json(name = "name")
-    val name: String?,
-    @Json(name = "number")
-    val number: Int?,
-    @Json(name = "numberOfAyahs")
-    val numberOfAyahs: Int?,
-    @Json(name = "revelationType")
-    val revelationType: String?
-)
 @Parcelize
 @Entity(tableName = "table_surah")
 data class SurahEntity(
@@ -33,8 +20,6 @@ data class SurahEntity(
     val name: String,
     @PrimaryKey(autoGenerate = false)
     val number: Int,
-    @ColumnInfo(name = "numberOfAyahs")
-    val numberOfAyahs: Int,
     @ColumnInfo(name = "revelationType")
     val revelationType: String
 ):Parcelable

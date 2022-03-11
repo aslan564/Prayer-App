@@ -16,10 +16,10 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -28,10 +28,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.ActivityMainBinding
+import aslan.aslanov.prayerapp.local.PrayerDatabase
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isLatitude
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.isLongitude
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCityName
 import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.locationCountryName
+import aslan.aslanov.prayerapp.model.baseViewModel.ViewModelFactory
+import aslan.aslanov.prayerapp.network.RetrofitService
 import aslan.aslanov.prayerapp.util.AppConstant
 import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -39,14 +42,13 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val TAG = "MainActivity456"
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val factory by lazy { ViewModelFactory(applicationContext) }
-    private val viewModel by lazy {
-        ViewModelProvider(
+    private val viewModel: MainViewModel by viewModels {
+        ViewModelFactory(
+            PrayerDatabase.getInstance(this),
             this,
-            factory
-        ).get(MainViewModel::class.java)
+            RetrofitService
+        )
     }
     private lateinit var client: FusedLocationProviderClient
     private lateinit var geocoder: Geocoder
@@ -91,7 +93,18 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         viewModel.getAllCountry()
         checkPermissionGetLocation()
+        observeDate()
 
+    }
+
+    private fun observeDate() {
+        viewModel.apply {
+            data.observe(this@MainActivity){
+                it?.let {
+                    saveConvertedList(it)
+                }
+            }
+        }
     }
 
 
@@ -204,5 +217,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        private const val TAG = "MainActivity"
+    }
 
 }

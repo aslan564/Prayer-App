@@ -4,8 +4,7 @@ import android.annotation.SuppressLint
 import androidx.databinding.ViewDataBinding
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.model.prayerCurrent.Data
-import aslan.aslanov.prayerapp.ui.fragment.city.adapterCity.GenericRecyclerViewAdapter
-import aslan.aslanov.prayerapp.util.GenericListAdapter
+import aslan.aslanov.prayerapp.util.GenericRecyclerViewAdapter
 
 @SuppressLint("ResourceType")
 class CalendarAdapter(

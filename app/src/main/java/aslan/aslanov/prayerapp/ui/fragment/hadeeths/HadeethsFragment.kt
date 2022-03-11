@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import aslan.aslanov.prayerapp.databinding.FragmentHadeethsBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemQuranHadeethBinding
-import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
+import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeth
 import aslan.aslanov.prayerapp.model.whereWereWe.AyahsOrSurah
 import aslan.aslanov.prayerapp.model.whereWereWe.WhereWereWe
-import aslan.aslanov.prayerapp.ui.activity.main.MainActivity
+import aslan.aslanov.prayerapp.ui.activity.reading.ReadingActivity
 import aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter.HadeethsAdapter
 import aslan.aslanov.prayerapp.util.*
 import kotlin.reflect.cast
@@ -42,7 +42,7 @@ class HadeethsFragment : BaseFragment() {
     }
 
 
-    override fun bindUI(): Unit = with(bindingFragment) {
+    override fun bindUI() {
         requireActivity().onBackPressedDispatcher.addCallback(
             this@HadeethsFragment,
             backPressedCallback
@@ -62,8 +62,8 @@ class HadeethsFragment : BaseFragment() {
             val category = HadeethsFragmentArgs.fromBundle(it).category
             viewModel.getWhereWee(category.title)
 
-            (activity as MainActivity).supportActionBar!!.title = category.title
-            if (languageHadeeth != null) {
+            (activity as ReadingActivity).supportActionBar!!.title = category.title
+            if (languageHadeth != null) {
                 addHadith(
                     category.id.toInt(),
                     page,
@@ -73,7 +73,7 @@ class HadeethsFragment : BaseFragment() {
             } else {
                 findNavController().popBackStack()
             }
-            getHadithFromDb(category.id.toInt()).observe(viewLifecycleOwner, { res ->
+            getHadithFromDb(category.id.toInt()).observe(viewLifecycleOwner) { res ->
                 if (res != null && res.isNotEmpty()) {
                     adapterHadeeths =
                         HadeethsAdapter(res) { viewDataBinding, data, _, positionAdapter ->
@@ -116,19 +116,19 @@ class HadeethsFragment : BaseFragment() {
                 } else {
                     logApp("**************************************** ${res.size}")
                 }
-            })
-            whereWereLiveData.observe(viewLifecycleOwner, { whereWereLiveData ->
+            }
+            whereWereLiveData.observe(viewLifecycleOwner) { whereWereLiveData ->
                 whereWereLiveData?.let {
                     iJustWantToScroll(whereWereLiveData.position)
                 }
-            })
+            }
 
-            error.observe(viewLifecycleOwner, { error ->
+            error.observe(viewLifecycleOwner) { error ->
                 error?.let {
                     requireContext().makeToast(error)
                 }
-            })
-            loading.observe(viewLifecycleOwner, { state ->
+            }
+            loading.observe(viewLifecycleOwner) { state ->
                 state?.let {
                     if (state) {
                         bindingFragment.progressBarHadith.visibility = View.VISIBLE
@@ -136,7 +136,7 @@ class HadeethsFragment : BaseFragment() {
                         bindingFragment.progressBarHadith.visibility = View.GONE
                     }
                 }
-            })
+            }
 
         }
     }
@@ -152,7 +152,7 @@ class HadeethsFragment : BaseFragment() {
             if (totalItemCount > 0 && endHasBeenReached) {
                 arguments?.let {
                     val category = HadeethsFragmentArgs.fromBundle(it).category
-                    if (languageHadeeth != null) {
+                    if (languageHadeth != null) {
                         viewModel.addHadith(
                             category.id.toInt(),
                             page++,
@@ -181,7 +181,6 @@ class HadeethsFragment : BaseFragment() {
     }
 
     companion object {
-        const val HADEETHS_POSITION = "hadeeth_position"
     }
 }
 

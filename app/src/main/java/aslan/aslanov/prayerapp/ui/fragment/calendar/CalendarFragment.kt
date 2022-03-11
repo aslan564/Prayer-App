@@ -4,26 +4,25 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import aslan.aslanov.prayerapp.R
 import aslan.aslanov.prayerapp.databinding.FragmentCalendarBinding
 import aslan.aslanov.prayerapp.databinding.LayoutCalendarItemBinding
-import aslan.aslanov.prayerapp.ui.activity.main.ViewModelFactory
+import aslan.aslanov.prayerapp.local.PrayerDatabase
+import aslan.aslanov.prayerapp.model.baseViewModel.ViewModelFactory
+import aslan.aslanov.prayerapp.network.RetrofitService
 import aslan.aslanov.prayerapp.ui.activity.reading.ReadingActivity
 import aslan.aslanov.prayerapp.ui.fragment.calendar.adapter.CalendarAdapter
-import aslan.aslanov.prayerapp.ui.fragment.settings.SettingsFragmentDirections
 import aslan.aslanov.prayerapp.util.BaseFragment
 
 
 @SuppressLint("ResourceType")
 class CalendarFragment : BaseFragment() {
     private val bindingFragment by lazy { FragmentCalendarBinding.inflate(layoutInflater) }
-    private val factory by lazy { ViewModelFactory(requireContext()) }
-    private val viewModel by lazy {
-        ViewModelProvider(requireActivity(), factory).get(
-            CalendarViewModel::class.java
-        )
+    private val viewModel:CalendarViewModel by viewModels {
+        ViewModelFactory(PrayerDatabase.getInstance(requireContext()),requireContext(), RetrofitService)
+
     }
     private lateinit var adapterCalendarFragment :
         CalendarAdapter
@@ -61,20 +60,21 @@ class CalendarFragment : BaseFragment() {
     }
 
     override fun observeData(): Unit = with(viewModel) {
-        viewModel.prayerTimeByHijriCalendar.observe(viewLifecycleOwner, {
-            it?.let {list->
-                adapterCalendarFragment=CalendarAdapter(list.data!!){ viewDataBinding, data, _, _ ->
-                    if (viewDataBinding is LayoutCalendarItemBinding) {
-                        viewDataBinding.itemPrayer=data
-                        viewDataBinding.executePendingBindings()
+        viewModel.prayerTimeByHijriCalendar.observe(viewLifecycleOwner) {
+            it?.let { list ->
+                adapterCalendarFragment =
+                    CalendarAdapter(list.data!!) { viewDataBinding, data, _, _ ->
+                        if (viewDataBinding is LayoutCalendarItemBinding) {
+                            viewDataBinding.itemPrayer = data
+                            viewDataBinding.executePendingBindings()
+                        }
                     }
-                }
                 bindingFragment.recyclerViewCalendar.apply {
                     adapter = adapterCalendarFragment
                 }
             }
-        })
-        viewModel.errorMessage.observe(viewLifecycleOwner, {
+        }
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
             it?.let {
                 android.widget.Toast.makeText(
                     requireContext(),
@@ -82,9 +82,9 @@ class CalendarFragment : BaseFragment() {
                     android.widget.Toast.LENGTH_SHORT
                 ).show()
             }
-        })
+        }
 
-        viewModel.loading.observe(viewLifecycleOwner, {
+        viewModel.loading.observe(viewLifecycleOwner) {
             it?.let {
                 if (it) {
                     bindingFragment.progressBar.visibility = View.VISIBLE
@@ -92,7 +92,7 @@ class CalendarFragment : BaseFragment() {
                     bindingFragment.progressBar.visibility = View.GONE
                 }
             }
-        })
+        }
     }
 
     companion object {

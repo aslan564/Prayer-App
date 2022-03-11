@@ -1,4 +1,4 @@
-package aslan.aslanov.prayerapp.ui.fragment.city.adapterCity
+package aslan.aslanov.prayerapp.util
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

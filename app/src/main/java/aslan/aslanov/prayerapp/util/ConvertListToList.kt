@@ -1,16 +1,14 @@
 package aslan.aslanov.prayerapp.util
 
-import aslan.aslanov.prayerapp.model.ayahs.Ayah
 import aslan.aslanov.prayerapp.model.ayahs.AyahEntity
 import aslan.aslanov.prayerapp.model.countryModel.City
-import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
 import aslan.aslanov.prayerapp.model.hadithCategory.CategoryEntity
 import aslan.aslanov.prayerapp.model.hadithCategory.CategoryItem
+import aslan.aslanov.prayerapp.model.newQuranModel.Ayah
+import aslan.aslanov.prayerapp.model.newQuranModel.Surah
 import aslan.aslanov.prayerapp.model.prayerCurrent.Timings
 import aslan.aslanov.prayerapp.model.prayerCurrent.TimingsEntity
-import aslan.aslanov.prayerapp.model.surahs.Data
 import aslan.aslanov.prayerapp.model.surahs.SurahEntity
-import java.lang.Exception
 
 fun cityList(cityStrings: List<String>, countryId: String): List<City> {
     val newCityList = mutableListOf<City>()
@@ -20,14 +18,13 @@ fun cityList(cityStrings: List<String>, countryId: String): List<City> {
     return newCityList
 }
 
-fun List<Data>.convertToSurahEntity(): List<SurahEntity> = map {
+fun List<Surah>.convertToSurahEntity(): List<SurahEntity> = map {
     SurahEntity(
-        englishName = it.englishName!!,
-        englishNameTranslation = it.englishNameTranslation!!,
-        name = it.name!!,
-        number = it.number!!,
-        numberOfAyahs = it.numberOfAyahs!!,
-        revelationType = it.revelationType!!
+        englishName= it.englishName?:"",
+        englishNameTranslation = it.englishNameTranslation?:"",
+        name = it.name?:"",
+        number = it.number?:0,
+        revelationType = it.revelationType?:""
     )
 }
 
@@ -46,15 +43,15 @@ fun List<Ayah>.convertToAyah(
     surahName: String
 ): List<AyahEntity> = map {
     AyahEntity(
-        hizbQuarter = it.hizbQuarter!!,
-        juz = it.juz!!,
-        manzil = it.manzil!!,
-        number = it.number!!,
-        numberInSurah = it.numberInSurah!!,
-        page = it.page!!,
-        ruku = it.ruku!!,
+        hizbQuarter = it.hizbQuarter?:0,
+        juz = it.juz?:0,
+        manzil = it.manzil?:0,
+        number = it.number?:0,
+        numberInSurah = it.numberInSurah?:0,
+        page = it.page?:0,
+        ruku = it.ruku?:0,
         sajda = it.sajda == null ?: false,
-        text = it.text!!,
+        text = it.text?:"",
         surahId = surahId,
         surahEnglishName = surahName,
         surahArabicName = surahActualName

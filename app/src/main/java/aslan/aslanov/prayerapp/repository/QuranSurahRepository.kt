@@ -1,37 +1,59 @@
 package aslan.aslanov.prayerapp.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
 import aslan.aslanov.prayerapp.local.PrayerDatabase
-import aslan.aslanov.prayerapp.model.surahs.QuranResponse
+import aslan.aslanov.prayerapp.model.ayahs.AyahsResponse
+import aslan.aslanov.prayerapp.model.newQuranModel.Ayah
+import aslan.aslanov.prayerapp.model.newQuranModel.QuranResponse
+import aslan.aslanov.prayerapp.model.newQuranModel.Surah
 import aslan.aslanov.prayerapp.model.surahs.SurahEntity
 import aslan.aslanov.prayerapp.network.NetworkResult
-import aslan.aslanov.prayerapp.network.RetrofitService.getQuranResponse
-import aslan.aslanov.prayerapp.network.Status
-import aslan.aslanov.prayerapp.util.convertToSurahEntity
+import aslan.aslanov.prayerapp.network.RetrofitService
 import aslan.aslanov.prayerapp.util.catchServerError
-import aslan.aslanov.prayerapp.util.logApp
+import aslan.aslanov.prayerapp.util.convertToAyah
+import aslan.aslanov.prayerapp.util.convertToSurahEntity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class QuranSurahRepository(private val database: PrayerDatabase) {
-    private val service = getQuranResponse
+class QuranSurahRepository(
+    private val database: PrayerDatabase,
+    private val context: Context,
+    private val retrofit: RetrofitService
+) {
+
+    suspend fun addQuranSurahToDB(surahs: List<Surah>) {
+        val convertedSurah = withContext(Dispatchers.Default)
+        {
+            return@withContext surahs.convertToSurahEntity()
+        }
+        database.getQuranDao().insertSurah(*convertedSurah.toTypedArray())
+    }
+
+    suspend fun addQuranAyahsToDB(surahs: SurahEntity, ayahs: List<Ayah>) {
+        withContext(Dispatchers.Default)
+        {
+            return@withContext surahs.number.let { surah ->
+                ayahs.convertToAyah(
+                    surah,
+                    surahs.name,
+                    surahs.englishName
+                )
+            }
+        }?.let { ayahEntity ->
+            database.getQuranDao()
+                .insertQuranAyah(*ayahEntity.toTypedArray())
+        }
+    }
+
+    suspend fun getSurahFromDB() = database.getQuranDao().getSurahsFromDatabase()
 
 
-    private var _quranUiState = MutableLiveData<Boolean>()
-    val quranUiState: LiveData<Boolean>
-        get() = _quranUiState
-
-    private var _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String>
-        get() = _errorMessage
-
-    private suspend fun fetchQuran(onCompleteListener: (NetworkResult<QuranResponse>) -> Unit) {
+    suspend fun fetchNewQuran(
+        onCompleteListener: (NetworkResult<QuranResponse>) -> Unit
+    ) {
         try {
             onCompleteListener(NetworkResult.loading())
-            val res = service.fetchSurahFromQuran()
+            val res = retrofit.getQuranResponse.getQuran()
             if (res.isSuccessful) {
                 res.body()?.let {
                     onCompleteListener(NetworkResult.success(it))
@@ -47,39 +69,27 @@ class QuranSurahRepository(private val database: PrayerDatabase) {
         }
     }
 
-    suspend fun addQuranSurahToDB() {
-        fetchQuran { res ->
-            when (res.status) {
-                Status.LOADING -> {
-                    _quranUiState.value = true
-                }
-                Status.ERROR -> {
-                    res.msg?.let {
-                        logApp(res.msg)
-                        _errorMessage.value = it
-                        _quranUiState.value = false
-                    }
-                }
-                Status.SUCCESS -> {
-                    res.data?.let {
-                        it.data!!.let { surahs ->
-                            GlobalScope.launch {
-                                val convertedSurah = withContext(Dispatchers.Default)
-                                {
-                                    return@withContext surahs.convertToSurahEntity()
-                                }
-                                database.getQuranDao().insertSurah(*convertedSurah.toTypedArray())
-                            }
-                            _quranUiState.postValue(false)
-                        }
-                    }
+    suspend fun getAyahFromInternet(
+        surah: Int,
+        language: String,
+        onComplete: (NetworkResult<AyahsResponse>) -> Unit
+    ) {
+        try {
+            val response = retrofit.getQuranResponse.fetchSurahAyahsQuran(surah, language)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    onComplete(NetworkResult.success(it))
+                } ?: onComplete(NetworkResult.error(response.message()))
+            } else {
+                catchServerError<AyahsResponse>(response.errorBody()) {
+                    onComplete(it)
                 }
             }
+        } catch (e: java.lang.Exception) {
+            onComplete(NetworkResult.error(e.message))
         }
     }
 
-    fun getSurahFromDB(): LiveData<List<SurahEntity>> {
-        _quranUiState.postValue(false)
-        return (database.getQuranDao().getSurahsFromDatabase())
-    }
+    fun getAyahsFromDatabase(surah: Int) =
+        database.getQuranDao().getAyahsFromDatabase(surah)
 }

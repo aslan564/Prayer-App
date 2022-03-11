@@ -3,7 +3,7 @@ package aslan.aslanov.prayerapp.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import aslan.aslanov.prayerapp.local.PrayerDatabase
-import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeeth
+import aslan.aslanov.prayerapp.local.manager.SharedPreferenceManager.languageHadeth
 import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
 import aslan.aslanov.prayerapp.model.hadeeths.HadeethsResponse
 import aslan.aslanov.prayerapp.model.hadeeths.convertToHadeeths
@@ -18,7 +18,6 @@ import aslan.aslanov.prayerapp.network.Status
 import aslan.aslanov.prayerapp.util.convertToCategoryEntity
 import aslan.aslanov.prayerapp.util.catchServerError
 import kotlinx.coroutines.*
-import okhttp3.internal.wait
 
 class HadithAndLanguageRepository(private val database: PrayerDatabase) {
     private val service = getHadeethsService
@@ -93,9 +92,10 @@ class HadithAndLanguageRepository(private val database: PrayerDatabase) {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     suspend fun addCategoryToDatabase() {
-        if (languageHadeeth != null) {
-            getCategoryList(languageHadeeth!!) { res ->
+        if (languageHadeth != null) {
+            getCategoryList(languageHadeth!!) { res ->
                 when (res.status) {
                     Status.SUCCESS -> {
                         res.data?.let {
@@ -165,8 +165,8 @@ class HadithAndLanguageRepository(private val database: PrayerDatabase) {
         perPage: Int,
         hadeethsName: String,
     ) {
-        if (languageHadeeth != null) {
-            getHadith(languageHadeeth!!, categoryId, page, perPage) { res ->
+        if (languageHadeth != null) {
+            getHadith(languageHadeth!!, categoryId, page, perPage) { res ->
                 when (res.status) {
                     Status.SUCCESS -> {
                         res.data?.let {
@@ -175,7 +175,7 @@ class HadithAndLanguageRepository(private val database: PrayerDatabase) {
                                     it.data?.let { dataList ->
                                         val convertList = withContext(Dispatchers.Default) {
                                             return@withContext dataList.convertToHadeeths(
-                                                languageHadeeth!!,
+                                                languageHadeth!!,
                                                 categoryId,
                                                 hadeethsName
                                             )

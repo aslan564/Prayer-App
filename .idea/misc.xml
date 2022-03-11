@@ -4,6 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.36512820512820515" />
+        <entry key="..\:/Users/aslan/StudioProjects/Prayer-App/app/src/main/res/drawable/bg_custome_progres.xml" value="0.2075" />
+        <entry key="..\:/Users/aslan/StudioProjects/Prayer-App/app/src/main/res/layout/activity_reading.xml" value="0.1671195652173913" />
+        <entry key="..\:/Users/aslan/StudioProjects/Prayer-App/app/src/main/res/layout/fragment_ayahs.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/aslan/StudioProjects/Prayer-App/app/src/main/res/layout/fragment_quran_surahs.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/aslan/StudioProjects/Prayer-App/app/src/main/res/layout/fragment_remaining_time.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/aslan/StudioProjects/Prayer-App/app/src/main/res/layout/layout_item_quran_surahs.xml" value="0.22826086956521738" />
         <entry key="app/src/main/res/drawable/bg_custome_progres.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/bg_layout.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/bg_text_city.xml" value="0.371875" />

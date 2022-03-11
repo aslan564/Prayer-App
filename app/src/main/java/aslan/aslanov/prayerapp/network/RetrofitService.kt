@@ -3,6 +3,7 @@ package aslan.aslanov.prayerapp.network
 import aslan.aslanov.prayerapp.BuildConfig
 import aslan.aslanov.prayerapp.network.RetrofitFactory.createService
 import aslan.aslanov.prayerapp.network.services.*
+import aslan.aslanov.prayerapp.util.NetworkConstant
 import aslan.aslanov.prayerapp.util.NetworkConstant.BASE_URL
 import aslan.aslanov.prayerapp.util.NetworkConstant.BASE_URL_COUNTRY
 import aslan.aslanov.prayerapp.util.NetworkConstant.BASE_URL_HADEETHS
@@ -24,7 +25,9 @@ object RetrofitService {
     }
 
     val getQuranResponse by lazy { createService<QuranService>(BuildConfig.DEBUG, BASE_URL_QURAN) }
-
+    val newQuranResponse by lazy { createService<QuranService>(BuildConfig.DEBUG,
+        NetworkConstant.BASE_URL_QURAN_LOCAL
+    ) }
     val getQiblaService by lazy { createService<QiblaService>(BuildConfig.DEBUG, BASE_URL) }
 
     val getHadeethsService by lazy {

@@ -2,7 +2,7 @@ package aslan.aslanov.prayerapp.network.services
 
 import aslan.aslanov.prayerapp.model.ayahs.AyahsResponse
 import aslan.aslanov.prayerapp.model.language.LanguageResponse
-import aslan.aslanov.prayerapp.model.surahs.QuranResponse
+import aslan.aslanov.prayerapp.model.newQuranModel.QuranResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -18,8 +18,7 @@ interface QuranService {
         @Path(value = "edition") edition: String
     ): Response<AyahsResponse>
 
-
     @GET("surah")
-    suspend fun fetchSurahFromQuran(
+    suspend fun getQuran(
     ): Response<QuranResponse>
 }

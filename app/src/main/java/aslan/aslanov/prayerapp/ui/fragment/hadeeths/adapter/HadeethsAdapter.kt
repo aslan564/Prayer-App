@@ -3,9 +3,8 @@ package aslan.aslanov.prayerapp.ui.fragment.hadeeths.adapter
 import android.annotation.SuppressLint
 import androidx.databinding.ViewDataBinding
 import aslan.aslanov.prayerapp.R
-import aslan.aslanov.prayerapp.model.hadeeths.Data
 import aslan.aslanov.prayerapp.model.hadeeths.HadeethsEntity
-import aslan.aslanov.prayerapp.ui.fragment.city.adapterCity.GenericRecyclerViewAdapter
+import aslan.aslanov.prayerapp.util.GenericRecyclerViewAdapter
 
 @SuppressLint("ResourceType")
 class HadeethsAdapter(

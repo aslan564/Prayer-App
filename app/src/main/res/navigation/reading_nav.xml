@@ -73,12 +73,9 @@
         tools:layout="@layout/fragment_ayahs"
         android:label="Quran Ayahs">
         <argument
-            android:name="surahNum"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
-            android:name="surahName"
-            app:argType="string" />
+            android:name="surahData"
+            app:argType="aslan.aslanov.prayerapp.model.surahs.SurahEntity"
+            app:nullable="true" />
     </fragment>
 
 

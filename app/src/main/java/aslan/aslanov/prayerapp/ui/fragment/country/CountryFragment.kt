@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import aslan.aslanov.prayerapp.databinding.FragmentCountriesBinding
 import aslan.aslanov.prayerapp.databinding.LayoutItemCountryBinding
+import aslan.aslanov.prayerapp.local.PrayerDatabase
+import aslan.aslanov.prayerapp.model.baseViewModel.ViewModelFactory
 import aslan.aslanov.prayerapp.model.countryModel.CountryWithCities
-import aslan.aslanov.prayerapp.ui.activity.main.ViewModelFactory
+import aslan.aslanov.prayerapp.network.RetrofitService
 import aslan.aslanov.prayerapp.ui.fragment.country.adapterCountry.AdapterCountry
 import aslan.aslanov.prayerapp.util.BaseFragment
 import aslan.aslanov.prayerapp.util.makeToast
@@ -20,8 +23,13 @@ import aslan.aslanov.prayerapp.util.makeToast
 
 class CountryFragment : BaseFragment() {
     private val bindingFragment by lazy { FragmentCountriesBinding.inflate(layoutInflater) }
-    private val factory by lazy { ViewModelFactory(requireContext()) }
-    private val viewModel by lazy { ViewModelProvider(this,factory).get(CountryViewModel::class.java)}
+    private val viewModel: CountryViewModel by viewModels {
+        ViewModelFactory(
+            PrayerDatabase.getInstance(
+                requireContext()
+            ), requireContext(), RetrofitService
+        )
+    }
     private var adapterCountry: AdapterCountry? = null
 
     override fun onCreateView(
@@ -32,17 +40,18 @@ class CountryFragment : BaseFragment() {
 
 
     override fun bindUI(): Unit = with(bindingFragment) {
+        viewModel.getCountry()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun observeData(): Unit = with(viewModel) {
-        countryListError.observe(viewLifecycleOwner, {
+        errorMessage.observe(viewLifecycleOwner) {
             it?.let {
                 requireContext().makeToast(it)
             }
-        })
+        }
 
-        country.observe(viewLifecycleOwner, {
+        data.observe(viewLifecycleOwner) {
             it?.let {
                 adapterCountry =
                     AdapterCountry(
@@ -63,10 +72,10 @@ class CountryFragment : BaseFragment() {
                     adapter = adapterCountry
                 }
             }
-        })
+        }
 
 
-        state.observe(viewLifecycleOwner, {
+        loadingState.observe(viewLifecycleOwner) {
             it?.let {
                 if (it) {
                     bindingFragment.progressBar.visibility = View.VISIBLE
@@ -74,7 +83,7 @@ class CountryFragment : BaseFragment() {
                     bindingFragment.progressBar.visibility = View.GONE
                 }
             }
-        })
+        }
     }
 
 
